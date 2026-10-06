@@ -2,8 +2,11 @@
 
 namespace Tests\Unit\Libraries;
 
+use DOMDocument;
+use DOMElement;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Sumex;
 use Tests\Support\FakeCiSettings;
 
 final class SumexXmlTest extends TestCase
@@ -15,8 +18,8 @@ final class SumexXmlTest extends TestCase
         require_once APPPATH . 'helpers/invoice_helper.php';
         require_once APPPATH . 'libraries/Sumex.php';
 
-        $this->ciBackup = $GLOBALS['unitCiInstance'] ?? null;
-        $settings       = new FakeCiSettings();
+        $this->ciBackup  = $GLOBALS['unitCiInstance'] ?? null;
+        $settings        = new FakeCiSettings();
         $settings->_data = [
             'sumex_sliptype' => '0',
             'currency_code'  => 'CHF',
@@ -26,7 +29,7 @@ final class SumexXmlTest extends TestCase
         ];
         $GLOBALS['unitCiInstance'] = (object) [
             'mdl_settings' => $settings,
-            'load'         => new class {
+            'load'         => new class () {
                 public function helper(mixed $h): void {}
             },
         ];
@@ -176,7 +179,7 @@ final class SumexXmlTest extends TestCase
     }
 
     /** @param array<string, mixed> $overrides */
-    private function sumex(array $overrides = [], ?array $items = null, array $options = []): \Sumex
+    private function sumex(array $overrides = [], ?array $items = null, array $options = []): Sumex
     {
         $invoice = (object) array_merge([
             'invoice_id'            => 7,
@@ -211,7 +214,7 @@ final class SumexXmlTest extends TestCase
             'sumex_observations'    => '',
         ], $overrides);
 
-        return new \Sumex(['invoice' => $invoice, 'items' => $items ?? [$this->item('Consult', '120', '1.00', '50.00', '50.00')], 'options' => $options]);
+        return new Sumex(['invoice' => $invoice, 'items' => $items ?? [$this->item('Consult', '120', '1.00', '50.00', '50.00')], 'options' => $options]);
     }
 
     private function item(string $name, string $sku, string $qty, string $price, string $total): object
@@ -226,16 +229,16 @@ final class SumexXmlTest extends TestCase
         ];
     }
 
-    private function parse(string|false $xml): \DOMDocument
+    private function parse(string|false $xml): DOMDocument
     {
         self::assertIsString($xml);
-        $doc = new \DOMDocument();
+        $doc = new DOMDocument();
         self::assertTrue($doc->loadXML($xml), 'Sumex must emit well-formed XML.');
 
         return $doc;
     }
 
-    private function first(\DOMDocument $doc, string $local): \DOMElement
+    private function first(DOMDocument $doc, string $local): DOMElement
     {
         $nodes = $doc->getElementsByTagName($local);
         self::assertGreaterThan(0, $nodes->length, "Expected <{$local}> in the output.");

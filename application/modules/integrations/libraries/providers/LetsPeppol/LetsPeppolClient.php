@@ -27,33 +27,6 @@ class LetsPeppolClient extends AbstractRestProvider
         $this->documents     = new LetsPeppolDocumentEndpoint($this->apiClient);
     }
 
-    protected static function definition(): array
-    {
-        return [
-            'code'     => 'letspeppol',
-            'name'     => 'LetsPeppol',
-            'auth'     => 'oauth2',
-            'settings' => [
-                'client_id'                    => ['type' => 'text', 'required' => true],
-                'client_secret'                => ['type' => 'password', 'required' => true, 'sensitive' => true],
-                'token_url'                    => ['default' => 'https://api.letspeppol.eu/oauth2/token', 'type' => 'url', 'required' => true],
-                'api_base_url'                 => ['default' => 'https://api.letspeppol.eu', 'type' => 'url', 'required' => true],
-                'invoice_endpoint'             => ['default' => '/v1/invoices', 'type' => 'path', 'required' => true],
-                'invoice_status_endpoint'      => ['default' => '/v1/invoices/{id}', 'type' => 'path', 'required' => true],
-                'incoming_invoices_endpoint'   => ['default' => '/v1/incoming-invoices', 'type' => 'path', 'required' => true],
-                'invoice_events_endpoint'      => ['default' => '/v1/invoice-events', 'type' => 'path', 'required' => true],
-                'credit_note_endpoint'         => ['default' => '/v1/credit-notes', 'type' => 'path', 'required' => true],
-                'credit_note_status_endpoint'  => ['default' => '/v1/credit-notes/{id}', 'type' => 'path', 'required' => true],
-                'participants_endpoint'        => ['default' => '/v1/participants', 'type' => 'path', 'required' => true],
-                'participant_lookup_endpoint'  => ['default' => '/v1/participants/{id}', 'type' => 'path', 'required' => true],
-                'transmissions_endpoint'       => ['default' => '/v1/transmissions', 'type' => 'path', 'required' => true],
-                'transmission_status_endpoint' => ['default' => '/v1/transmissions/{id}', 'type' => 'path', 'required' => true],
-                'documents_endpoint'           => ['default' => '/v1/documents', 'type' => 'path', 'required' => true],
-                'document_endpoint'            => ['default' => '/v1/documents/{id}', 'type' => 'path', 'required' => true],
-            ],
-        ];
-    }
-
     public function authenticate(array $settings): bool
     {
         $this->requireSettings($settings, ['client_id', 'client_secret', 'token_url', 'api_base_url']);
@@ -157,6 +130,33 @@ class LetsPeppolClient extends AbstractRestProvider
     public function documents(): LetsPeppolDocumentEndpoint
     {
         return $this->documents;
+    }
+
+    protected static function definition(): array
+    {
+        return [
+            'code'     => 'letspeppol',
+            'name'     => 'LetsPeppol',
+            'auth'     => 'oauth2',
+            'settings' => [
+                'client_id'                    => ['type' => 'text', 'required' => true],
+                'client_secret'                => ['type' => 'password', 'required' => true, 'sensitive' => true],
+                'token_url'                    => ['default' => 'https://api.letspeppol.eu/oauth2/token', 'type' => 'url', 'required' => true],
+                'api_base_url'                 => ['default' => 'https://api.letspeppol.eu', 'type' => 'url', 'required' => true],
+                'invoice_endpoint'             => ['default' => '/v1/invoices', 'type' => 'path', 'required' => true],
+                'invoice_status_endpoint'      => ['default' => '/v1/invoices/{id}', 'type' => 'path', 'required' => true],
+                'incoming_invoices_endpoint'   => ['default' => '/v1/incoming-invoices', 'type' => 'path', 'required' => true],
+                'invoice_events_endpoint'      => ['default' => '/v1/invoice-events', 'type' => 'path', 'required' => true],
+                'credit_note_endpoint'         => ['default' => '/v1/credit-notes', 'type' => 'path', 'required' => true],
+                'credit_note_status_endpoint'  => ['default' => '/v1/credit-notes/{id}', 'type' => 'path', 'required' => true],
+                'participants_endpoint'        => ['default' => '/v1/participants', 'type' => 'path', 'required' => true],
+                'participant_lookup_endpoint'  => ['default' => '/v1/participants/{id}', 'type' => 'path', 'required' => true],
+                'transmissions_endpoint'       => ['default' => '/v1/transmissions', 'type' => 'path', 'required' => true],
+                'transmission_status_endpoint' => ['default' => '/v1/transmissions/{id}', 'type' => 'path', 'required' => true],
+                'documents_endpoint'           => ['default' => '/v1/documents', 'type' => 'path', 'required' => true],
+                'document_endpoint'            => ['default' => '/v1/documents/{id}', 'type' => 'path', 'required' => true],
+            ],
+        ];
     }
 
     private function encodedDocument(array $document): ?string

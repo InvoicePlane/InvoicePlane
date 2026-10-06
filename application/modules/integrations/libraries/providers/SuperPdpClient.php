@@ -6,27 +6,6 @@ class SuperPdpClient extends AbstractRestProvider
 {
     protected bool $mergeRequestDebug = true;
 
-    protected static function definition(): array
-    {
-        return [
-            'code'     => 'superpdp',
-            'name'     => 'SuperPDP',
-            'auth'     => 'oauth2',
-            'settings' => [
-                'client_id'                  => ['type' => 'text', 'required' => true],
-                'client_secret'              => ['type' => 'password', 'required' => true, 'sensitive' => true],
-                'token_url'                  => ['default' => 'https://api.superpdp.tech/oauth2/token', 'type' => 'url', 'required' => true],
-                'api_base_url'               => ['default' => 'https://api.superpdp.tech', 'type' => 'url', 'required' => true],
-                'invoice_endpoint'           => ['default' => '/v1.beta/invoices', 'type' => 'path', 'required' => true],
-                'invoice_status_endpoint'    => ['default' => '/v1.beta/invoices/{id}', 'type' => 'path', 'required' => true],
-                'incoming_invoices_endpoint' => ['default' => '/v1.beta/invoices', 'type' => 'path', 'required' => true],
-                'incoming_document_endpoint' => ['default' => '/v1.beta/invoices/{id}/document', 'type' => 'path', 'required' => true],
-                'invoice_events_endpoint'    => ['default' => '/v1.beta/invoice_events', 'type' => 'path', 'required' => true],
-                'disable_pre_check'          => ['default' => false, 'type' => 'checkbox'],
-            ],
-        ];
-    }
-
     public function authenticate(array $settings): bool
     {
         $this->settings = $settings;
@@ -224,6 +203,27 @@ class SuperPdpClient extends AbstractRestProvider
             ['events', 'items', 'data'],
             'events'
         );
+    }
+
+    protected static function definition(): array
+    {
+        return [
+            'code'     => 'superpdp',
+            'name'     => 'SuperPDP',
+            'auth'     => 'oauth2',
+            'settings' => [
+                'client_id'                  => ['type' => 'text', 'required' => true],
+                'client_secret'              => ['type' => 'password', 'required' => true, 'sensitive' => true],
+                'token_url'                  => ['default' => 'https://api.superpdp.tech/oauth2/token', 'type' => 'url', 'required' => true],
+                'api_base_url'               => ['default' => 'https://api.superpdp.tech', 'type' => 'url', 'required' => true],
+                'invoice_endpoint'           => ['default' => '/v1.beta/invoices', 'type' => 'path', 'required' => true],
+                'invoice_status_endpoint'    => ['default' => '/v1.beta/invoices/{id}', 'type' => 'path', 'required' => true],
+                'incoming_invoices_endpoint' => ['default' => '/v1.beta/invoices', 'type' => 'path', 'required' => true],
+                'incoming_document_endpoint' => ['default' => '/v1.beta/invoices/{id}/document', 'type' => 'path', 'required' => true],
+                'invoice_events_endpoint'    => ['default' => '/v1.beta/invoice_events', 'type' => 'path', 'required' => true],
+                'disable_pre_check'          => ['default' => false, 'type' => 'checkbox'],
+            ],
+        ];
     }
 
     private function decodeInlineDocument(array $invoice): ?array

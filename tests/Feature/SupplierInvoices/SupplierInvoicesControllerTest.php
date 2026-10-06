@@ -21,6 +21,31 @@ final class SupplierInvoicesControllerTest extends AbstractTestCase
         $this->actingAsAdmin();
     }
 
+    /** @return array<string, array{0: array<string,string>}> */
+    public static function invalidPayments(): array
+    {
+        return [
+            'overpayment'     => [['payment_date' => '2026-10-04', 'amount' => '100.01']],
+            'zero amount'     => [['payment_date' => '2026-10-04', 'amount' => '0']],
+            'negative amount' => [['payment_date' => '2026-10-04', 'amount' => '-5']],
+            'non-numeric'     => [['payment_date' => '2026-10-04', 'amount' => 'ten euros']],
+            'empty amount'    => [['payment_date' => '2026-10-04', 'amount' => '']],
+            'missing date'    => [['amount' => '10']],
+            'malformed date'  => [['payment_date' => '04/10/2026', 'amount' => '10']],
+        ];
+    }
+
+    /** @return array<string, array{0: array<string,mixed>}> */
+    public static function invalidInvoiceForms(): array
+    {
+        return [
+            'no supplier'       => [['supplier_id' => 0]],
+            'unknown supplier'  => [['supplier_id' => 999999]],
+            'no invoice number' => [['supplier_invoice_number' => '']],
+            'no invoice date'   => [['supplier_invoice_date' => '']],
+        ];
+    }
+
     #[Test]
     public function it_lists_and_filters_supplier_invoices(): void
     {
@@ -44,27 +69,27 @@ final class SupplierInvoicesControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $supplierId = $this->seedSupplier('Payment Supplier');
-        $invoiceId = $this->seedSupplierInvoice($supplierId, 'PAY-001', '100.00');
+        $invoiceId  = $this->seedSupplierInvoice($supplierId, 'PAY-001', '100.00');
         $this->enableCsrfProtection();
 
         /* Act */
         $response = $this->postWithValidCsrfToken('/supplier_invoices/payment/' . $invoiceId, [
-            'payment_date' => '2026-10-04',
-            'amount' => '100.00',
+            'payment_date'   => '2026-10-04',
+            'amount'         => '100.00',
             'payment_method' => 'Bank transfer',
-            'reference' => 'PAYMENT-001',
+            'reference'      => 'PAYMENT-001',
         ]);
 
         /* Assert */
         $this->assertResponseRedirectsToRoute($response, 'supplier_invoices/view/' . $invoiceId);
         $this->assertDatabaseHas('ip_supplier_invoices', [
             'supplier_invoice_id' => $invoiceId,
-            'amount_paid' => '100.000000',
-            'status' => 'paid',
+            'amount_paid'         => '100.000000',
+            'status'              => 'paid',
         ]);
         $this->assertDatabaseHas('ip_supplier_invoice_payments', [
             'supplier_invoice_id' => $invoiceId,
-            'reference' => 'PAYMENT-001',
+            'reference'           => 'PAYMENT-001',
         ]);
     }
 
@@ -73,7 +98,7 @@ final class SupplierInvoicesControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $supplierId = $this->seedSupplier('Archive Supplier');
-        $invoiceId = $this->seedSupplierInvoice($supplierId, 'ARCH-001', '50.00');
+        $invoiceId  = $this->seedSupplierInvoice($supplierId, 'ARCH-001', '50.00');
         $this->enableCsrfProtection();
 
         /* Act - Archive */
@@ -234,20 +259,6 @@ final class SupplierInvoicesControllerTest extends AbstractTestCase
         $this->assertDatabaseHas('ip_supplier_invoice_status_history', ['supplier_invoice_id' => $invoiceId, 'new_status' => 'paid']);
     }
 
-    /** @return array<string, array{0: array<string,string>}> */
-    public static function invalidPayments(): array
-    {
-        return [
-            'overpayment'       => [['payment_date' => '2026-10-04', 'amount' => '100.01']],
-            'zero amount'       => [['payment_date' => '2026-10-04', 'amount' => '0']],
-            'negative amount'   => [['payment_date' => '2026-10-04', 'amount' => '-5']],
-            'non-numeric'       => [['payment_date' => '2026-10-04', 'amount' => 'ten euros']],
-            'empty amount'      => [['payment_date' => '2026-10-04', 'amount' => '']],
-            'missing date'      => [['amount' => '10']],
-            'malformed date'    => [['payment_date' => '04/10/2026', 'amount' => '10']],
-        ];
-    }
-
     /** @param array<string,string> $post */
     #[Test]
     #[\PHPUnit\Framework\Attributes\DataProvider('invalidPayments')]
@@ -307,17 +318,6 @@ final class SupplierInvoicesControllerTest extends AbstractTestCase
         self::assertSame((string) $supplierId, (string) $saved['supplier_id']);
         $this->assertDatabaseHas('ip_supplier_invoice_items', ['supplier_invoice_id' => $saved['supplier_invoice_id'], 'item_name' => 'Consulting']);
         $this->assertDatabaseHas('ip_supplier_invoice_items', ['supplier_invoice_id' => $saved['supplier_invoice_id'], 'item_name' => 'Travel']);
-    }
-
-    /** @return array<string, array{0: array<string,mixed>}> */
-    public static function invalidInvoiceForms(): array
-    {
-        return [
-            'no supplier'        => [['supplier_id' => 0]],
-            'unknown supplier'   => [['supplier_id' => 999999]],
-            'no invoice number'  => [['supplier_invoice_number' => '']],
-            'no invoice date'    => [['supplier_invoice_date' => '']],
-        ];
     }
 
     /** @param array<string,mixed> $override */
@@ -488,7 +488,7 @@ final class SupplierInvoicesControllerTest extends AbstractTestCase
         file_put_contents($absolute, '%PDF-1.4 attachment-bytes');
         $attachmentId = $this->databaseInsert('ip_supplier_invoice_attachments', [
             'supplier_invoice_id' => $invoiceId, 'file_name' => 'scan.pdf', 'storage_path' => $relative,
-            'mime_type' => 'application/pdf', 'file_size' => 25, 'sha256' => hash('sha256', 'x' . $relative), 'created_at' => date('Y-m-d H:i:s'),
+            'mime_type'           => 'application/pdf', 'file_size' => 25, 'sha256' => hash('sha256', 'x' . $relative), 'created_at' => date('Y-m-d H:i:s'),
         ]);
 
         try {
@@ -510,7 +510,7 @@ final class SupplierInvoicesControllerTest extends AbstractTestCase
         $invoiceId    = $this->seedSupplierInvoice($this->seedSupplier('Tampered Supplier'), 'DL-002', '10.00');
         $attachmentId = $this->databaseInsert('ip_supplier_invoice_attachments', [
             'supplier_invoice_id' => $invoiceId, 'file_name' => 'steal.txt', 'storage_path' => '../../ipconfig.php',
-            'mime_type' => 'text/plain', 'file_size' => 1, 'sha256' => hash('sha256', 'tamper'), 'created_at' => date('Y-m-d H:i:s'),
+            'mime_type'           => 'text/plain', 'file_size' => 1, 'sha256' => hash('sha256', 'tamper'), 'created_at' => date('Y-m-d H:i:s'),
         ]);
 
         /* Act */
@@ -546,18 +546,18 @@ final class SupplierInvoicesControllerTest extends AbstractTestCase
     private function invoiceFormPost(int $supplierId, array $override = []): array
     {
         return array_merge([
-            'supplier_id' => $supplierId, 'supplier_invoice_number' => 'F-' . random_int(1000, 9999),
+            'supplier_id'           => $supplierId, 'supplier_invoice_number' => 'F-' . random_int(1000, 9999),
             'supplier_invoice_date' => '2026-10-04', 'supplier_due_date' => '2026-11-04', 'currency_code' => 'EUR',
-            'subtotal' => '100.00', 'tax_total' => '21.00', 'total' => '121.00', 'notes' => '',
+            'subtotal'              => '100.00', 'tax_total' => '21.00', 'total' => '121.00', 'notes' => '',
         ], $override);
     }
 
     private function seedSupplier(string $name): int
     {
         return $this->databaseInsert('ip_suppliers', [
-            'supplier_name' => $name,
-            'supplier_active' => 1,
-            'supplier_date_created' => '2026-10-04',
+            'supplier_name'          => $name,
+            'supplier_active'        => 1,
+            'supplier_date_created'  => '2026-10-04',
             'supplier_date_modified' => '2026-10-04',
         ]);
     }
@@ -565,18 +565,18 @@ final class SupplierInvoicesControllerTest extends AbstractTestCase
     private function seedSupplierInvoice(int $supplierId, string $number, string $total): int
     {
         return $this->databaseInsert('ip_supplier_invoices', [
-            'supplier_id' => $supplierId,
-            'incoming_response_id' => null,
+            'supplier_id'             => $supplierId,
+            'incoming_response_id'    => null,
             'supplier_invoice_number' => $number,
-            'supplier_invoice_date' => '2026-10-04',
-            'currency_code' => 'EUR',
-            'subtotal' => $total,
-            'tax_total' => '0.00',
-            'total' => $total,
-            'amount_paid' => '0.00',
-            'status' => 'received',
-            'created_at' => '2026-10-04 12:00:00',
-            'updated_at' => '2026-10-04 12:00:00',
+            'supplier_invoice_date'   => '2026-10-04',
+            'currency_code'           => 'EUR',
+            'subtotal'                => $total,
+            'tax_total'               => '0.00',
+            'total'                   => $total,
+            'amount_paid'             => '0.00',
+            'status'                  => 'received',
+            'created_at'              => '2026-10-04 12:00:00',
+            'updated_at'              => '2026-10-04 12:00:00',
         ]);
     }
 }

@@ -235,8 +235,8 @@ class LoginSecurityTest extends AbstractTestCase
     private function seedLoginUser(string $email): void
     {
         $this->databaseInsert('ip_users', [
-            'user_name' => 'Login Tester', 'user_password' => password_hash('correct-password', PASSWORD_BCRYPT),
-            'user_psalt' => bin2hex(random_bytes(10)), 'user_email' => $email, 'user_type' => 1, 'user_active' => 1,
+            'user_name'         => 'Login Tester', 'user_password' => password_hash('correct-password', PASSWORD_BCRYPT),
+            'user_psalt'        => bin2hex(random_bytes(10)), 'user_email' => $email, 'user_type' => 1, 'user_active' => 1,
             'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
         ]);
     }

@@ -190,20 +190,6 @@ class SessionsFeatureTest extends AbstractTestCase
         self::assertSame($before['user_password'], $after['user_password']);
     }
 
-    private function seedResetUser(string $email, int $active): int
-    {
-        return $this->databaseInsert('ip_users', [
-            'user_name' => 'Reset Tester', 'user_email' => $email, 'user_type' => 1, 'user_active' => $active,
-            'user_password' => password_hash('correct-password', PASSWORD_BCRYPT), 'user_psalt' => bin2hex(random_bytes(10)),
-            'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
-        ]);
-    }
-
-    private function usersWithResetToken(): int
-    {
-        return (int) $this->databaseSelect("SELECT COUNT(*) AS c FROM ip_users WHERE user_passwordreset_token IS NOT NULL AND user_passwordreset_token <> ''")[0]['c'];
-    }
-
     #[Test]
     public function it_redirects_to_login_on_logout(): void
     {
@@ -218,5 +204,19 @@ class SessionsFeatureTest extends AbstractTestCase
         $this->assertResponseRedirectsToRoute($response, 'sessions/login');
         self::assertTrue($control->sessionActive(), 'Control: a normal authenticated request keeps its session open.');
         self::assertFalse($response->sessionActive(), 'Logout must destroy the session.');
+    }
+
+    private function seedResetUser(string $email, int $active): int
+    {
+        return $this->databaseInsert('ip_users', [
+            'user_name'         => 'Reset Tester', 'user_email' => $email, 'user_type' => 1, 'user_active' => $active,
+            'user_password'     => password_hash('correct-password', PASSWORD_BCRYPT), 'user_psalt' => bin2hex(random_bytes(10)),
+            'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+    }
+
+    private function usersWithResetToken(): int
+    {
+        return (int) $this->databaseSelect("SELECT COUNT(*) AS c FROM ip_users WHERE user_passwordreset_token IS NOT NULL AND user_passwordreset_token <> ''")[0]['c'];
     }
 }

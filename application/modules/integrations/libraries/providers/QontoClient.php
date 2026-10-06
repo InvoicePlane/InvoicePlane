@@ -12,39 +12,6 @@ class QontoClient extends AbstractRestProvider
         $this->urlGuard = $urlGuard ?? new RemoteUrlGuard();
     }
 
-    protected static function definition(): array
-    {
-        return [
-            'code'     => 'qonto',
-            'name'     => 'Qonto PA',
-            'label'    => 'Qonto',
-            'auth'     => 'bearer',
-            'settings' => [
-                'access_token'               => ['type' => 'password', 'required' => true, 'sensitive' => true],
-                'staging_token'              => ['type' => 'password', 'sensitive' => true],
-                'api_base_url'               => ['default' => 'https://thirdparty.qonto.com', 'type' => 'url', 'required' => true],
-                'import_endpoint'            => ['default' => '/v2/client_invoices/bulk', 'type' => 'path', 'required' => true],
-                'client_invoices_endpoint'   => ['default' => '/v2/client_invoices', 'type' => 'path', 'required' => true],
-                'send_invoice_endpoint'      => ['default' => '/v2/client_invoices/{id}/send_by_einvoice', 'type' => 'path', 'required' => true],
-                'invoice_status_endpoint'    => ['default' => '/v2/client_invoices/{id}', 'type' => 'path', 'required' => true],
-                'incoming_invoices_endpoint' => ['default' => '/v2/supplier_invoices', 'type' => 'path', 'required' => true],
-                'attachment_endpoint'        => ['default' => '/v2/attachments/{id}', 'type' => 'path', 'required' => true],
-            ],
-        ];
-    }
-
-    protected function bearerToken(): ?string
-    {
-        return $this->settings['access_token'] ?? null;
-    }
-
-    protected function extraHeaders(): array
-    {
-        return empty($this->settings['staging_token'])
-            ? []
-            : ['X-Qonto-Staging-Token: ' . $this->settings['staging_token']];
-    }
-
     public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
     {
         $metadata['invoice_number'] = $invoice->invoice_number ?? null;
@@ -266,6 +233,39 @@ class QontoClient extends AbstractRestProvider
         $response['response']['events'] = $events;
 
         return $response;
+    }
+
+    protected static function definition(): array
+    {
+        return [
+            'code'     => 'qonto',
+            'name'     => 'Qonto PA',
+            'label'    => 'Qonto',
+            'auth'     => 'bearer',
+            'settings' => [
+                'access_token'               => ['type' => 'password', 'required' => true, 'sensitive' => true],
+                'staging_token'              => ['type' => 'password', 'sensitive' => true],
+                'api_base_url'               => ['default' => 'https://thirdparty.qonto.com', 'type' => 'url', 'required' => true],
+                'import_endpoint'            => ['default' => '/v2/client_invoices/bulk', 'type' => 'path', 'required' => true],
+                'client_invoices_endpoint'   => ['default' => '/v2/client_invoices', 'type' => 'path', 'required' => true],
+                'send_invoice_endpoint'      => ['default' => '/v2/client_invoices/{id}/send_by_einvoice', 'type' => 'path', 'required' => true],
+                'invoice_status_endpoint'    => ['default' => '/v2/client_invoices/{id}', 'type' => 'path', 'required' => true],
+                'incoming_invoices_endpoint' => ['default' => '/v2/supplier_invoices', 'type' => 'path', 'required' => true],
+                'attachment_endpoint'        => ['default' => '/v2/attachments/{id}', 'type' => 'path', 'required' => true],
+            ],
+        ];
+    }
+
+    protected function bearerToken(): ?string
+    {
+        return $this->settings['access_token'] ?? null;
+    }
+
+    protected function extraHeaders(): array
+    {
+        return empty($this->settings['staging_token'])
+            ? []
+            : ['X-Qonto-Staging-Token: ' . $this->settings['staging_token']];
     }
 
     /**

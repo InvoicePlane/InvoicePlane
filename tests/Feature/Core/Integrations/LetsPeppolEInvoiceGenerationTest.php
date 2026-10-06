@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core\Integrations;
 
+use DOMDocument;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -45,7 +46,7 @@ final class LetsPeppolEInvoiceGenerationTest extends AbstractInvoiceTransmission
         self::assertSame('lp-ubl-1', $attempt['merchant_response_reference'], (string) ($attempt['error_detail'] ?? ''));
 
         $xml = $this->generatedXml($invoiceId);
-        $doc = new \DOMDocument();
+        $doc = new DOMDocument();
         self::assertTrue($doc->loadXML($xml), 'The artifact must be well-formed XML.');
         self::assertSame('Invoice', $doc->documentElement->localName);
         self::assertStringContainsString('UBL-LP-001', $xml);

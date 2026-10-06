@@ -3,6 +3,7 @@
 namespace Tests\Concerns;
 
 use RuntimeException;
+use stdClass;
 
 /**
  * Run real CodeIgniter models in the PHPUnit process against the test database.
@@ -41,12 +42,12 @@ trait UsesCodeIgniterModels
 
         $this->ciBackup = $GLOBALS['unitCiInstance'] ?? null;
 
-        $ci         = new \stdClass();
-        $ci->db     = DB([
-            'dsn' => '', 'hostname' => env('DB_HOSTNAME'), 'username' => env('DB_USERNAME'), 'password' => env('DB_PASSWORD'),
+        $ci     = new stdClass();
+        $ci->db = DB([
+            'dsn'      => '', 'hostname' => env('DB_HOSTNAME'), 'username' => env('DB_USERNAME'), 'password' => env('DB_PASSWORD'),
             'database' => $this->ciDatabaseName(), 'dbdriver' => 'mysqli', 'dbprefix' => '', 'pconnect' => false, 'db_debug' => true,
             'cache_on' => false, 'cachedir' => '', 'char_set' => 'utf8mb4', 'dbcollat' => 'utf8mb4_general_ci', 'swap_pre' => '',
-            'encrypt' => false, 'compress' => false, 'stricton' => false, 'failover' => [], 'save_queries' => false,
+            'encrypt'  => false, 'compress' => false, 'stricton' => false, 'failover' => [], 'save_queries' => false,
         ]);
         $ci->load = new class ($ci) {
             public function __construct(private object $ci) {}
@@ -55,14 +56,14 @@ trait UsesCodeIgniterModels
             public function model(string|array $models, ?string $alias = null): void
             {
                 foreach ((array) $models as $path) {
-                    $class                                = $this->resolveModel($path);
+                    $class                                             = $this->resolveModel($path);
                     $this->ci->{$alias ?? strtolower(basename($path))} = new $class();
                 }
             }
 
             public function library(string $name): void
             {
-                $this->ci->{$name} ??= new \stdClass();
+                $this->ci->{$name} ??= new stdClass();
             }
 
             /** @return list<string> */

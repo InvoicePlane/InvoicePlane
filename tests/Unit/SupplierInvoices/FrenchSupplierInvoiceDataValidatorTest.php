@@ -17,21 +17,21 @@ final class FrenchSupplierInvoiceDataValidatorTest extends TestCase
     {
         /* Arrange */
         $validator = new FrenchSupplierInvoiceDataValidator();
-        $invoice = [
+        $invoice   = [
             'supplier' => [
-                'supplier_name' => 'French Supplier',
+                'supplier_name'      => 'French Supplier',
                 'supplier_address_1' => '1 Rue de Paris',
-                'supplier_country' => 'FR',
-                'supplier_tax_code' => '123456789',
-                'supplier_vat_id' => 'FR32123456789',
+                'supplier_country'   => 'FR',
+                'supplier_tax_code'  => '123456789',
+                'supplier_vat_id'    => 'FR32123456789',
             ],
             'invoice' => [
                 'supplier_invoice_number' => 'INV-2026/001',
-                'supplier_invoice_date' => '2026-10-04',
-                'currency_code' => 'EUR',
-                'subtotal' => 100,
-                'tax_total' => 20,
-                'total' => 120,
+                'supplier_invoice_date'   => '2026-10-04',
+                'currency_code'           => 'EUR',
+                'subtotal'                => 100,
+                'tax_total'               => 20,
+                'total'                   => 120,
             ],
             'items' => [['item_name' => 'Consulting']],
         ];
@@ -48,19 +48,19 @@ final class FrenchSupplierInvoiceDataValidatorTest extends TestCase
     {
         /* Arrange */
         $validator = new FrenchSupplierInvoiceDataValidator();
-        $invoice = [
+        $invoice   = [
             'supplier' => [
-                'supplier_country' => 'FR',
+                'supplier_country'  => 'FR',
                 'supplier_tax_code' => '123',
-                'supplier_vat_id' => 'FR00123456789',
+                'supplier_vat_id'   => 'FR00123456789',
             ],
             'invoice' => [
                 'supplier_invoice_number' => 'INV 001',
-                'supplier_invoice_date' => '2026-02-30',
-                'currency_code' => 'EURO',
-                'subtotal' => 100,
-                'tax_total' => 20,
-                'total' => 125,
+                'supplier_invoice_date'   => '2026-02-30',
+                'currency_code'           => 'EURO',
+                'subtotal'                => 100,
+                'tax_total'               => 20,
+                'total'                   => 125,
             ],
             'items' => [],
         ];
@@ -83,10 +83,10 @@ final class FrenchSupplierInvoiceDataValidatorTest extends TestCase
     {
         /* Arrange */
         $validator = new FrenchSupplierInvoiceDataValidator();
-        $invoice = [
+        $invoice   = [
             'supplier' => ['supplier_country' => 'DE'],
-            'invoice' => [],
-            'items' => [],
+            'invoice'  => [],
+            'items'    => [],
         ];
 
         /* Act */

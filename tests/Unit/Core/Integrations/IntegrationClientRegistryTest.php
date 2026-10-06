@@ -150,7 +150,7 @@ class IntegrationClientRegistryTest extends TestCase
     {
         /* Arrange */
         $dir = $this->providerDirectory([
-            'RegFixtureAlphaClient.php' => $this->providerSource('RegFixtureAlphaClient', 'reg-alpha'),
+            'RegFixtureAlphaClient.php'  => $this->providerSource('RegFixtureAlphaClient', 'reg-alpha'),
             'RegFixtureHelperClient.php' => '<?php class RegFixtureHelperClient {}',
         ]);
 

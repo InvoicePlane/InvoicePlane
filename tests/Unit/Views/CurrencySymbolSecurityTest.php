@@ -13,7 +13,7 @@ class CurrencySymbolSecurityTest extends TestCase
     {
         parent::setUp();
 
-        $this->previousCi = $GLOBALS['unitCiInstance'] ?? null;
+        $this->previousCi          = $GLOBALS['unitCiInstance'] ?? null;
         $GLOBALS['unitCiInstance'] = (object) ['mdl_settings' => new FakeCiSettings()];
         require_once dirname(__DIR__, 3) . '/application/helpers/echo_helper.php';
         require_once dirname(__DIR__, 3) . '/application/helpers/settings_helper.php';
@@ -32,7 +32,7 @@ class CurrencySymbolSecurityTest extends TestCase
         // When get_setting('currency_symbol') is called without escaping,
         // and the setting contains HTML, it should be escaped by the caller
 
-        $CI = & get_instance();
+        $CI                                         = & get_instance();
         $CI->mdl_settings->_data['currency_symbol'] = '<script>alert(1)</script>';
 
         // get_setting without escape flag returns raw value

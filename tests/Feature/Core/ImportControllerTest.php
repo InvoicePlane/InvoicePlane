@@ -18,6 +18,14 @@ class ImportControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;
 
+    private const CLIENT_HEADERS = ['client_name', 'client_address_1', 'client_address_2', 'client_city', 'client_state', 'client_zip', 'client_country', 'client_phone', 'client_fax', 'client_mobile', 'client_email', 'client_web', 'client_vat_id', 'client_tax_code', 'client_active'];
+
+    private const INVOICE_HEADERS = ['user_email', 'client_name', 'invoice_date_created', 'invoice_date_due', 'invoice_number', 'invoice_terms'];
+
+    private const ITEM_HEADERS = ['invoice_number', 'item_tax_rate', 'item_date_added', 'item_name', 'item_description', 'item_quantity', 'item_price'];
+
+    private const PAYMENT_HEADERS = ['invoice_number', 'payment_method', 'payment_date', 'payment_amount', 'payment_note'];
+
     private string $importDir;
 
     protected function setUp(): void
@@ -41,34 +49,6 @@ class ImportControllerTest extends AbstractTestCase
         }
 
         parent::tearDown();
-    }
-
-    private const CLIENT_HEADERS = ['client_name', 'client_address_1', 'client_address_2', 'client_city', 'client_state', 'client_zip', 'client_country', 'client_phone', 'client_fax', 'client_mobile', 'client_email', 'client_web', 'client_vat_id', 'client_tax_code', 'client_active'];
-
-    private const INVOICE_HEADERS = ['user_email', 'client_name', 'invoice_date_created', 'invoice_date_due', 'invoice_number', 'invoice_terms'];
-
-    private const ITEM_HEADERS = ['invoice_number', 'item_tax_rate', 'item_date_added', 'item_name', 'item_description', 'item_quantity', 'item_price'];
-
-    private const PAYMENT_HEADERS = ['invoice_number', 'payment_method', 'payment_date', 'payment_amount', 'payment_note'];
-
-    /**
-     * @param list<string>             $headers
-     * @param list<list<string>>       $rows
-     */
-    private function writeCsv(string $file, array $headers, array $rows): void
-    {
-        $handle = fopen($this->importDir . '/' . $file, 'w');
-        fputcsv($handle, $headers, ',', '"', '\\');
-        foreach ($rows as $row) {
-            fputcsv($handle, $row, ',', '"', '\\');
-        }
-        fclose($handle);
-    }
-
-    /** @return list<string> */
-    private function clientRow(string $name, string $email): array
-    {
-        return [$name, '1 Main St', '', 'Springfield', 'ST', '12345', 'US', '555-0100', '', '', $email, 'https://client.test', 'VAT123', 'TAX123', '1'];
     }
 
     #[Test]
@@ -316,5 +296,25 @@ class ImportControllerTest extends AbstractTestCase
         self::assertTrue($response->isRedirect(), 'Import submit must redirect after processing.');
         $this->assertDatabaseCount('ip_imports', 1);
         $this->assertDatabaseCount('ip_import_details', 0);
+    }
+
+    /**
+     * @param list<string>       $headers
+     * @param list<list<string>> $rows
+     */
+    private function writeCsv(string $file, array $headers, array $rows): void
+    {
+        $handle = fopen($this->importDir . '/' . $file, 'w');
+        fputcsv($handle, $headers, ',', '"', '\\');
+        foreach ($rows as $row) {
+            fputcsv($handle, $row, ',', '"', '\\');
+        }
+        fclose($handle);
+    }
+
+    /** @return list<string> */
+    private function clientRow(string $name, string $email): array
+    {
+        return [$name, '1 Main St', '', 'Springfield', 'ST', '12345', 'US', '555-0100', '', '', $email, 'https://client.test', 'VAT123', 'TAX123', '1'];
     }
 }

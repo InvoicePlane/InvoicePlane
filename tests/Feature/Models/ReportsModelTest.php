@@ -22,8 +22,8 @@ final class ReportsModelTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $ci                = $this->bootCodeIgniter();
-        $ci->mdl_settings  = new FakeCiSettings();
+        $ci                                     = $this->bootCodeIgniter();
+        $ci->mdl_settings                       = new FakeCiSettings();
         $ci->mdl_settings->_data['date_format'] = 'Y-m-d';
         require_once APPPATH . 'helpers/date_helper.php';
         $this->reports = $this->ciModel('reports/models/Mdl_reports');

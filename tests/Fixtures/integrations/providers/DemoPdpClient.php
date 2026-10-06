@@ -4,21 +4,6 @@ defined('BASEPATH') || exit('No direct script access allowed');
 
 class DemoPdpClient extends AbstractRestProvider
 {
-    protected static function definition(): array
-    {
-        return [
-            'code'     => 'demopdp',
-            'name'     => 'Demo PDP',
-            'auth'     => 'bearer',
-            'settings' => [
-                'access_token'            => ['type' => 'password', 'required' => true, 'sensitive' => true],
-                'api_base_url'            => ['default' => 'https://api.demo-pdp.test', 'type' => 'url', 'required' => true],
-                'invoice_endpoint'        => ['default' => '/v1/invoices', 'type' => 'path', 'required' => true],
-                'invoice_status_endpoint' => ['default' => '/v1/invoices/{id}', 'type' => 'path', 'required' => true],
-            ],
-        ];
-    }
-
     public function sendInvoice(string $documentPath, array $metadata): array
     {
         $response = $this->request(RequestMethod::POST, $this->buildUrl($this->settings['invoice_endpoint']), ['filename' => basename($documentPath)]);
@@ -35,7 +20,7 @@ class DemoPdpClient extends AbstractRestProvider
 
     public function receiveInvoices(array $filters = []): array
     {
-        $response                        = $this->request(RequestMethod::GET, $this->buildUrl($this->settings['invoice_endpoint'], $filters));
+        $response                         = $this->request(RequestMethod::GET, $this->buildUrl($this->settings['invoice_endpoint'], $filters));
         $response['response']['invoices'] = IntegrationResponseNormalizer::extractItems($response, ['invoices', 'data']);
 
         return $response;
@@ -49,5 +34,20 @@ class DemoPdpClient extends AbstractRestProvider
     public function getInvoiceEvents(array $filters = []): array
     {
         return ['success' => true, 'response' => ['events' => []]];
+    }
+
+    protected static function definition(): array
+    {
+        return [
+            'code'     => 'demopdp',
+            'name'     => 'Demo PDP',
+            'auth'     => 'bearer',
+            'settings' => [
+                'access_token'            => ['type' => 'password', 'required' => true, 'sensitive' => true],
+                'api_base_url'            => ['default' => 'https://api.demo-pdp.test', 'type' => 'url', 'required' => true],
+                'invoice_endpoint'        => ['default' => '/v1/invoices', 'type' => 'path', 'required' => true],
+                'invoice_status_endpoint' => ['default' => '/v1/invoices/{id}', 'type' => 'path', 'required' => true],
+            ],
+        ];
     }
 }

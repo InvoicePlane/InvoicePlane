@@ -13,7 +13,7 @@ class NumberFormattingSecurityTest extends TestCase
     {
         parent::setUp();
 
-        $this->previousCi = $GLOBALS['unitCiInstance'] ?? null;
+        $this->previousCi          = $GLOBALS['unitCiInstance'] ?? null;
         $GLOBALS['unitCiInstance'] = (object) ['mdl_settings' => new FakeCiSettings()];
         require_once dirname(__DIR__, 3) . '/application/helpers/echo_helper.php';
         require_once dirname(__DIR__, 3) . '/application/helpers/number_helper.php';
@@ -32,11 +32,11 @@ class NumberFormattingSecurityTest extends TestCase
         $CI = & get_instance();
 
         // Simulate admin setting malicious thousands_separator
-        $CI->mdl_settings->_data['thousands_separator'] = '<img src="http://attacker.com/x">';
-        $CI->mdl_settings->_data['decimal_point'] = '.';
-        $CI->mdl_settings->_data['currency_symbol'] = '$';
+        $CI->mdl_settings->_data['thousands_separator']       = '<img src="http://attacker.com/x">';
+        $CI->mdl_settings->_data['decimal_point']             = '.';
+        $CI->mdl_settings->_data['currency_symbol']           = '$';
         $CI->mdl_settings->_data['currency_symbol_placement'] = 'after';
-        $CI->mdl_settings->_data['tax_rate_decimal_places'] = '2';
+        $CI->mdl_settings->_data['tax_rate_decimal_places']   = '2';
 
         $result = format_currency(1500.00);
 
@@ -51,11 +51,11 @@ class NumberFormattingSecurityTest extends TestCase
     {
         $CI = & get_instance();
 
-        $CI->mdl_settings->_data['thousands_separator'] = ',';
-        $CI->mdl_settings->_data['decimal_point'] = '<script>alert(1)</script>';
-        $CI->mdl_settings->_data['currency_symbol'] = '$';
+        $CI->mdl_settings->_data['thousands_separator']       = ',';
+        $CI->mdl_settings->_data['decimal_point']             = '<script>alert(1)</script>';
+        $CI->mdl_settings->_data['currency_symbol']           = '$';
         $CI->mdl_settings->_data['currency_symbol_placement'] = 'after';
-        $CI->mdl_settings->_data['tax_rate_decimal_places'] = '2';
+        $CI->mdl_settings->_data['tax_rate_decimal_places']   = '2';
 
         $result = format_currency(1.5);
 
@@ -68,8 +68,8 @@ class NumberFormattingSecurityTest extends TestCase
     {
         $CI = & get_instance();
 
-        $CI->mdl_settings->_data['thousands_separator'] = '<svg onload=alert(1)>';
-        $CI->mdl_settings->_data['decimal_point'] = '.';
+        $CI->mdl_settings->_data['thousands_separator']     = '<svg onload=alert(1)>';
+        $CI->mdl_settings->_data['decimal_point']           = '.';
         $CI->mdl_settings->_data['tax_rate_decimal_places'] = '2';
 
         $result = format_amount(1500.00);
@@ -83,8 +83,8 @@ class NumberFormattingSecurityTest extends TestCase
     {
         $CI = & get_instance();
 
-        $CI->mdl_settings->_data['thousands_separator'] = ',';
-        $CI->mdl_settings->_data['decimal_point'] = '<img src=x>';
+        $CI->mdl_settings->_data['thousands_separator']     = ',';
+        $CI->mdl_settings->_data['decimal_point']           = '<img src=x>';
         $CI->mdl_settings->_data['tax_rate_decimal_places'] = '2';
 
         $result = format_amount(1.5);
@@ -98,8 +98,8 @@ class NumberFormattingSecurityTest extends TestCase
     {
         $CI = & get_instance();
 
-        $CI->mdl_settings->_data['thousands_separator'] = '<img src="http://169.254.169.254/">';
-        $CI->mdl_settings->_data['decimal_point'] = '.';
+        $CI->mdl_settings->_data['thousands_separator']   = '<img src="http://169.254.169.254/">';
+        $CI->mdl_settings->_data['decimal_point']         = '.';
         $CI->mdl_settings->_data['default_item_decimals'] = '2';
 
         $result = format_quantity(1500.00);

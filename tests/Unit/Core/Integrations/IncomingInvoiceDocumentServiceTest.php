@@ -4,12 +4,15 @@ namespace Tests\Unit\Core\Integrations;
 
 use EInvoiceProfile;
 use EInvoiceProfileRegistry;
+use FilesystemIterator;
 use IncomingInvoiceDocumentService;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use RuntimeException;
 
 /**
@@ -34,6 +37,49 @@ final class IncomingInvoiceDocumentServiceTest extends TestCase
     {
         $this->removeTree($this->archive);
         parent::tearDown();
+    }
+
+    /** @return array<string, array{0: mixed, 1: string}> */
+    public static function filenames(): array
+    {
+        return [
+            'plain'                      => ['invoice.xml', 'invoice.xml'],
+            'missing extension gets one' => ['invoice', 'invoice.xml'],
+            'wrong extension gets one'   => ['invoice.pdf', 'invoice.pdf.xml'],
+            'directory traversal'        => ['../../etc/passwd', 'passwd.xml'],
+            'windows traversal'          => ['..\\..\\boot.ini', 'boot.ini.xml'],
+            'markup and control chars'   => ["in<script>v\x00oice.xml", 'in_script_v_oice.xml'],
+            'unicode letters are kept'   => ['facture-é-ü.xml', 'facture-é-ü.xml'],
+            'only junk'                  => ['  ...  ', 'incoming-invoice.xml'],
+            'not a string'               => [null, 'incoming-invoice.xml'],
+            'empty'                      => ['', 'incoming-invoice.xml'],
+        ];
+    }
+
+    /** @return array<string, array{0: array<string,mixed>, 1: string}> */
+    public static function badDownloads(): array
+    {
+        return [
+            'generic failure' => [['success' => false], 'Provider document download failed.'],
+            'no content'      => [['success' => true], 'empty incoming invoice document'],
+            'empty content'   => [['success' => true, 'content' => ''], 'empty incoming invoice document'],
+            'array content'   => [['success' => true, 'content' => ['x']], 'empty incoming invoice document'],
+            'over 15 MB'      => [['success' => true, 'content' => str_repeat('a', 15 * 1024 * 1024 + 1)], '15 MB limit'],
+        ];
+    }
+
+    /** @return array<string, array{0: string}> */
+    public static function badProviderCodes(): array
+    {
+        return [
+            'traversal'     => ['../escape'],
+            'slash'         => ['a/b'],
+            'uppercase'     => ['Provider'],
+            'space'         => ['pro vider'],
+            'leading digit' => ['1provider'],
+            'empty'         => [''],
+            'null byte'     => ["prov\0ider"],
+        ];
     }
 
     // -- accepted documents --------------------------------------------------
@@ -87,23 +133,6 @@ final class IncomingInvoiceDocumentServiceTest extends TestCase
         self::assertFileExists($this->archive . '/' . $b['document_path']);
     }
 
-    /** @return array<string, array{0: mixed, 1: string}> */
-    public static function filenames(): array
-    {
-        return [
-            'plain'                       => ['invoice.xml', 'invoice.xml'],
-            'missing extension gets one'  => ['invoice', 'invoice.xml'],
-            'wrong extension gets one'    => ['invoice.pdf', 'invoice.pdf.xml'],
-            'directory traversal'         => ['../../etc/passwd', 'passwd.xml'],
-            'windows traversal'           => ['..\\..\\boot.ini', 'boot.ini.xml'],
-            'markup and control chars'    => ["in<script>v\x00oice.xml", 'in_script_v_oice.xml'],
-            'unicode letters are kept'    => ['facture-é-ü.xml', 'facture-é-ü.xml'],
-            'only junk'                   => ['  ...  ', 'incoming-invoice.xml'],
-            'not a string'                => [null, 'incoming-invoice.xml'],
-            'empty'                       => ['', 'incoming-invoice.xml'],
-        ];
-    }
-
     #[Test]
     #[DataProvider('filenames')]
     public function it_sanitizes_the_display_filename(mixed $given, string $expected): void
@@ -138,18 +167,6 @@ final class IncomingInvoiceDocumentServiceTest extends TestCase
         $this->service()->archive('testprov', [], ['success' => false, 'message' => 'Gateway timeout'], $this->archive);
     }
 
-    /** @return array<string, array{0: array<string,mixed>, 1: string}> */
-    public static function badDownloads(): array
-    {
-        return [
-            'generic failure'  => [['success' => false], 'Provider document download failed.'],
-            'no content'       => [['success' => true], 'empty incoming invoice document'],
-            'empty content'    => [['success' => true, 'content' => ''], 'empty incoming invoice document'],
-            'array content'    => [['success' => true, 'content' => ['x']], 'empty incoming invoice document'],
-            'over 15 MB'       => [['success' => true, 'content' => str_repeat('a', 15 * 1024 * 1024 + 1)], '15 MB limit'],
-        ];
-    }
-
     /** @param array<string,mixed> $download */
     #[Test]
     #[DataProvider('badDownloads')]
@@ -165,20 +182,6 @@ final class IncomingInvoiceDocumentServiceTest extends TestCase
         } finally {
             self::assertSame([], glob($this->archive . '/*'), 'A rejected download must leave nothing in the archive.');
         }
-    }
-
-    /** @return array<string, array{0: string}> */
-    public static function badProviderCodes(): array
-    {
-        return [
-            'traversal'  => ['../escape'],
-            'slash'      => ['a/b'],
-            'uppercase'  => ['Provider'],
-            'space'      => ['pro vider'],
-            'leading digit' => ['1provider'],
-            'empty'      => [''],
-            'null byte'  => ["prov\0ider"],
-        ];
     }
 
     #[Test]
@@ -319,7 +322,7 @@ final class IncomingInvoiceDocumentServiceTest extends TestCase
 
         try {
             /* Act */
-            $this->facturx($this->fakePdfDetach(list: "3: factur-x.xml", saveContent: '<?xml version="1.0"?><NotCii/>'))
+            $this->facturx($this->fakePdfDetach(list: '3: factur-x.xml', saveContent: '<?xml version="1.0"?><NotCii/>'))
                 ->archive('qonto', [], $this->download('%PDF-1.7 body'), $this->archive);
             self::fail('A PDF carrying a non-CII attachment must be rejected.');
         } catch (RuntimeException $e) {
@@ -377,7 +380,7 @@ final class IncomingInvoiceDocumentServiceTest extends TestCase
         if ( ! is_dir($dir)) {
             return;
         }
-        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST) as $entry) {
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST) as $entry) {
             $entry->isDir() ? rmdir($entry->getPathname()) : unlink($entry->getPathname());
         }
         rmdir($dir);

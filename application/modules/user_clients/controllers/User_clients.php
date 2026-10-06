@@ -71,17 +71,20 @@ class User_Clients extends Admin_Controller
         $target_user_id  = (int) $user_id;
         if ($target_user_id !== $current_user_id && ! $this->mdl_users->is_primary_administrator($current_user_id)) {
             show_error(trans('access_denied'), 403);
+
             return;
         }
 
         // Defense-in-depth: POSTed user_id must match the URL user_id
         if ($this->input->post('user_id') && (int) $this->input->post('user_id') !== $target_user_id) {
             show_error(trans('access_denied'), 403);
+
             return;
         }
 
         if ($this->input->post('user_all_clients') && ! $this->mdl_users->is_primary_administrator($current_user_id)) {
             show_error(trans('access_denied'), 403);
+
             return;
         }
 
@@ -138,6 +141,7 @@ class User_Clients extends Admin_Controller
         $target_user_id  = (int) $ref->user_id;
         if ($target_user_id !== $current_user_id && ! $this->mdl_users->is_primary_administrator($current_user_id)) {
             show_error(trans('access_denied'), 403);
+
             return;
         }
 

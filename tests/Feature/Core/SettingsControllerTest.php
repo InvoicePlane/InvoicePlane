@@ -31,6 +31,17 @@ class SettingsControllerTest extends AbstractTestCase
         ]);
     }
 
+    /** @return array<string, array{0: string, 1: string}> */
+    public static function unsafeLogoNames(): array
+    {
+        return [
+            'invoice traversal' => ['invoice_logo', '../../ipconfig.php'],
+            'login traversal'   => ['login_logo', '../bootstrap/kernel.php'],
+            'absolute path'     => ['invoice_logo', '/etc/passwd'],
+            'windows traversal' => ['login_logo', '..\\..\\ipconfig.php'],
+        ];
+    }
+
     // -------------------------------------------------------------------------
     // Read
     // -------------------------------------------------------------------------
@@ -265,17 +276,6 @@ class SettingsControllerTest extends AbstractTestCase
         /* Assert */
         $this->assertDatabaseHas('ip_settings', ['setting_key' => 'decimal_point', 'setting_value' => ',']);
         $this->assertDatabaseHas('ip_settings', ['setting_key' => 'thousands_separator', 'setting_value' => '.']);
-    }
-
-    /** @return array<string, array{0: string, 1: string}> */
-    public static function unsafeLogoNames(): array
-    {
-        return [
-            'invoice traversal'  => ['invoice_logo', '../../ipconfig.php'],
-            'login traversal'    => ['login_logo', '../bootstrap/kernel.php'],
-            'absolute path'      => ['invoice_logo', '/etc/passwd'],
-            'windows traversal'  => ['login_logo', '..\\..\\ipconfig.php'],
-        ];
     }
 
     #[Test]

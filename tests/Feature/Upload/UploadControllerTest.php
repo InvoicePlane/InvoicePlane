@@ -63,7 +63,7 @@ final class UploadControllerTest extends AbstractTestCase
         /* Arrange */
         $urlKey = $this->urlKey();
         $this->databaseInsert('ip_uploads', [
-            'client_id' => 1, 'url_key' => $urlKey, 'file_name_original' => 'ghost.pdf',
+            'client_id'     => 1, 'url_key' => $urlKey, 'file_name_original' => 'ghost.pdf',
             'file_name_new' => $urlKey . '_ghost.pdf', 'uploaded_date' => date('Y-m-d'),
         ]);
 
@@ -175,7 +175,7 @@ final class UploadControllerTest extends AbstractTestCase
         file_put_contents($path, $content);
         $this->createdFiles[] = $path;
         $this->databaseInsert('ip_uploads', [
-            'client_id' => 1, 'url_key' => $urlKey, 'file_name_original' => $name,
+            'client_id'     => 1, 'url_key' => $urlKey, 'file_name_original' => $name,
             'file_name_new' => $urlKey . '_' . $name, 'uploaded_date' => date('Y-m-d'),
         ]);
 

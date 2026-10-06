@@ -57,7 +57,7 @@ class ClickjackingProtectionTest extends AbstractTestCase
     public function it_sends_x_frame_options_on_guest_invoice_page(): void
     {
         /* Arrange */
-        $client = $this->seedClient(['client_name' => 'Test Client']);
+        $client  = $this->seedClient(['client_name' => 'Test Client']);
         $invoice = $this->seedGuestInvoice($client);
         $this->actingAsGuest();
 
@@ -76,7 +76,7 @@ class ClickjackingProtectionTest extends AbstractTestCase
     {
         /* Arrange */
         $client = $this->seedClient(['client_name' => 'Test Client']);
-        $quote = $this->seedQuote($client);
+        $quote  = $this->seedQuote($client);
         $this->actingAsGuest();
 
         /* Act */
@@ -176,7 +176,7 @@ class ClickjackingProtectionTest extends AbstractTestCase
         );
 
         // Check that SameSite is set to a restrictive value OR there's a comment explaining why none is needed
-        $hasSameSiteStrict = (bool) preg_match('/SameSite\s*=\s*(Strict|Lax)/i', $content);
+        $hasSameSiteStrict  = (bool) preg_match('/SameSite\s*=\s*(Strict|Lax)/i', $content);
         $hasNoneExplanation = (bool) preg_match(
             '/SameSite\s*=\s*none.*comment|SameSite\s*=\s*none.*reason/i',
             $content
@@ -198,7 +198,7 @@ class ClickjackingProtectionTest extends AbstractTestCase
     {
         /* Arrange */
         $client = $this->seedClient(['client_name' => 'Test Client']);
-        $quote = $this->seedQuote($client);
+        $quote  = $this->seedQuote($client);
         $this->actingAsGuest();
 
         /* Act */

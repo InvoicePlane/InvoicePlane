@@ -148,9 +148,9 @@ register_shutdown_function(static function () use (&$exception): void {
         'headers' => array_merge(headers_list(), isset($GLOBALS['ip_test_location']) ? ['Location: ' . $GLOBALS['ip_test_location']] : [], $GLOBALS['ip_security_response_headers'] ?? []),
         // base64-encoded: the body may be binary (a streamed PDF, an image, ...),
         // which isn't valid UTF-8 and would make json_encode() throw below.
-        'output'    => base64_encode($output),
-        'exception' => $exception,
-        'session'   => $_SESSION ?? [],
+        'output'         => base64_encode($output),
+        'exception'      => $exception,
+        'session'        => $_SESSION ?? [],
         'session_active' => session_status() === PHP_SESSION_ACTIVE,
     ];
 
@@ -185,10 +185,10 @@ $result = [
     'status'  => http_response_code() ?: 200,
     'headers' => array_merge(headers_list(), isset($GLOBALS['ip_test_location']) ? ['Location: ' . $GLOBALS['ip_test_location']] : [], $GLOBALS['ip_security_response_headers'] ?? []),
     // base64-encoded: see the shutdown-function comment above.
-    'output'    => base64_encode($output),
-    'exception' => $exception,
-    'session'   => $_SESSION ?? [],
-        'session_active' => session_status() === PHP_SESSION_ACTIVE,
+    'output'         => base64_encode($output),
+    'exception'      => $exception,
+    'session'        => $_SESSION ?? [],
+    'session_active' => session_status() === PHP_SESSION_ACTIVE,
 ];
 
 echo '__CI_TEST_RESULT_START__';

@@ -192,8 +192,8 @@ final class InvoiceAmountsCalculationTest extends AbstractTestCase
     private function item(int $invoiceId, string $name, string $quantity, string $price, ?int $taxRateId = null): array
     {
         return [
-            'invoice_id' => (string) $invoiceId, 'item_id' => '', 'item_name' => $name, 'item_description' => '',
-            'item_quantity' => $quantity, 'item_price' => $price, 'item_discount_amount' => '', 'item_product_id' => '',
+            'invoice_id'           => (string) $invoiceId, 'item_id' => '', 'item_name' => $name, 'item_description' => '',
+            'item_quantity'        => $quantity, 'item_price' => $price, 'item_discount_amount' => '', 'item_product_id' => '',
             'item_product_unit_id' => '', 'item_tax_rate_id' => (string) ($taxRateId ?? 0),
         ];
     }
@@ -205,9 +205,9 @@ final class InvoiceAmountsCalculationTest extends AbstractTestCase
     private function save(int $invoiceId, array $items, array $overrides = []): void
     {
         $response = $this->ajax('POST', '/invoices/ajax/save', array_merge([
-            'invoice_id' => (string) $invoiceId, 'invoice_date_created' => date('Y-m-d'),
-            'invoice_date_due' => date('Y-m-d', strtotime('+30 days')), 'invoice_time_created' => date('H:i:s'),
-            'invoice_status_id' => (string) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id'],
+            'invoice_id'               => (string) $invoiceId, 'invoice_date_created' => date('Y-m-d'),
+            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')), 'invoice_time_created' => date('H:i:s'),
+            'invoice_status_id'        => (string) $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_status_id'],
             'invoice_discount_percent' => '0', 'invoice_discount_amount' => '0', 'items' => json_encode($items),
         ], $overrides));
 
