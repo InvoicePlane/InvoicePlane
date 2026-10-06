@@ -14,8 +14,14 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *   name     string  display name
  *   label    string  short name used in exception messages (defaults to name)
  *   auth     string  none | oauth2 | bearer | api_key
+ *   token    string  bearer only: the setting that holds the access token (default access_token)
  *   settings array<string, array{default?: mixed, type: string, required?: bool, sensitive?: bool}>
  *            in form order; endpoint settings are the keys ending in "_endpoint"
+ *
+ * authenticate() and fetchToken() work out of the box for bearer (token setting + api_base_url) and
+ * oauth2 (client_id, client_secret, token_url + api_base_url); override them for anything else.
+ * A new provider then implements sendInvoice, getInvoiceStatus, receiveInvoices,
+ * downloadInvoiceDocument and getInvoiceEvents.
  */
 abstract class AbstractRestProvider implements IntegrationClientInterface
 {
@@ -79,9 +85,46 @@ abstract class AbstractRestProvider implements IntegrationClientInterface
         return $schema;
     }
 
+    public function authenticate(array $settings): bool
+    {
+        $this->settings = $settings;
+
+        if (static::authType() === 'oauth2') {
+            $this->requireSettings($settings, ['client_id', 'client_secret', 'token_url', 'api_base_url']);
+            $token = $this->oauthFetchToken($settings['token_url'], $settings['client_id'], $settings['client_secret']);
+            if (empty($token['access_token'])) {
+                throw new RuntimeException(static::label() . ' OAuth failed: no access_token in response.');
+            }
+            $this->accessToken = $token['access_token'];
+
+            return true;
+        }
+
+        $this->requireSettings($settings, [static::tokenSetting(), 'api_base_url']);
+        $this->accessToken = (string) $settings[static::tokenSetting()];
+
+        return true;
+    }
+
+    public function fetchToken(array $settings): string
+    {
+        if (static::authType() === 'oauth2') {
+            $token = $this->oauthFetchToken($settings['token_url'] ?? '', $settings['client_id'] ?? '', $settings['client_secret'] ?? '');
+
+            return (string) ($token['access_token'] ?? '');
+        }
+
+        return (string) ($settings[static::tokenSetting()] ?? '');
+    }
+
     public function buildInvoicePayload($invoice, array $items, array $metadata = []): array
     {
         return $metadata;
+    }
+
+    protected static function tokenSetting(): string
+    {
+        return (string) (static::definition()['token'] ?? 'access_token');
     }
 
     protected static function label(): string
