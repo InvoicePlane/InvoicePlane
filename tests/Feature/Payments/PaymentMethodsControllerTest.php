@@ -97,7 +97,8 @@ class PaymentMethodsControllerTest extends AbstractTestCase
             'is_update'           => '0',
             'btn_submit'          => '1',
         ]);
-        $this->assertResponseRedirectsToRoute($response2, 'payment_methods');
+        $this->assertResponseRedirectsToRoute($response2, 'payment_methods/form');
+        $this->assertDatabaseCount('ip_payment_methods', $methodCountBefore + 1);
     }
 
     // -------------------------------------------------------------------------

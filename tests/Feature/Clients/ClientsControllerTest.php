@@ -165,7 +165,7 @@ class ClientsControllerTest extends AbstractTestCase
         $response = $this->post('/clients/delete/' . $id, []);
 
         /* Assert */
-        $this->assertResponseRedirectsToRoute($response, 'clients');
+        $this->assertResponseRedirectsToRoute($response, 'clients/status/active');
         $this->assertDatabaseMissing('ip_clients', ['client_id' => $id]);
         $this->assertDatabaseHas('ip_clients', ['client_id' => $keep]);
     }
@@ -185,7 +185,7 @@ class ClientsControllerTest extends AbstractTestCase
         $response = $this->postWithValidCsrfToken('/clients/delete/' . $id);
 
         /* Assert */
-        $this->assertResponseRedirectsToRoute($response, 'clients');
+        $this->assertResponseRedirectsToRoute($response, 'clients/status/active');
         $this->assertDatabaseMissing('ip_clients', ['client_id' => $id]);
     }
 
