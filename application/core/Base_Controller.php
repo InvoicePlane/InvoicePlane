@@ -27,6 +27,7 @@ class Base_Controller extends MX_Controller
         parent::__construct();
 
         $this->config->load('invoice_plane');
+        $this->setSecurityHeaders();
 
         // Don't allow non-ajax requests to ajax controllers
         if ($this->ajax_controller && ! $this->input->is_ajax_request()) {
@@ -73,6 +74,18 @@ class Base_Controller extends MX_Controller
 
             // Load the layout module to start building the app
             $this->load->module('layout');
+        }
+    }
+
+    protected function setSecurityHeaders(): void
+    {
+        $this->output
+            ->set_header('X-Frame-Options: ' . env('X_FRAME_OPTIONS', 'SAMEORIGIN'))
+            ->set_header("Content-Security-Policy: frame-ancestors 'self'; object-src 'none'; base-uri 'self'")
+            ->set_header('Referrer-Policy: strict-origin-when-cross-origin');
+
+        if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', 'true')) {
+            $this->output->set_header('X-Content-Type-Options: nosniff');
         }
     }
 

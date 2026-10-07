@@ -134,8 +134,10 @@ class Paypal extends Base_Controller
             // Set the status of the actual transaction (not just the API call result.)
             $capture_status = mb_strtoupper($paypal_object->purchase_units[0]->payments->captures[0]->status) ?? null;
 
-            // If either Completed or Pending, we're treating it as completed from the buyer's perspective.
-            if ($capture_status === 'COMPLETED' || $capture_status === 'PENDING') {
+            // Only COMPLETED captures should be recorded as settled payments.
+            // PENDING captures represent transactions that have not yet reached a final state
+            // and should not reduce invoice balance or mark invoices as paid.
+            if ($capture_status === 'COMPLETED') {
                 // Extract payment data with defensive null safety checks at each level
                 $purchase_units = $paypal_object->purchase_units ?? null;
                 $payments       = $purchase_units[0]->payments ?? null;
@@ -247,15 +249,12 @@ class Paypal extends Base_Controller
                                     $this->session->set_flashdata('alert_error', trans('online_payment_payment_failed'));
                                     $this->session->keep_flashdata('alert_error');
                                 } else {
-                                    // If the payment status is pending, set a note accordingly.
-                                    $payment_note = ($capture_status === 'PENDING') ? trans('online_payment_pending') : '';
-
                                     $this->mdl_payments->save(null, [
                                         'invoice_id'          => $invoice_id,
                                         'payment_date'        => date('Y-m-d'),
                                         'payment_amount'      => $amount,
                                         'payment_method_id'   => get_setting('gateway_paypal_payment_method'),
-                                        'payment_note'        => $payment_note,
+                                        'payment_note'        => '',
                                         'payment_external_id' => $capture_id,
                                     ]);
 
@@ -269,17 +268,7 @@ class Paypal extends Base_Controller
                     }
                 }
 
-                /*
-                 * merchant_response_success will be set to true for both completed and pending,
-                 * so that it will show up as green in the logs.
-                 *
-                 * In the future we could include a "pending" status, and maybe show it
-                 * as blue..??
-                 *
-                 * TODO Add Pending Status
-                 *
-                 * merchant_response is now the actual capture status.
-                 */
+                // Record COMPLETED capture in merchant responses
                 $this->db->insert('ip_merchant_responses', [
                     'invoice_id'                   => $invoice_id,
                     'merchant_response_successful' => true,
@@ -288,6 +277,34 @@ class Paypal extends Base_Controller
                     'merchant_response'            => $capture_status,
                     'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id,
                 ]);
+            } elseif ($capture_status === 'PENDING') {
+                // PENDING captures are acknowledged but NOT recorded as settled payments.
+                // The invoice balance is not updated; the transaction awaits PayPal settlement confirmation.
+                // This prevents reconciliation issues where invoices are marked paid before funds are actually received.
+
+                // $capture_data and $capture_id only exist inside the COMPLETED branch above, so
+                // read the pending capture from the PayPal response itself.
+                $pending_capture = $paypal_object->purchase_units[0]->payments->captures[0] ?? null;
+                $invoice_id      = $pending_capture->invoice_id ?? null;
+                $capture_id      = $pending_capture->id ?? null;
+
+                // Log the pending capture for audit purposes
+                if ($invoice_id) {
+                    log_message('info', __CLASS__ . '::' . __FUNCTION__ . ' - PayPal capture pending settlement. Invoice: ' . sanitize_for_logging($invoice_id) . ', Capture ID: ' . sanitize_for_logging($capture_id));
+
+                    $this->db->insert('ip_merchant_responses', [
+                        'invoice_id'                   => $invoice_id,
+                        'merchant_response_successful' => true,
+                        'merchant_response_date'       => date('Y-m-d'),
+                        'merchant_response_driver'     => 'paypal',
+                        'merchant_response'            => 'PENDING - awaiting settlement',
+                        'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id,
+                    ]);
+                }
+
+                // Notify the user that payment is pending
+                $this->session->set_flashdata('alert_info', trans('online_payment_pending'));
+                $this->session->keep_flashdata('alert_info');
             } else {
                 // Payment failed (DECLINED or any other non-success status)
                 $invoice_id = $paypal_object->purchase_units[0]->payments->captures[0]->invoice_id ?? null;

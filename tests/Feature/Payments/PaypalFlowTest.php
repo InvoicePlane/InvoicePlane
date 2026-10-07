@@ -305,12 +305,13 @@ class PaypalFlowTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_records_a_pending_capture_as_a_payment_with_a_pending_note(): void
+    public function it_does_not_record_a_pending_capture_as_a_settled_payment(): void
     {
         /* Arrange */
         $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
         $invoiceId          = $this->seedPayableInvoice();
         $paymentCountBefore = $this->databaseCount('ip_payments');
+        $amountsBefore      = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
 
         $this->mockPaypal([
             $this->authResponse(),
@@ -320,23 +321,75 @@ class PaypalFlowTest extends AbstractTestCase
         /* Act */
         $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER-2');
 
-        /* Assert: Business Logic (A) */
-        $this->assertDatabaseHas('ip_payments', ['invoice_id' => $invoiceId, 'payment_external_id' => 'CAP-PENDING']);
+        /* Assert: no money is booked for funds that have not settled */
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-PENDING']);
+        self::assertSame($paymentCountBefore, $this->databaseCount('ip_payments'));
+        $amountsAfter = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        self::assertSame($amountsBefore['invoice_paid'], $amountsAfter['invoice_paid']);
+        self::assertSame($amountsBefore['invoice_balance'], $amountsAfter['invoice_balance']);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'invoice_status_id' => 2]);
 
-        /* Assert: State Isolation (B) */
-        $paymentCountAfter = $this->databaseCount('ip_payments');
-        $this->assertSame($paymentCountBefore + 1, $paymentCountAfter);
+        /* Assert: the pending capture is still visible in the gateway log */
+        $this->assertDatabaseHas('ip_merchant_responses', [
+            'invoice_id'                   => $invoiceId,
+            'merchant_response_driver'     => 'paypal',
+            'merchant_response'            => 'PENDING - awaiting settlement',
+            'merchant_response_successful' => 1,
+        ]);
 
-        /* Assert: Error Semantics (C) */
-        self::assertTrue($response->isRedirect() || $response->statusCode() === 200);
+        /* Assert: the buyer is told the payment is pending, not that it succeeded */
+        self::assertSame('Payment Pending! Check PayPal for details.', $response->sessionValue('alert_info'));
+        self::assertNull($response->sessionValue('alert_success'));
+    }
 
-        /* Assert: Data Integrity (D) */
-        $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'CAP-PENDING']);
-        $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+    #[Test]
+    public function it_tells_the_buyer_a_pending_capture_is_pending_even_when_the_invoice_cannot_be_identified(): void
+    {
+        /* Arrange */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->captureResponse(['invoice_id' => null, 'amount' => '50.00', 'capture_id' => 'CAP-NOINV'], 'PENDING'),
+        ]);
+        $logBefore = $this->databaseCount('ip_merchant_responses');
 
-        /* Assert: Idempotency (E) */
-        $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER-2');
-        self::assertTrue($response2->isRedirect() || $response2->statusCode() === 200);
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER-4');
+
+        /* Assert */
+        self::assertSame('Payment Pending! Check PayPal for details.', $response->sessionValue('alert_info'));
+        self::assertSame($logBefore, $this->databaseCount('ip_merchant_responses'), 'Nothing can be logged against an unknown invoice.');
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-NOINV']);
+    }
+
+    #[Test]
+    public function it_records_the_payment_once_the_same_capture_later_completes(): void
+    {
+        /* Arrange: first the capture is pending, then PayPal reports it completed */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $invoiceId = $this->seedPayableInvoice();
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->captureResponse(['invoice_id' => $invoiceId, 'amount' => '50.00', 'capture_id' => 'CAP-LATER'], 'PENDING'),
+        ]);
+        $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER-3');
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-LATER']);
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->captureResponse(['invoice_id' => $invoiceId, 'amount' => '50.00', 'capture_id' => 'CAP-LATER'], 'COMPLETED'),
+        ]);
+
+        /* Act */
+        $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER-3');
+
+        /* Assert */
+        $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'CAP-LATER']);
+        self::assertNotNull($payment, 'A completed capture is booked as a payment.');
+        self::assertSame($invoiceId, (int) $payment['invoice_id']);
+        self::assertSame('', (string) $payment['payment_note'], 'No "pending" note: only settled funds are recorded.');
+        $this->assertDatabaseHas('ip_invoice_amounts', ['invoice_id' => $invoiceId, 'invoice_paid' => '50.00']);
     }
 
     #[Test]
