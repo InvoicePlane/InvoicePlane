@@ -13,7 +13,7 @@ if ( ! defined('BASEPATH')) {
  * @link        https://invoiceplane.com
  */
 
-require_once APPPATH . 'modules/guest/libraries/PaymentCallbackLock.php';
+require_once APPPATH . 'libraries/PaymentCallbackLock.php';
 
 use GuzzleHttp\Exception\ClientException;
 
