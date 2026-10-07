@@ -172,6 +172,65 @@ class AdminPaymentAmountRaceTest extends AbstractTestCase
         self::assertGreaterThanOrEqual(-0.001, (float) $amounts['invoice_balance']);
     }
 
+    /**
+     * Intentionally slow (~10s): PaymentCallbackLock::acquire() is called with
+     * no explicit timeout, so it uses GET_LOCK's default of 10 seconds. Holding
+     * the named lock for the whole request is the only way to make acquire()
+     * actually return false and exercise Payments::form()'s "! $lock_acquired"
+     * branch -- every other test in this file releases the lock quickly and so
+     * only ever exercises the lock-SUCCEEDED-but-then-rejected-on-balance path
+     * (CodeIgniter's own validation_errors() rendering), never this one.
+     */
+    #[Test]
+    public function it_renders_a_distinct_message_when_the_invoice_lock_cannot_be_acquired(): void
+    {
+        /* Arrange: hold the named lock for the entire request */
+        $invoiceId  = $this->seedPayableInvoice(500.00);
+        $lockName   = 'ip:payment:invoice:' . $invoiceId;
+        $lockHolder = $this->openSecondaryConnection();
+
+        $acquired = $lockHolder->prepare('SELECT GET_LOCK(?, ?) AS acquired');
+        $acquired->execute([$lockName, 5]);
+        self::assertSame(1, (int) $acquired->fetch(PDO::FETCH_ASSOC)['acquired'], 'Test setup could not acquire the named lock.');
+
+        /* Act: the request blocks in PaymentCallbackLock::acquire()'s default
+         * 10s GET_LOCK timeout, since the lock above is never released early. */
+        $handle = $this->startAsyncPost('/payments/form', [
+            'invoice_id'     => (string) $invoiceId,
+            'payment_date'   => date('Y-m-d'),
+            'payment_amount' => '400.00',
+            'btn_submit'     => '1',
+        ]);
+
+        $result = $this->finishAsyncRequestFull($handle);
+
+        $release = $lockHolder->prepare('SELECT RELEASE_LOCK(?)');
+        $release->execute([$lockName]);
+
+        /* Assert: no save happened, so no redirect to the payments list */
+        $redirected = array_filter($result['headers'], static fn ($h) => stripos((string) $h, 'Location:') === 0);
+        self::assertSame([], array_values($redirected), 'The form submission redirected despite the invoice lock never being acquired.');
+
+        /* Assert: the lock-contention message is actually rendered in the page,
+         * and the (wrong, pre-review-fix) balance message is not -- this is the
+         * concrete claim the reviewer asked to see verified, not just reasoned
+         * about from the CodeIgniter Session source. */
+        self::assertStringContainsString(
+            'Another payment for this invoice is being processed',
+            $result['body'],
+            'The lock-contention flash message was not found in the rendered form.'
+        );
+        self::assertStringNotContainsString(
+            'Payment amount cannot exceed invoice balance',
+            $result['body'],
+            'The lock-contention path rendered the over-balance validation message instead of its own.'
+        );
+
+        /* Assert: Data Integrity — nothing was saved while the lock was held */
+        $this->resetDatabaseConnection();
+        $this->assertDatabaseCount('ip_payments', 0, ['invoice_id' => $invoiceId]);
+    }
+
     #[Test]
     public function it_still_allows_a_single_legitimate_payment_to_succeed(): void
     {
