@@ -16,6 +16,21 @@ record *why* and *how*.
 
 ### Security fixes
 
+- **Payment-amount validation race (TOCTOU, CWE-362 / CWE-367).** `Mdl_Payments::validate_payment_amount()`
+  read `invoice_balance` and `Mdl_Payments::save()` inserted the payment row as separate,
+  non-atomic steps. Concurrent payment submissions from distinct authenticated admin sessions
+  for the same invoice could each read the same stale balance and pass validation before either
+  committed, driving the invoice into an overpaid (negative-balance) state. Both admin payment
+  entry points (`Payments::form()`, `Ajax::add()`) now serialize on the invoice with
+  `PaymentCallbackLock` — the same connection-scoped MySQL advisory lock already used to close
+  the equivalent gateway-callback race — so a losing submission blocks until the winner commits,
+  then re-validates against the now-current balance. **Note on scope:** this is distinct from
+  gateway replay deduplication (the unique index on `ip_payments.payment_external_id`, shipped in
+  1.7.3). That index does not exist on installations still running the released 1.7.2; this fix
+  does not add it retroactively — it only closes the admin-side balance race. Reported by
+  [@hariprakash6969-create](https://github.com/hariprakash6969-create).
+  [#4](https://github.com/underdogg-forks/ivpl-xprmt/pull/4)
+
 **nginx and Apache served private files** (GHSA-qq8q-gf24-576m) — Reported by [@nirtem](https://github.com/nirtem); Fixed by [@DylanUnderwood](https://github.com/DylanUnderwood).
 
 - **nginx and Apache served private files.** The bundled `resources/docker/nginx/invoiceplane.conf` served

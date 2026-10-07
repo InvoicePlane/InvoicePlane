@@ -4,7 +4,7 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . 'modules/guest/libraries/PaymentCallbackLock.php';
+require_once APPPATH . 'libraries/PaymentCallbackLock.php';
 
 /*
  * InvoicePlane

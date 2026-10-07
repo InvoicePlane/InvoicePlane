@@ -207,6 +207,35 @@ class PaymentsAjaxControllerTest extends AbstractTestCase
     }
 
     #[Test]
+    public function it_accepts_a_payment_exactly_equal_to_the_invoice_balance(): void
+    {
+        /* Arrange: validate_payment_amount() rejects strictly amount > balance, so
+         * amount == balance (not just the sub-balance / excessive cases covered
+         * above) must be accepted -- a careless >= would wrongly reject this. */
+        $clientId                  = $this->seedClient();
+        $invoiceId                 = $this->seedInvoice($clientId, [], ['invoice_balance' => '10.00']);
+        $payload                   = $this->validPayload($invoiceId);
+        $payload['payment_amount'] = '10.00';
+        $paymentCountBefore        = $this->databaseCount('ip_payments');
+
+        /* Act */
+        $response = $this->ajax('POST', '/payments/ajax/add', $payload);
+
+        /* Assert: Business Logic (A) */
+        $json = json_decode($response->body(), true);
+        self::assertSame(1, $json['success'] ?? null, 'Body: ' . $response->body());
+
+        /* Assert: State Isolation (B) */
+        $this->assertSame($paymentCountBefore + 1, $this->databaseCount('ip_payments'));
+
+        /* Assert: Error Semantics (C) */
+        $this->assertResponseStatusCode($response, 200);
+
+        /* Assert: Data Integrity (D) */
+        $this->assertDatabaseHas('ip_payments', ['invoice_id' => $invoiceId, 'payment_amount' => '10.00']);
+    }
+
+    #[Test]
     public function it_renders_the_add_payment_modal(): void
     {
         /* Arrange */
