@@ -85,6 +85,155 @@ class Settings extends Admin_Controller
                             }
                         }
                     }
+                    // Security: Validate first_day_of_week to prevent XSS via JavaScript context injection
+                    if ($key === 'first_day_of_week') {
+                        if ( ! in_array($value, ['0', '1', '2', '3', '4', '5', '6'], true)) {
+                            $safe_value = is_scalar($value) ? sanitize_for_logging((string) $value) : '[non-scalar]';
+                            log_message('error', sprintf('Invalid first_day_of_week value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate decimal_point to prevent XSS injection
+                    if ($key === 'decimal_point') {
+                        $decimal_point = is_scalar($value) ? (string) $value : '';
+                        if (empty($decimal_point) || mb_strlen($decimal_point) !== 1 || preg_match('/<|>|javascript:|onerror|onload|onclick/', $decimal_point)) {
+                            $safe_value = sanitize_for_logging($decimal_point);
+                            log_message('error', sprintf('Invalid decimal_point value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                        // Check that decimal_point and thousands_separator are different
+                        $thousands_sep = $settings['thousands_separator'] ?? get_setting('thousands_separator');
+                        if ($decimal_point === $thousands_sep) {
+                            log_message('error', sprintf('Decimal point and thousands separator are identical, attempted by user %d', $this->session->userdata('user_id')));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate thousands_separator to prevent XSS injection
+                    if ($key === 'thousands_separator') {
+                        $thousands_sep = is_scalar($value) ? (string) $value : '';
+                        if (empty($thousands_sep) || mb_strlen($thousands_sep) !== 1 || preg_match('/<|>|javascript:|onerror|onload|onclick/', $thousands_sep)) {
+                            $safe_value = sanitize_for_logging($thousands_sep);
+                            log_message('error', sprintf('Invalid thousands_separator value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                        // Check that decimal_point and thousands_separator are different
+                        $decimal_pt = $settings['decimal_point'] ?? get_setting('decimal_point');
+                        if ($thousands_sep === $decimal_pt) {
+                            log_message('error', sprintf('Decimal point and thousands separator are identical, attempted by user %d', $this->session->userdata('user_id')));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate currency_symbol to prevent XSS injection
+                    if ($key === 'currency_symbol') {
+                        $currency_symbol = is_scalar($value) ? (string) $value : '';
+                        if (empty($currency_symbol) || mb_strlen($currency_symbol) > 4 || preg_match('/<|>|javascript:|onerror|onload|onclick|onmouseover|script|iframe|svg/', $currency_symbol)) {
+                            $safe_value = sanitize_for_logging($currency_symbol);
+                            log_message('error', sprintf('Invalid currency_symbol value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate date_format to prevent XSS injection via arbitrary format strings
+                    if ($key === 'date_format') {
+                        $date_format = is_scalar($value) ? (string) $value : '';
+                        $valid_formats = array_keys(date_formats());
+                        if ( ! in_array($date_format, $valid_formats, true) || preg_match('/<|>|javascript:|onerror|onload|onclick/', $date_format)) {
+                            $safe_value = sanitize_for_logging($date_format);
+                            log_message('error', sprintf('Invalid date_format value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate number_format to prevent XSS injection via format key tampering
+                    if ($key === 'number_format') {
+                        $number_fmt = is_scalar($value) ? (string) $value : '';
+                        $valid_formats = array_keys($number_formats);
+                        if ( ! in_array($number_fmt, $valid_formats, true) || preg_match('/<|>|javascript:|onerror|onload|onclick/', $number_fmt)) {
+                            $safe_value = sanitize_for_logging($number_fmt);
+                            log_message('error', sprintf('Invalid number_format value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate pdf_watermark to prevent type confusion attacks
+                    if ($key === 'pdf_watermark') {
+                        $pdf_wm = is_scalar($value) ? (string) $value : '';
+                        if ( ! in_array($pdf_wm, ['0', '1'], true) || preg_match('/<|>|javascript:|onerror|onload|onclick/', $pdf_wm)) {
+                            $safe_value = sanitize_for_logging($pdf_wm);
+                            log_message('error', sprintf('Invalid pdf_watermark value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate default_language to prevent path traversal and XSS
+                    if ($key === 'default_language') {
+                        $this->load->helper('trans');
+                        $default_lang = is_scalar($value) ? (string) $value : '';
+                        $available_langs = get_available_languages();
+                        if ( ! in_array($default_lang, $available_langs, true) || preg_match('/<|>|javascript:|onerror|onload|onclick|\/|\\\\/', $default_lang)) {
+                            $safe_value = sanitize_for_logging($default_lang);
+                            log_message('error', sprintf('Invalid default_language value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate default_country to prevent path traversal and XSS
+                    if ($key === 'default_country') {
+                        $this->load->helper('country');
+                        $default_ctry = is_scalar($value) ? (string) $value : '';
+                        $country_list = get_country_list(trans('cldr'));
+                        if ( ! isset($country_list[$default_ctry]) || preg_match('/<|>|javascript:|onerror|onload|onclick|\/|\\\\/', $default_ctry)) {
+                            $safe_value = sanitize_for_logging($default_ctry);
+                            log_message('error', sprintf('Invalid default_country value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate custom_title to prevent XSS injection in page titles and forms
+                    if ($key === 'custom_title') {
+                        $custom_title = is_scalar($value) ? (string) $value : '';
+                        if (preg_match('/<|>|javascript:|onerror|onload|onclick|onmouseover|script|iframe|svg/', $custom_title)) {
+                            $safe_value = sanitize_for_logging($custom_title);
+                            log_message('error', sprintf('Invalid custom_title value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate default_invoice_terms to prevent XSS injection
+                    if ($key === 'default_invoice_terms') {
+                        $terms = is_scalar($value) ? (string) $value : '';
+                        if (preg_match('/<|>|javascript:|onerror|onload|onclick|onmouseover|script|iframe|svg/', $terms)) {
+                            $safe_value = sanitize_for_logging($terms);
+                            log_message('error', sprintf('Invalid default_invoice_terms value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate pdf_invoice_footer to prevent XSS injection in PDF output
+                    if ($key === 'pdf_invoice_footer') {
+                        $footer = is_scalar($value) ? (string) $value : '';
+                        if (preg_match('/<|>|javascript:|onerror|onload|onclick|onmouseover|script|iframe|svg/', $footer)) {
+                            $safe_value = sanitize_for_logging($footer);
+                            log_message('error', sprintf('Invalid pdf_invoice_footer value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
+                    // Security: Validate pdf_quote_footer to prevent XSS injection in PDF output
+                    if ($key === 'pdf_quote_footer') {
+                        $footer = is_scalar($value) ? (string) $value : '';
+                        if (preg_match('/<|>|javascript:|onerror|onload|onclick|onmouseover|script|iframe|svg/', $footer)) {
+                            $safe_value = sanitize_for_logging($footer);
+                            log_message('error', sprintf('Invalid pdf_quote_footer value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
                     $batch_settings[$key] = $value;
                 }
 

@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
     <title>
-        <?php echo get_setting('custom_title', 'InvoicePlane', true); ?>
+        <?php echo htmlsc(get_setting('custom_title', 'InvoicePlane', true)); ?>
         - <?php _trans('invoice'); ?> <?php echo htmlsc($invoice->invoice_number); ?>
     </title>
 

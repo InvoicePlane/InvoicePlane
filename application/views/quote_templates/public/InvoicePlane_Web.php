@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <title>
-        <?php echo get_setting('custom_title', 'InvoicePlane', true); ?>
+        <?php echo htmlsc(get_setting('custom_title', 'InvoicePlane', true)); ?>
         - <?php _trans('quote'); ?> <?php echo htmlsc($quote->quote_number); ?>
     </title>
 
