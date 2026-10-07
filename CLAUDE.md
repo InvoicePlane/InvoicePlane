@@ -181,6 +181,31 @@ becomes `null`, the connection is denied, and every DB-backed test is **skipped*
 failing. A run with zero failures but a large skip count is therefore not green: check the skip
 count. The same applies to CI: keep `DB_*` out of the job-level `env:` of the phpunit step.
 
+### Known traps when merging `develop` into `prep/v180`
+
+A blunt "develop wins" conflict resolution strategy breaks things that look unrelated to the
+actual conflict, because `prep/v180` carries fixes of its own in the same files. Recorded here
+after a merge (#1706) first went green on the second attempt, having started red (3 failures,
+625 skipped):
+
+- **`config.php`.** Taking develop's whole file wholesale drops `prep/v180`'s tested
+  `resolve_session_save_path()` wiring and the `#1601` test-mode `csrf_regenerate` toggle —
+  `SessionSavePathResolverTest` then fails. Keep `prep/v180`'s `config.php`; develop's only
+  unique change there (the `SESS_SAVE_PATH` line) is already superseded by that helper.
+- **`application/modules/users/controllers/Users.php`.** Taking develop's whole file pulls in
+  an unqualified `$this->load->model('mdl_user_clients')` (→ "Unable to locate the model" on
+  `delete_user_client`) and drops `user_einvoice_identifier` from the self-edit session
+  refresh. Keep develop's `Mdl_Users::is_primary_administrator()` authorization consolidation,
+  but restore both of those from `prep/v180`'s version.
+- **`UserAuthorizationService`.** Once `Users::form()` uses develop's inline
+  `is_primary_administrator()` check, this class and its unit test become dead code — delete
+  both, and drop `application/modules/users/services/` from the composer classmap (a classmap
+  entry for a directory with no files left breaks `composer install` autoload generation).
+- **625 skipped, not failed.** See "Do not export `DB_*`" above — a masked DB run looks like a
+  clean pass unless you check the skip count.
+- Regenerate `tests/Support/class-coverage-inventory.md` (see the command above) after any of
+  this — removing `UserAuthorizationService`'s test changes the file-to-test mapping.
+
 ### Line coverage (PCOV)
 
 `tests/Support/class-coverage-inventory.md` is only a name search. For executed-line coverage,
