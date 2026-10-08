@@ -34,6 +34,22 @@ class Ajax extends Admin_Controller
         if ($this->mdl_invoices->run_validation('validation_rules_save_invoice')) {
             $items = json_decode($this->input->post('items'));
 
+            // Reject negative quantities, prices and discounts (and items that belong to another
+            // invoice) before anything is written: items are saved one by one below.
+            $this->load->helper('item_amount');
+            $errors = amount_sign_errors(
+                $items,
+                $this->input->post('invoice_discount_amount'),
+                $this->input->post('invoice_discount_percent'),
+                $this->is_credit_invoice($invoice_id)
+            ) + $this->foreign_item_errors($items, $invoice_id);
+
+            if ($errors !== []) {
+                $this->json_encode_ajax(['success' => 0, 'validation_errors' => $errors]);
+
+                return;
+            }
+
             $invoice_discount_percent = (float) $this->input->post('invoice_discount_percent');
             $invoice_discount_amount  = (float) $this->input->post('invoice_discount_amount');
 
@@ -66,6 +82,11 @@ class Ajax extends Admin_Controller
                 $this->config->set_item('legacy_calculation', ! empty($this->input->post('legacy_calculation')));
             }
 
+            // Everything below writes; a refused (negative) total must undo it instead of reporting success.
+            $this->load->model('invoices/mdl_invoice_amounts');
+            $this->mdl_invoice_amounts->negative_total_refused = false;
+            $this->db->trans_begin();
+
             foreach ($items as $item) {
                 // Check if an item has either a quantity + price or name or description
                 if ( ! empty($item->item_name)) {
@@ -82,6 +103,9 @@ class Ajax extends Admin_Controller
 
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
+
+                    // The posted invoice is the only one an item may be saved to.
+                    $item->invoice_id = (int) $invoice_id;
 
                     if ( ! $item->item_task_id) {
                         unset($item->item_task_id);
@@ -107,6 +131,7 @@ class Ajax extends Admin_Controller
                         ],
                     ];
 
+                    $this->db->trans_rollback();
                     $this->json_encode_ajax($response);
 
                     return;
@@ -131,6 +156,7 @@ class Ajax extends Admin_Controller
                         ],
                     ];
 
+                    $this->db->trans_rollback();
                     $this->json_encode_ajax($response);
 
                     return;
@@ -187,9 +213,28 @@ class Ajax extends Admin_Controller
 
             if (config_item('legacy_calculation')) {
                 // Recalculate for discounts
-                $this->load->model('invoices/mdl_invoice_amounts');
                 $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
             }
+
+            if ($this->db->trans_status() === false) {
+                $this->db->trans_rollback();
+                log_message('error', __METHOD__ . ' - a database write failed, the invoice save was rolled back');
+                $this->json_encode_ajax(['success' => 0, 'validation_errors' => ['invoice_id' => trans('invoice_could_not_be_saved')]]);
+
+                return;
+            }
+
+            if ($this->mdl_invoice_amounts->negative_total_refused) {
+                $this->db->trans_rollback();
+                $this->json_encode_ajax([
+                    'success'           => 0,
+                    'validation_errors' => ['invoice_total' => trans('invoice_total_must_not_be_negative')],
+                ]);
+
+                return;
+            }
+
+            $this->db->trans_commit();
 
             $response = [
                 'success' => 1,
@@ -585,6 +630,11 @@ class Ajax extends Admin_Controller
             $target_id = $this->mdl_invoices->save();
             $source_id = $this->security->xss_clean($this->input->post('invoice_id'));
 
+            // Mark the target as a credit invoice before its (negative) items are copied, so the
+            // amounts calculation recognises the negative total as legitimate.
+            $this->mdl_invoices->where('invoice_id', $target_id);
+            $this->mdl_invoices->update('ip_invoices', ['creditinvoice_parent_id' => $source_id]);
+
             $this->mdl_invoices->copy_credit_invoice($source_id, $target_id);
 
             // Set source invoice to read-only
@@ -594,9 +644,6 @@ class Ajax extends Admin_Controller
             }
 
             // Set target invoice to credit invoice
-            $this->mdl_invoices->where('invoice_id', $target_id);
-            $this->mdl_invoices->update('ip_invoices', ['creditinvoice_parent_id' => $source_id]);
-
             $this->mdl_invoices->where('invoice_id', $target_id);
             $this->mdl_invoices->update('ip_invoice_amounts', ['invoice_sign' => '-1']);
 
@@ -613,5 +660,44 @@ class Ajax extends Admin_Controller
         }
 
         $this->json_encode_ajax($response);
+    }
+
+    private function is_credit_invoice($invoice_id): bool
+    {
+        $amounts = $this->db->select('invoice_sign')->where('invoice_id', (int) $invoice_id)->get('ip_invoice_amounts')->row();
+        $invoice = $this->db->select('creditinvoice_parent_id')->where('invoice_id', (int) $invoice_id)->get('ip_invoices')->row();
+
+        return ($amounts !== null && (int) $amounts->invoice_sign < 0)
+            || ($invoice !== null && (int) $invoice->creditinvoice_parent_id > 0);
+    }
+
+    /**
+     * An item id that does not exist, or belongs to another invoice, must not be updated through
+     * this invoice: the update would silently do nothing, or move another invoice's item here.
+     *
+     * @return array<string, string>
+     */
+    private function foreign_item_errors($items, $invoice_id): array
+    {
+        if ( ! is_iterable($items)) {
+            return [];
+        }
+
+        foreach ($items as $item) {
+            if (empty($item->item_id)) {
+                continue;
+            }
+
+            $owned = $this->db
+                ->where('item_id', (int) $item->item_id)
+                ->where('invoice_id', (int) $invoice_id)
+                ->count_all_results('ip_invoice_items');
+
+            if ($owned < 1) {
+                return ['item_id' => trans('item_not_on_document')];
+            }
+        }
+
+        return [];
     }
 }

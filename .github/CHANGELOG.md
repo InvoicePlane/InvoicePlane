@@ -14,7 +14,41 @@ record *why* and *how*.
 
 ## [Unreleased]
 
+### Thank you
+
+Thanks to [@hariprakash6969-create](https://github.com/hariprakash6969-create),
+[@santhoshdodo2721](https://github.com/santhoshdodo2721), [@nirtem](https://github.com/nirtem),
+[@d3do-23](https://github.com/d3do-23), [@capivara-research](https://github.com/capivara-research),
+[@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh), [@Ishbarna](https://github.com/Ishbarna),
+[@Taxanehh](https://github.com/Taxanehh), [@Shad0w35](https://github.com/Shad0w35),
+[@dreamer1eh](https://github.com/dreamer1eh), [@iamharshitgupta](https://github.com/iamharshitgupta),
+[@medamineelhatimi](https://github.com/medamineelhatimi), [@T0x1cG](https://github.com/T0x1cG), and
+[@fr1d4yy](https://github.com/fr1d4yy) for responsibly disclosing the issues resolved or in progress
+in this release.
+
+### Security Vulnerability Summary
+
+| Vulnerability | Severity | Security Advisory (GHSA) | Reported By | Fixed In |
+|---|---|---|---|---|
+| Payment-amount validation race (TOCTOU, CWE-362 / CWE-367) | — | — | [@hariprakash6969-create](https://github.com/hariprakash6969-create) | [#1756](https://github.com/InvoicePlane/InvoicePlane/pull/1756) |
+| PayPal `PENDING` capture treated as settled payment | — | — | [@santhoshdodo2721](https://github.com/santhoshdodo2721) | [#1724](https://github.com/InvoicePlane/InvoicePlane/pull/1724) |
+| Unauthenticated disclosure of sensitive financial data via static-file exposure (CWE-538 / CWE-284 / CWE-22 / CWE-668) | — | — | [@nirtem](https://github.com/nirtem), [@d3do-23](https://github.com/d3do-23) | [#1716](https://github.com/InvoicePlane/InvoicePlane/pull/1716) |
+| Object-level authorization missing in `Users::delete()` (CWE-639 / CWE-269) | — | — | [@capivara-research](https://github.com/capivara-research) | [#1713](https://github.com/InvoicePlane/InvoicePlane/pull/1713) |
+| Object-level authorization missing in `Users/Ajax::save_user_client()` (CWE-862 / CWE-269) | — | — | [@capivara-research](https://github.com/capivara-research) | [#1714](https://github.com/InvoicePlane/InvoicePlane/pull/1714) |
+| SQL operator precedence vulnerability in guest invoice listing (CWE-639 / CWE-862) | Medium | [GHSA-w5r4-8w63-c5h2](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-w5r4-8w63-c5h2) | — | [#1717](https://github.com/InvoicePlane/InvoicePlane/pull/1717) |
+| Stored XSS via `first_day_of_week` setting (JavaScript context injection) | — | [GHSA-x3r7-qm3m-hc48](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x3r7-qm3m-hc48) | [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh) | [#1751](https://github.com/InvoicePlane/InvoicePlane/pull/1751) |
+| PayPal capture not re-verified against the invoice before funds move; Stripe callback crash on uninitialized state | — | [GHSA-m2c5-pmxf-qfh5](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-m2c5-pmxf-qfh5), [GHSA-r382-4chp-xj3p](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-r382-4chp-xj3p) | [@Ishbarna](https://github.com/Ishbarna) | [#1749](https://github.com/InvoicePlane/InvoicePlane/pull/1749) |
+| Login / password-reset-token rate-limit counter forgery via shared key column (CWE-694) | — | [GHSA-r59m-wgg6-h4pv](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-r59m-wgg6-h4pv) | [@Taxanehh](https://github.com/Taxanehh) | [#1748](https://github.com/InvoicePlane/InvoicePlane/pull/1748) |
+| Missing object-level authorization on user-client assignment endpoints (CWE-639 / CWE-862) | — | [GHSA-5rqm-w9p8-gp7w](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-5rqm-w9p8-gp7w) | [@Shad0w35](https://github.com/Shad0w35), [@dreamer1eh](https://github.com/dreamer1eh) | [#1747](https://github.com/InvoicePlane/InvoicePlane/pull/1747) |
+| Sessions not invalidated after a password change (CWE-613) | — | [GHSA-hg6g-m4fp-7cj3](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-hg6g-m4fp-7cj3) | [@iamharshitgupta](https://github.com/iamharshitgupta) | [#1746](https://github.com/InvoicePlane/InvoicePlane/pull/1746) |
+| Stored XSS via custom field label in validation error alerts (CWE-79 / CWE-116) | — | [GHSA-xvpx-fwvm-346g](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-xvpx-fwvm-346g) | [@Shad0w35](https://github.com/Shad0w35) | [#1745](https://github.com/InvoicePlane/InvoicePlane/pull/1745) |
+| Stored XSS via unescaped `currency_symbol` — 15 remaining view sinks (CWE-79 / CWE-116) | — | [GHSA-gpv9-p6gj-238h](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-gpv9-p6gj-238h) | [@Shad0w35](https://github.com/Shad0w35), [@medamineelhatimi](https://github.com/medamineelhatimi) | [#1744](https://github.com/InvoicePlane/InvoicePlane/pull/1744) |
+| Stored XSS in guest payment pages via unescaped payment-gateway settings (CWE-79) | — | [GHSA-mp5h-3jcr-f7hm](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-mp5h-3jcr-f7hm) | [@T0x1cG](https://github.com/T0x1cG) | [#1743](https://github.com/InvoicePlane/InvoicePlane/pull/1743) |
+| SSRF via `thousands_separator` / `decimal_point` settings and the mPDF footer filename (CWE-918) | — | [GHSA-x9qq-6v8r-pfcf](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x9qq-6v8r-pfcf), [GHSA-ph5g-ffvw-r5vq](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-ph5g-ffvw-r5vq) | [@fr1d4yy](https://github.com/fr1d4yy) | [#1742](https://github.com/InvoicePlane/InvoicePlane/pull/1742) |
+
 ### Security fixes
+
+- **Stored XSS via `first_day_of_week` setting (JavaScript context injection)** ([GHSA-x3r7-qm3m-hc48](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x3r7-qm3m-hc48)): the `first_day_of_week` setting was echoed directly into a JavaScript string literal in the datepicker initialization in `head.php`, with only HTML escaping applied — which does not protect a JavaScript string context. An authenticated administrator could set the value to a payload that breaks out of the string literal and executes arbitrary JavaScript in the browser of every authenticated user who loads a page with a datepicker. **Fix:** a new `encode_for_javascript_string()` helper escapes backslashes, quotes, line terminators, and forward slashes before the value is embedded in the script, and `Settings::index()` now validates `first_day_of_week` against the valid `0`–`6` range server-side, rejecting and logging anything else. Thanks to [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh) for responsible disclosure. [#1751](https://github.com/InvoicePlane/InvoicePlane/pull/1751)
 
 - **Payment-amount validation race (TOCTOU, CWE-362 / CWE-367).** `Mdl_Payments::validate_payment_amount()`
   read `invoice_balance` and `Mdl_Payments::save()` inserted the payment row as separate,
@@ -179,14 +213,29 @@ record *why* and *how*.
   whitespace-only `SESS_SAVE_PATH` to `sys_get_temp_dir()`, exactly matching an unset one; an
   explicit path is unchanged.
 
+- **PayPal `PENDING` capture never wrote its audit row:** the `PENDING` branch added with the fix that stopped recording pending captures as settled payments read `$capture_data` and `$capture_id`, which are only defined inside the `COMPLETED` branch. The invoice id was always empty, so the "pending – awaiting settlement" merchant-response row was never written and PHP raised undefined-variable warnings. The branch now reads the capture itself. No payment is recorded for a pending capture, as before. Thanks to [@santhoshdodo2721](https://github.com/santhoshdodo2721) for responsible disclosure.
+
 ---
 
 ## [1.7.3] - 2026-08-29
 
+### Thank you
+
+Thanks to [@0xMoError-22](https://github.com/0xMoError-22) and [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh)
+for responsibly disclosing the issues resolved in this release.
+
+### Security Vulnerability Summary
+
+| Vulnerability | Severity | Security Advisory (GHSA) | Reported By | Fixed In |
+|---|---|---|---|---|
+| Horizontal privilege escalation via email takeover in `Users::form()` | High | [Incomplete Authorization Remediation in Users::form() Enables Primary Administrator Account Takeover](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-77hm-22wp-96wp) | [@0xMoError-22](https://github.com/0xMoError-22) | [#1689](https://github.com/InvoicePlane/InvoicePlane/pull/1689) |
+| Primary-administrator role downgrade via `user_type` (privilege destruction, CWE-269) | High | Same root cause as [GHSA-77hm-22wp-96wp](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-77hm-22wp-96wp) | [@0xMoError-22](https://github.com/0xMoError-22) | [#1697](https://github.com/InvoicePlane/InvoicePlane/pull/1697) |
+| Stored XSS via `first_day_of_week` setting (JavaScript context injection) | — | [GHSA-x3r7-qm3m-hc48](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x3r7-qm3m-hc48) | [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh) | [#1751](https://github.com/InvoicePlane/InvoicePlane/pull/1751) |
+
 ### Security fixes
 
-- **Horizontal privilege escalation via email takeover:** PR #1638 fixed password-change authorization (IDOR), but left the email field unprotected. A secondary administrator (`user_type=1`, `user_id != 1`) could edit the primary administrator's email address through the user form, then use password recovery to take over the account. `Users::form()` now validates that only the primary administrator can edit `user_id=1`, and `user_email` is included in `PRIMARY_ADMIN_LOCKED_FIELDS` (defense-in-depth). Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for the responsible disclosure.
-- **Primary-administrator role downgrade via `user_type` (privilege destruction, CWE-269):** the same missing object-level authorization in `Users::form()` also let a secondary administrator rewrite the primary administrator's `user_type` to `2` (guest / read-only) — destroying the root account's privilege, revoking its sessions, and locking the legitimate owner out. The `user_id=1` isolation guard added for the email fix already closes this vector at the controller. This release hardens it further: the `Mdl_Users::save()` data layer now uses `PRIMARY_ADMIN_LOCKED_FIELDS` to strip privilege- and identity-bearing fields (`user_type`, `user_active`, `user_psalt`, `user_email`, `user_password`) from any write targeting `user_id=1` that does not originate from the primary administrator's own session, and the scattered `user_id == 1` checks in `Users::form()`, `Users::delete()` and `Users::change_password()` are consolidated behind a single `Mdl_Users::is_primary_administrator()` predicate so future mutation paths cannot forget the boundary. Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for the responsible disclosure.
+- [#1689](https://github.com/InvoicePlane/InvoicePlane/pull/1689) — **Horizontal privilege escalation via email takeover:** PR #1638 fixed password-change authorization (IDOR), but left the email field unprotected. A secondary administrator (`user_type=1`, `user_id != 1`) could edit the primary administrator's email address through the user form, then use password recovery to take over the account. `Users::form()` now validates that only the primary administrator can edit `user_id=1`, and `user_email` is included in `PRIMARY_ADMIN_LOCKED_FIELDS` (defense-in-depth). Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for the responsible disclosure.
+- [#1697](https://github.com/InvoicePlane/InvoicePlane/pull/1697) — **Primary-administrator role downgrade via `user_type` (privilege destruction, CWE-269):** the same missing object-level authorization in `Users::form()` also let a secondary administrator rewrite the primary administrator's `user_type` to `2` (guest / read-only) — destroying the root account's privilege, revoking its sessions, and locking the legitimate owner out. The `user_id=1` isolation guard added for the email fix already closes this vector at the controller. This release hardens it further: the `Mdl_Users::save()` data layer now uses `PRIMARY_ADMIN_LOCKED_FIELDS` to strip privilege- and identity-bearing fields (`user_type`, `user_active`, `user_psalt`, `user_email`, `user_password`) from any write targeting `user_id=1` that does not originate from the primary administrator's own session, and the scattered `user_id == 1` checks in `Users::form()`, `Users::delete()` and `Users::change_password()` are consolidated behind a single `Mdl_Users::is_primary_administrator()` predicate so future mutation paths cannot forget the boundary. Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for the responsible disclosure.
 
 ### Documentation / configuration
 

@@ -290,7 +290,7 @@ class Paypal extends Base_Controller
 
                 // Log the pending capture for audit purposes
                 if ($invoice_id) {
-                    log_message('info', __CLASS__ . '::' . __FUNCTION__ . ' - PayPal capture pending settlement. Invoice: ' . sanitize_for_logging($invoice_id) . ', Capture ID: ' . sanitize_for_logging($capture_id));
+                    log_message('info', __CLASS__ . '::' . __FUNCTION__ . ' - PayPal capture pending settlement. Invoice: ' . sanitize_for_logging($invoice_id) . ', Capture ID: ' . sanitize_for_logging((string) $capture_id));
 
                     $this->db->insert('ip_merchant_responses', [
                         'invoice_id'                   => $invoice_id,
