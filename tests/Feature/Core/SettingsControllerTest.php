@@ -295,6 +295,71 @@ class SettingsControllerTest extends AbstractTestCase
     }
 
     #[Test]
+    public function it_persists_a_valid_first_day_of_week(): void
+    {
+        /* Arrange */
+
+        /* Act */
+        $response = $this->post('/settings', ['settings' => ['first_day_of_week' => '1'], 'btn_submit' => '1']);
+
+        /* Assert */
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertDatabaseHas('ip_settings', ['setting_key' => 'first_day_of_week', 'setting_value' => '1']);
+    }
+
+    #[Test]
+    public function it_refuses_a_first_day_of_week_xss_payload_and_saves_none_of_the_batch(): void
+    {
+        /*
+         * Regression for GHSA-x3r7-qm3m-hc48: first_day_of_week was echoed unescaped into a
+         * JavaScript string literal in head.php. A value that breaks out of the literal must
+         * be rejected server-side, not merely relied on to be escaped at render time.
+         */
+
+        /* Arrange */
+        $this->setSetting('cron_key', 'original-cron-key');
+        $payload = "1' + window['ale'+'rt']('XSS') + '";
+
+        /* Act */
+        $response = $this->post('/settings', ['settings' => ['first_day_of_week' => $payload, 'cron_key' => 'must-not-be-saved'], 'btn_submit' => '1']);
+
+        /* Assert: rejected before the batch write, so even the harmless sibling field is not persisted */
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertDatabaseMissing('ip_settings', ['setting_key' => 'first_day_of_week', 'setting_value' => $payload]);
+        $this->assertDatabaseHas('ip_settings', ['setting_key' => 'cron_key', 'setting_value' => 'original-cron-key']);
+    }
+
+    #[Test]
+    public function it_refuses_an_out_of_range_first_day_of_week(): void
+    {
+        /* Arrange */
+        $this->setSetting('cron_key', 'original-cron-key');
+
+        /* Act */
+        $response = $this->post('/settings', ['settings' => ['first_day_of_week' => '7', 'cron_key' => 'must-not-be-saved'], 'btn_submit' => '1']);
+
+        /* Assert */
+        $this->assertResponseRedirectsToRoute($response, 'settings');
+        $this->assertDatabaseMissing('ip_settings', ['setting_key' => 'first_day_of_week', 'setting_value' => '7']);
+        $this->assertDatabaseHas('ip_settings', ['setting_key' => 'cron_key', 'setting_value' => 'original-cron-key']);
+    }
+
+    #[Test]
+    public function it_renders_the_week_start_setting_escaped_for_the_javascript_context(): void
+    {
+        /* Arrange: a value that cannot currently be stored (validation blocks it going forward),
+         * but proves the view-layer encoding independently of the controller guard — defense in
+         * depth, per the fix's own two-layer design. */
+        $this->setSetting('first_day_of_week', "1' + alert(1) + '");
+
+        /* Act */
+        $response = $this->get('/settings');
+
+        /* Assert */
+        $this->assertResponseBodyNotContains($response, "weekStart: '1' + alert(1) + ''");
+    }
+
+    #[Test]
     public function it_blocks_svg_logo_uploads_and_records_the_attempt_in_the_log(): void
     {
         /* Arrange: SVG can carry script, so it is refused before any upload handling. The audit line is also

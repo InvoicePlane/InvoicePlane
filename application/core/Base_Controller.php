@@ -52,7 +52,7 @@ class Base_Controller extends MX_Controller
             $this->load->library(['encryption', 'form_validation', 'session', 'security', 'ClientTitleEnum']);
             $this->load->database();
 
-            $this->load->helper(['trans', 'number', 'pager', 'invoice', 'date', 'form', 'echo', 'user', 'client', 'country']);
+            $this->load->helper(['trans', 'number', 'pager', 'invoice', 'date', 'form', 'echo', 'user', 'client', 'country', 'security']);
 
             // Load setting model and load settings
             $this->load->model('settings/mdl_settings');
