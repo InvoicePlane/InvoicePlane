@@ -64,8 +64,8 @@ record *why* and *how*.
 
 ### Thank you
 
-Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for responsibly disclosing both
-issues resolved in this release.
+Thanks to [@0xMoError-22](https://github.com/0xMoError-22) and [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh)
+for responsibly disclosing the issues resolved in this release.
 
 ### Security Vulnerability Summary
 
@@ -73,6 +73,7 @@ issues resolved in this release.
 |---|---|---|---|---|
 | Horizontal privilege escalation via email takeover in `Users::form()` | High | [Incomplete Authorization Remediation in Users::form() Enables Primary Administrator Account Takeover](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-77hm-22wp-96wp) | [@0xMoError-22](https://github.com/0xMoError-22) | [#1689](https://github.com/InvoicePlane/InvoicePlane/pull/1689) |
 | Primary-administrator role downgrade via `user_type` (privilege destruction, CWE-269) | High | Same root cause as [GHSA-77hm-22wp-96wp](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-77hm-22wp-96wp) | [@0xMoError-22](https://github.com/0xMoError-22) | [#1697](https://github.com/InvoicePlane/InvoicePlane/pull/1697) |
+| Stored XSS via `first_day_of_week` setting (JavaScript context injection) | — | [GHSA-x3r7-qm3m-hc48](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x3r7-qm3m-hc48) | [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh) | [#1751](https://github.com/InvoicePlane/InvoicePlane/pull/1751) |
 
 ### Security fixes
 
