@@ -54,7 +54,7 @@ record *why* and *how*.
   whitespace-only `SESS_SAVE_PATH` to `sys_get_temp_dir()`, exactly matching an unset one; an
   explicit path is unchanged.
 
-- **PayPal `PENDING` capture never wrote its audit row:** the `PENDING` branch added with the fix that stopped recording pending captures as settled payments read `$capture_data` and `$capture_id`, which are only defined inside the `COMPLETED` branch. The invoice id was always empty, so the "pending – awaiting settlement" merchant-response row was never written and PHP raised undefined-variable warnings. The branch now reads the capture itself. No payment is recorded for a pending capture, as before.
+- **PayPal `PENDING` capture never wrote its audit row:** the `PENDING` branch added with the fix that stopped recording pending captures as settled payments read `$capture_data` and `$capture_id`, which are only defined inside the `COMPLETED` branch. The invoice id was always empty, so the "pending – awaiting settlement" merchant-response row was never written and PHP raised undefined-variable warnings. The branch now reads the capture itself. No payment is recorded for a pending capture, as before. Thanks to [@santhoshdodo2721](https://github.com/santhoshdodo2721) for responsible disclosure.
 
 ---
 
