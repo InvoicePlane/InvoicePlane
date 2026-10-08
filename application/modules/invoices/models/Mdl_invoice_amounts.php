@@ -21,6 +21,12 @@ class Mdl_Invoice_Amounts extends CI_Model
      */
     public $decimal_places = 2;
 
+    /**
+     * Set when calculate() refused to store a negative total, so a caller that wrote data first
+     * (Invoices/Ajax::save) can roll that back instead of reporting success.
+     */
+    public bool $negative_total_refused = false;
+
     public function __construct()
     {
         $this->decimal_places = (int) get_setting('tax_rate_decimal_places');
@@ -47,8 +53,10 @@ class Mdl_Invoice_Amounts extends CI_Model
      *
      * @param $invoice_id
      * @param $global_discount
+     *
+     * @return bool false when the total was refused (negative for a regular invoice), nothing stored
      */
-    public function calculate($invoice_id, $global_discount)
+    public function calculate($invoice_id, $global_discount): bool
     {
         // Get the basic totals
         $query = $this->db->query('
@@ -72,6 +80,18 @@ class Mdl_Invoice_Amounts extends CI_Model
         } else {
             $invoice_item_subtotal = $invoice_amounts->invoice_item_subtotal - $invoice_amounts->invoice_item_discount - $global_discount['item'];
             $invoice_total         = $invoice_item_subtotal + $invoice_amounts->invoice_item_tax_total;
+        }
+
+        // Defence in depth: only a credit invoice may total less than zero. Persisting a negative
+        // total for a regular invoice would show the customer a bill the company owes them, so keep
+        // the last good amounts and leave a trace instead.
+        if ($invoice_total < 0 && ! $this->is_credit_invoice($invoice_id)) {
+            $this->load->helper('file_security');
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Refused to store a negative total (' . sanitize_for_logging((string) $invoice_total) . ') for the non-credit invoice ' . sanitize_for_logging((string) $invoice_id));
+
+            $this->negative_total_refused = true;
+
+            return false;
         }
 
         // Get the amount already paid
@@ -131,6 +151,8 @@ class Mdl_Invoice_Amounts extends CI_Model
                 $this->db->update('ip_invoices');
             }
         }
+
+        return true;
     }
 
     /**
@@ -439,5 +461,18 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
 
         return $return;
+    }
+
+    /**
+     * A credit invoice is marked by its negative sign, or by the parent invoice it credits (which
+     * is recorded before its items are copied, i.e. before any amounts exist to carry the sign).
+     */
+    private function is_credit_invoice($invoice_id): bool
+    {
+        $amounts = $this->db->select('invoice_sign')->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
+        $invoice = $this->db->select('creditinvoice_parent_id')->where('invoice_id', $invoice_id)->get('ip_invoices')->row();
+
+        return ($amounts !== null && (int) $amounts->invoice_sign < 0)
+            || ($invoice !== null && (int) $invoice->creditinvoice_parent_id > 0);
     }
 }
