@@ -121,6 +121,84 @@ class SecurityHelperTest extends TestCase
         self::assertStringContainsString('&quot;', $escaped);
     }
 
+    #[Test]
+    public function it_breaks_the_javascript_string_breakout_payload_for_first_day_of_week(): void
+    {
+        /*
+         * Regression for GHSA-x3r7-qm3m-hc48: first_day_of_week was echoed raw into a
+         * single-quoted JS string literal. A value like 1' + alert(1) + ' must no longer
+         * be able to close the literal.
+         */
+
+        /* Arrange */
+        $payload = "1' + window['ale'+'rt']('XSS ' + document.domain) + '";
+
+        /* Act */
+        $encoded = encode_for_javascript_string($payload);
+
+        /* Assert: every single quote must be escaped — remove the escaped sequences and
+         * confirm no bare quote remains that could close the surrounding JS string literal. */
+        self::assertStringContainsString("\\'", $encoded);
+        self::assertStringNotContainsString("'", str_replace("\\'", '', $encoded));
+    }
+
+    #[Test]
+    public function it_escapes_backslashes_before_quotes_to_avoid_reintroducing_a_live_escape(): void
+    {
+        /* Arrange: a trailing backslash must not combine with the following escaped quote
+         * to produce an unescaped quote (e.g. "\\" . "'" must not read as \' being a single
+         * escaped backslash followed by a live quote). */
+        $payload = 'end\\';
+
+        /* Act */
+        $encoded = encode_for_javascript_string($payload);
+
+        /* Assert */
+        self::assertSame('end\\\\', $encoded);
+    }
+
+    #[Test]
+    public function it_escapes_line_terminators_that_are_invalid_in_a_js_string_literal(): void
+    {
+        /* Arrange */
+        $payload = "line1\r\nline2\u{2028}line3\u{2029}";
+
+        /* Act */
+        $encoded = encode_for_javascript_string($payload);
+
+        /* Assert */
+        self::assertStringNotContainsString("\r", $encoded);
+        self::assertStringNotContainsString("\n", $encoded);
+        self::assertStringNotContainsString("\u{2028}", $encoded);
+        self::assertStringNotContainsString("\u{2029}", $encoded);
+    }
+
+    #[Test]
+    public function it_escapes_a_closing_script_tag_sequence(): void
+    {
+        /* Arrange */
+        $payload = '</script><script>alert(1)</script>';
+
+        /* Act */
+        $encoded = encode_for_javascript_string($payload);
+
+        /* Assert */
+        self::assertStringNotContainsString('</script>', $encoded);
+    }
+
+    #[Test]
+    public function it_casts_a_non_string_value_before_encoding(): void
+    {
+        /* Arrange */
+        $payload = 3;
+
+        /* Act */
+        $encoded = encode_for_javascript_string($payload);
+
+        /* Assert */
+        self::assertSame('3', $encoded);
+    }
+
     private function setRequest(array $get, array $post, array $cookies, bool $withSecurity = false): void
     {
         $GLOBALS['unitCiConfig'] = [
