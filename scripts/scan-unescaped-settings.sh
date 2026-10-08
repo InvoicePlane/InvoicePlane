@@ -12,7 +12,7 @@ YELLOW='\033[1;33m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
-echo "\xf0\x9f\x94\x8d Scanning for unescaped get_setting() calls in views..."
+echo "🔍 Scanning for unescaped get_setting() calls in views..."
 echo "Repository: $REPO_ROOT"
 echo ""
 
@@ -26,41 +26,41 @@ UNESCAPED=$(grep -r "get_setting" "$REPO_ROOT/application/views/" \
     | grep -v "^[[:space:]]*//") || true
 
 if [ -z "$UNESCAPED" ]; then
-    echo "\xe2\x9c\x85 No unescaped get_setting() calls found in views!"
+    echo "✅ No unescaped get_setting() calls found in views!"
     echo ""
     exit 0
 fi
 
 case "$OUTPUT_FORMAT" in
     summary)
-        echo "\xe2\x9a\xa0\xef\xb8\x8f  UNESCAPED get_setting() CALLS FOUND:"
+        echo "⚠️  UNESCAPED get_setting() CALLS FOUND:"
         echo ""
         echo "$UNESCAPED" | awk -F: '{
             file=$1
             if (prev_file != file) {
                 if (prev_file != "") print ""
-                print "\xf0\x9f\x93\x84 " file
+                print "📄 " file
                 prev_file=file
             }
             gsub(/^[[:space:]]+/, "", $0)
-            match($0, /get_setting\([\x27"][^\x27"]+/)
+            match($0, /get_setting\(['\''"][^'\''"]+/)
             setting = substr($0, RSTART + 13, RLENGTH - 13)
-            printf "   \xe2\x80\xa2 Setting: %s\n", setting
+            printf "   • Setting: %s\n", setting
         }' | sort -u
 
         echo ""
-        echo "\xf0\x9f\x93\x8a Summary:"
+        echo "📊 Summary:"
         TOTAL=$(echo "$UNESCAPED" | wc -l)
-        UNIQUE_SETTINGS=$(echo "$UNESCAPED" | grep -oE "get_setting\([\x27\"][^\x27\"]+" | sort -u | wc -l)
+        UNIQUE_SETTINGS=$(echo "$UNESCAPED" | grep -oE "get_setting\(['\''\"][^'\''\"]+" | sort -u | wc -l)
         echo "   Total unescaped calls: $TOTAL"
         echo "   Unique settings: $UNIQUE_SETTINGS"
         ;;
 
     detailed)
-        echo "\xf0\x9f\x93\x8b DETAILED LISTING:"
+        echo "📋 DETAILED LISTING:"
         echo ""
         echo "$UNESCAPED" | while IFS=: read -r file line content; do
-            echo "\xf0\x9f\x93\x84 $file:$line"
+            echo "📄 $file:$line"
             echo "   $content" | sed 's/^[[:space:]]*//'
             echo ""
         done
@@ -77,7 +77,7 @@ case "$OUTPUT_FORMAT" in
             if [ "$first" = false ]; then echo ","; fi
             first=false
 
-            setting=$(echo "$content" | grep -oE "get_setting\([\x27\"][^\x27\"]+" | sed "s/get_setting([\x27\"]//" | head -1)
+            setting=$(echo "$content" | grep -oE "get_setting\(['\''\"][^'\''\"]+" | sed "s/get_setting(['\''\"]//" | head -1)
 
             cat <<EOF
     {
@@ -94,13 +94,13 @@ EOF
         ;;
 
     *)
-        echo "\xe2\x9d\x8c Unknown output format: $OUTPUT_FORMAT"
+        echo "❌ Unknown output format: $OUTPUT_FORMAT"
         echo "   Valid formats: summary, detailed, json"
         exit 1
         ;;
 esac
 
 echo ""
-echo "\xf0\x9f\x94\x90 Remediation: Wrap all get_setting() calls with htmlsc() or html_escape()"
+echo "🔐 Remediation: Wrap all get_setting() calls with htmlsc() or html_escape()"
 echo "   Example: htmlsc(get_setting('custom_title'))"
 echo ""
