@@ -14,6 +14,38 @@ record *why* and *how*.
 
 ## [Unreleased]
 
+### Thank you
+
+Thanks to [@hariprakash6969-create](https://github.com/hariprakash6969-create),
+[@santhoshdodo2721](https://github.com/santhoshdodo2721), [@nirtem](https://github.com/nirtem),
+[@d3do-23](https://github.com/d3do-23), [@capivara-research](https://github.com/capivara-research),
+[@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh), [@Ishbarna](https://github.com/Ishbarna),
+[@Taxanehh](https://github.com/Taxanehh), [@Shad0w35](https://github.com/Shad0w35),
+[@dreamer1eh](https://github.com/dreamer1eh), [@iamharshitgupta](https://github.com/iamharshitgupta),
+[@medamineelhatimi](https://github.com/medamineelhatimi), [@T0x1cG](https://github.com/T0x1cG), and
+[@fr1d4yy](https://github.com/fr1d4yy) for responsibly disclosing the issues resolved or in progress
+in this release.
+
+### Security Vulnerability Summary
+
+| Vulnerability | Severity | Security Advisory (GHSA) | Reported By | Fixed In |
+|---|---|---|---|---|
+| Payment-amount validation race (TOCTOU, CWE-362 / CWE-367) | — | — | [@hariprakash6969-create](https://github.com/hariprakash6969-create) | [#1756](https://github.com/InvoicePlane/InvoicePlane/pull/1756) |
+| PayPal `PENDING` capture treated as settled payment | — | — | [@santhoshdodo2721](https://github.com/santhoshdodo2721) | [#1724](https://github.com/InvoicePlane/InvoicePlane/pull/1724) |
+| Unauthenticated disclosure of sensitive financial data via static-file exposure (CWE-538 / CWE-284 / CWE-22 / CWE-668) | — | — | [@nirtem](https://github.com/nirtem), [@d3do-23](https://github.com/d3do-23) | [#1716](https://github.com/InvoicePlane/InvoicePlane/pull/1716) |
+| Object-level authorization missing in `Users::delete()` (CWE-639 / CWE-269) | — | — | [@capivara-research](https://github.com/capivara-research) | [#1713](https://github.com/InvoicePlane/InvoicePlane/pull/1713) |
+| Object-level authorization missing in `Users/Ajax::save_user_client()` (CWE-862 / CWE-269) | — | — | [@capivara-research](https://github.com/capivara-research) | [#1714](https://github.com/InvoicePlane/InvoicePlane/pull/1714) |
+| SQL operator precedence vulnerability in guest invoice listing (CWE-639 / CWE-862) | Medium | [GHSA-w5r4-8w63-c5h2](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-w5r4-8w63-c5h2) | — | [#1717](https://github.com/InvoicePlane/InvoicePlane/pull/1717) |
+| Stored XSS via `first_day_of_week` setting (JavaScript context injection) | — | [GHSA-x3r7-qm3m-hc48](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x3r7-qm3m-hc48) | [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh) | [#1751](https://github.com/InvoicePlane/InvoicePlane/pull/1751) |
+| PayPal capture not re-verified against the invoice before funds move; Stripe callback crash on uninitialized state | — | [GHSA-m2c5-pmxf-qfh5](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-m2c5-pmxf-qfh5), [GHSA-r382-4chp-xj3p](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-r382-4chp-xj3p) | [@Ishbarna](https://github.com/Ishbarna) | [#1749](https://github.com/InvoicePlane/InvoicePlane/pull/1749) |
+| Login / password-reset-token rate-limit counter forgery via shared key column (CWE-694) | — | [GHSA-r59m-wgg6-h4pv](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-r59m-wgg6-h4pv) | [@Taxanehh](https://github.com/Taxanehh) | [#1748](https://github.com/InvoicePlane/InvoicePlane/pull/1748) |
+| Missing object-level authorization on user-client assignment endpoints (CWE-639 / CWE-862) | — | [GHSA-5rqm-w9p8-gp7w](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-5rqm-w9p8-gp7w) | [@Shad0w35](https://github.com/Shad0w35), [@dreamer1eh](https://github.com/dreamer1eh) | [#1747](https://github.com/InvoicePlane/InvoicePlane/pull/1747) |
+| Sessions not invalidated after a password change (CWE-613) | — | [GHSA-hg6g-m4fp-7cj3](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-hg6g-m4fp-7cj3) | [@iamharshitgupta](https://github.com/iamharshitgupta) | [#1746](https://github.com/InvoicePlane/InvoicePlane/pull/1746) |
+| Stored XSS via custom field label in validation error alerts (CWE-79 / CWE-116) | — | [GHSA-xvpx-fwvm-346g](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-xvpx-fwvm-346g) | [@Shad0w35](https://github.com/Shad0w35) | [#1745](https://github.com/InvoicePlane/InvoicePlane/pull/1745) |
+| Stored XSS via unescaped `currency_symbol` — 15 remaining view sinks (CWE-79 / CWE-116) | — | [GHSA-gpv9-p6gj-238h](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-gpv9-p6gj-238h) | [@Shad0w35](https://github.com/Shad0w35), [@medamineelhatimi](https://github.com/medamineelhatimi) | [#1744](https://github.com/InvoicePlane/InvoicePlane/pull/1744) |
+| Stored XSS in guest payment pages via unescaped payment-gateway settings (CWE-79) | — | [GHSA-mp5h-3jcr-f7hm](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-mp5h-3jcr-f7hm) | [@T0x1cG](https://github.com/T0x1cG) | [#1743](https://github.com/InvoicePlane/InvoicePlane/pull/1743) |
+| SSRF via `thousands_separator` / `decimal_point` settings and the mPDF footer filename (CWE-918) | — | [GHSA-x9qq-6v8r-pfcf](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x9qq-6v8r-pfcf), [GHSA-ph5g-ffvw-r5vq](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-ph5g-ffvw-r5vq) | [@fr1d4yy](https://github.com/fr1d4yy) | [#1742](https://github.com/InvoicePlane/InvoicePlane/pull/1742) |
+
 ### Security fixes
 
 - **Stored XSS via `first_day_of_week` setting (JavaScript context injection)** ([GHSA-x3r7-qm3m-hc48](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x3r7-qm3m-hc48)): the `first_day_of_week` setting was echoed directly into a JavaScript string literal in the datepicker initialization in `head.php`, with only HTML escaping applied — which does not protect a JavaScript string context. An authenticated administrator could set the value to a payload that breaks out of the string literal and executes arbitrary JavaScript in the browser of every authenticated user who loads a page with a datepicker. **Fix:** a new `encode_for_javascript_string()` helper escapes backslashes, quotes, line terminators, and forward slashes before the value is embedded in the script, and `Settings::index()` now validates `first_day_of_week` against the valid `0`–`6` range server-side, rejecting and logging anything else. Thanks to [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh) for responsible disclosure. [#1751](https://github.com/InvoicePlane/InvoicePlane/pull/1751)
