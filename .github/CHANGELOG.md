@@ -45,10 +45,22 @@ record *why* and *how*.
 
 ## [1.7.3] - 2026-08-29
 
+### Thank you
+
+Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for responsibly disclosing both
+issues resolved in this release.
+
+### Security Vulnerability Summary
+
+| Vulnerability | Severity | Security Advisory (GHSA) | Reported By | Fixed In |
+|---|---|---|---|---|
+| Horizontal privilege escalation via email takeover in `Users::form()` | High | [Incomplete Authorization Remediation in Users::form() Enables Primary Administrator Account Takeover](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-77hm-22wp-96wp) | [@0xMoError-22](https://github.com/0xMoError-22) | [#1689](https://github.com/InvoicePlane/InvoicePlane/pull/1689) |
+| Primary-administrator role downgrade via `user_type` (privilege destruction, CWE-269) | High | Same root cause as [GHSA-77hm-22wp-96wp](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-77hm-22wp-96wp) | [@0xMoError-22](https://github.com/0xMoError-22) | [#1697](https://github.com/InvoicePlane/InvoicePlane/pull/1697) |
+
 ### Security fixes
 
-- **Horizontal privilege escalation via email takeover:** PR #1638 fixed password-change authorization (IDOR), but left the email field unprotected. A secondary administrator (`user_type=1`, `user_id != 1`) could edit the primary administrator's email address through the user form, then use password recovery to take over the account. `Users::form()` now validates that only the primary administrator can edit `user_id=1`, and `user_email` is included in `PRIMARY_ADMIN_LOCKED_FIELDS` (defense-in-depth). Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for the responsible disclosure.
-- **Primary-administrator role downgrade via `user_type` (privilege destruction, CWE-269):** the same missing object-level authorization in `Users::form()` also let a secondary administrator rewrite the primary administrator's `user_type` to `2` (guest / read-only) — destroying the root account's privilege, revoking its sessions, and locking the legitimate owner out. The `user_id=1` isolation guard added for the email fix already closes this vector at the controller. This release hardens it further: the `Mdl_Users::save()` data layer now uses `PRIMARY_ADMIN_LOCKED_FIELDS` to strip privilege- and identity-bearing fields (`user_type`, `user_active`, `user_psalt`, `user_email`, `user_password`) from any write targeting `user_id=1` that does not originate from the primary administrator's own session, and the scattered `user_id == 1` checks in `Users::form()`, `Users::delete()` and `Users::change_password()` are consolidated behind a single `Mdl_Users::is_primary_administrator()` predicate so future mutation paths cannot forget the boundary. Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for the responsible disclosure.
+- [#1689](https://github.com/InvoicePlane/InvoicePlane/pull/1689) — **Horizontal privilege escalation via email takeover:** PR #1638 fixed password-change authorization (IDOR), but left the email field unprotected. A secondary administrator (`user_type=1`, `user_id != 1`) could edit the primary administrator's email address through the user form, then use password recovery to take over the account. `Users::form()` now validates that only the primary administrator can edit `user_id=1`, and `user_email` is included in `PRIMARY_ADMIN_LOCKED_FIELDS` (defense-in-depth). Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for the responsible disclosure.
+- [#1697](https://github.com/InvoicePlane/InvoicePlane/pull/1697) — **Primary-administrator role downgrade via `user_type` (privilege destruction, CWE-269):** the same missing object-level authorization in `Users::form()` also let a secondary administrator rewrite the primary administrator's `user_type` to `2` (guest / read-only) — destroying the root account's privilege, revoking its sessions, and locking the legitimate owner out. The `user_id=1` isolation guard added for the email fix already closes this vector at the controller. This release hardens it further: the `Mdl_Users::save()` data layer now uses `PRIMARY_ADMIN_LOCKED_FIELDS` to strip privilege- and identity-bearing fields (`user_type`, `user_active`, `user_psalt`, `user_email`, `user_password`) from any write targeting `user_id=1` that does not originate from the primary administrator's own session, and the scattered `user_id == 1` checks in `Users::form()`, `Users::delete()` and `Users::change_password()` are consolidated behind a single `Mdl_Users::is_primary_administrator()` predicate so future mutation paths cannot forget the boundary. Thanks to [@0xMoError-22](https://github.com/0xMoError-22) for the responsible disclosure.
 
 ### Documentation / configuration
 
