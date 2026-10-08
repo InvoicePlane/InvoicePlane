@@ -16,6 +16,8 @@ record *why* and *how*.
 
 ### Security fixes
 
+- **Stored XSS via `first_day_of_week` setting (JavaScript context injection)** ([GHSA-x3r7-qm3m-hc48](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x3r7-qm3m-hc48)): the `first_day_of_week` setting was echoed directly into a JavaScript string literal in the datepicker initialization in `head.php`, with only HTML escaping applied — which does not protect a JavaScript string context. An authenticated administrator could set the value to a payload that breaks out of the string literal and executes arbitrary JavaScript in the browser of every authenticated user who loads a page with a datepicker. **Fix:** a new `encode_for_javascript_string()` helper escapes backslashes, quotes, line terminators, and forward slashes before the value is embedded in the script, and `Settings::index()` now validates `first_day_of_week` against the valid `0`–`6` range server-side, rejecting and logging anything else. Thanks to [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh) for responsible disclosure. [#1751](https://github.com/InvoicePlane/InvoicePlane/pull/1751)
+
 - **Payment-amount validation race (TOCTOU, CWE-362 / CWE-367).** `Mdl_Payments::validate_payment_amount()`
   read `invoice_balance` and `Mdl_Payments::save()` inserted the payment row as separate,
   non-atomic steps. Concurrent payment submissions from distinct authenticated admin sessions
