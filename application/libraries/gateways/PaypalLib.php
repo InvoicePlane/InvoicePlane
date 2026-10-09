@@ -193,7 +193,12 @@ class PaypalLib
         } catch (ClientException $clientException) {
             log_message('error', 'Paypal library authorization failed');
 
-            return $clientException->getResponse()->getBody();
+            // Rethrow instead of swallowing: buildHeaders() calls this lazily, then
+            // unconditionally reads $this->bearer_token. Returning here instead of
+            // throwing would leave that typed property uninitialized, and PHP throws
+            // an uncatchable-by-PaypalRequestExecutor Error on the next read of it —
+            // a 500 instead of the clean ['status' => false] failure every caller expects.
+            throw $clientException;
         }
     }
 
