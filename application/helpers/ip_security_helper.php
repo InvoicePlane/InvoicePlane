@@ -96,6 +96,15 @@ function generate_password_reset_token(): string
 }
 
 /**
+ * Store only a digest of a password reset token: the emailed link carries the token itself, so
+ * reading the users table (backup, SQL injection elsewhere) does not yield a usable reset link.
+ */
+function hash_password_reset_token(string $token): string
+{
+    return hash('sha256', $token);
+}
+
+/**
  * Generate a cryptographically secure salt for password hashing.
  *
  * Creates a 22-character base64-encoded salt suitable for bcrypt password hashing.
