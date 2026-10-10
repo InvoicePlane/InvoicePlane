@@ -42,7 +42,7 @@
                 autoclose: true,
                 format: '<?php echo date_format_datepicker(); ?>',
                 language: '<?php _trans('cldr'); ?>',
-                weekStart: '<?php echo get_setting('first_day_of_week'); ?>',
+                weekStart: '<?php echo encode_for_javascript_string(get_setting('first_day_of_week')); ?>',
                 todayHighlight: true,
                 todayBtn: 'linked'
             });

@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Open redirect via raw `$_SERVER['HTTP_REFERER']` | Medium | 6.1 | CWE-601 | — | Internal audit | #1567 |
 | Missing `Referrer-Policy` header | Low | — | CWE-116 | — | Internal audit | #1567 |
 | Stored XSS via `currency_symbol` on public invoice/quote pages | Medium | 4.3 | CWE-79 | — | [@crypto-nidh](https://github.com/crypto-nidh) | — |
+| Negative item quantity/price accepted when saving invoices and quotes | — | — | — | [[GHSA-jvcw-w8pr-j92c](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-jvcw-w8pr-j92c)] | [@RekhanshRajput](https://github.com/RekhanshRajput) | [#1758](https://github.com/InvoicePlane/InvoicePlane/pull/1758) |
 
 ---
 
