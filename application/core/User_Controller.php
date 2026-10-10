@@ -53,7 +53,7 @@ class User_Controller extends Base_Controller
         $current = null;
         if ($user_id) {
             $current = $this->db
-                ->select('user_type, user_active')
+                ->select('user_type, user_active, user_password')
                 ->where('user_id', $user_id)
                 ->get('ip_users')
                 ->row();
@@ -63,6 +63,21 @@ class User_Controller extends Base_Controller
             || (int) $current->user_active !== 1
             || (string) $current->user_type !== $required_val
         ) {
+            session_destroy();
+            redirect('sessions/login');
+
+            return;
+        }
+
+        // A password change or reset ends every session created with the old password.
+        $this->load->helper('ip_security');
+        $fingerprint         = session_credential_fingerprint((string) $current->user_password);
+        $session_fingerprint = (string) $this->session->userdata('user_credential');
+
+        if ($session_fingerprint === '') {
+            // Session created before fingerprints existed: bind it to the current password once.
+            $this->session->set_userdata('user_credential', $fingerprint);
+        } elseif ( ! hash_equals($fingerprint, $session_fingerprint)) {
             session_destroy();
             redirect('sessions/login');
 
