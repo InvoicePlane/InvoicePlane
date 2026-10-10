@@ -45,10 +45,28 @@ in this release.
 | Stored XSS via unescaped `currency_symbol` — 15 remaining view sinks (CWE-79 / CWE-116) | — | [GHSA-gpv9-p6gj-238h](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-gpv9-p6gj-238h) | [@Shad0w35](https://github.com/Shad0w35), [@medamineelhatimi](https://github.com/medamineelhatimi) | [#1744](https://github.com/InvoicePlane/InvoicePlane/pull/1744) |
 | Stored XSS in guest payment pages via unescaped payment-gateway settings (CWE-79) | — | [GHSA-mp5h-3jcr-f7hm](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-mp5h-3jcr-f7hm) | [@T0x1cG](https://github.com/T0x1cG) | [#1743](https://github.com/InvoicePlane/InvoicePlane/pull/1743) |
 | SSRF via `thousands_separator` / `decimal_point` settings and the mPDF footer filename (CWE-918) | — | [GHSA-x9qq-6v8r-pfcf](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x9qq-6v8r-pfcf), [GHSA-ph5g-ffvw-r5vq](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-ph5g-ffvw-r5vq) | [@fr1d4yy](https://github.com/fr1d4yy) | [#1742](https://github.com/InvoicePlane/InvoicePlane/pull/1742) |
+| Gateway-callback payment recording race — concurrent distinct Stripe/PayPal callbacks could double-credit an invoice (TOCTOU, CWE-362 / CWE-367) | — | — | — | [#1705](https://github.com/InvoicePlane/InvoicePlane/pull/1705) |
 
 ### Security fixes
 
 - **Stored XSS via `first_day_of_week` setting (JavaScript context injection)** ([GHSA-x3r7-qm3m-hc48](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x3r7-qm3m-hc48)): the `first_day_of_week` setting was echoed directly into a JavaScript string literal in the datepicker initialization in `head.php`, with only HTML escaping applied — which does not protect a JavaScript string context. An authenticated administrator could set the value to a payload that breaks out of the string literal and executes arbitrary JavaScript in the browser of every authenticated user who loads a page with a datepicker. **Fix:** a new `encode_for_javascript_string()` helper escapes backslashes, quotes, line terminators, and forward slashes before the value is embedded in the script, and `Settings::index()` now validates `first_day_of_week` against the valid `0`–`6` range server-side, rejecting and logging anything else. Thanks to [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh) for responsible disclosure. [#1751](https://github.com/InvoicePlane/InvoicePlane/pull/1751)
+
+- **Gateway-callback payment recording race (TOCTOU, CWE-362 / CWE-367).** The guest Stripe
+  (`callback`) and PayPal (`paypal_capture_payment`) endpoints recorded an online payment in
+  three separate, non-atomic steps: read `invoice_balance`, check it, then insert into
+  `ip_payments`. Two callbacks arriving concurrently for the same invoice, each carrying a
+  *distinct* gateway reference (distinct `payment_intent` / `capture_id`, so the existing
+  `payment_external_id` dedup matches neither — this is the concurrent variant of the replay
+  issue behind [GHSA-6cpc-hr8h-xgr2](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-6cpc-hr8h-xgr2)),
+  could both pass the balance check before either committed, double-crediting the invoice and
+  driving `invoice_balance` negative. **Fix:** `Mdl_Payments::record_external_payment()`
+  collapses the guard and the insert into one atomic operation — a single conditional `UPDATE`
+  on `ip_invoice_amounts` that only succeeds while `invoice_balance > 0`, serialized by InnoDB
+  on that row, followed by an `INSERT IGNORE` so a reference that still raced past a wider
+  balance is dropped by the unique `payment_external_id` index rather than erroring. The
+  `044_1.7.3.sql` migration adding that index is also repaired in place to make it `UNIQUE`
+  (it shipped non-unique), reconciling any duplicate rows recorded during that window without
+  deleting history. [#1705](https://github.com/InvoicePlane/InvoicePlane/pull/1705)
 
 - **Payment-amount validation race (TOCTOU, CWE-362 / CWE-367).** `Mdl_Payments::validate_payment_amount()`
   read `invoice_balance` and `Mdl_Payments::save()` inserted the payment row as separate,
