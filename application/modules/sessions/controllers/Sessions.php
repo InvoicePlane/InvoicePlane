@@ -343,6 +343,13 @@ class Sessions extends Base_Controller
             return false;
         }
 
+        // An empty identity has no account to lock out and nothing to authenticate; counting
+        // it would key a real, namespaced lockout row on hash(''), which is reachable by any
+        // submission that simply omits the field. Reject before any counter is touched.
+        if ($email_address === '' || $email_address === null) {
+            return false;
+        }
+
         $this->load->model('mdl_sessions');
 
         // IP-based rate limiting mirrors the password-reset throttle.
