@@ -569,9 +569,25 @@ class Sessions extends Base_Controller
 
         if (empty($existing_new_row)) {
             $this->db->where('login_name', $legacy_key)->update('ip_login_log', ['login_name' => $new_key]);
-        } else {
-            $this->db->where('login_name', $legacy_key)->delete('ip_login_log');
+
+            return;
         }
+
+        // Both rows can coexist (e.g. a case-variant email: the namespaced key is
+        // case-insensitive, but this exact-case legacy lookup only matches if an earlier
+        // request happened to use this exact casing). Keep whichever row's count is
+        // higher — the stronger lockout — instead of always discarding the legacy row's
+        // count, or an attacker could reset their own active lockout just by varying the
+        // email's case on a later attempt. Whether the surviving count is still within the
+        // 12-hour window is left to _login_log_check()'s own existing staleness check.
+        if ((int) $legacy_row->log_count > (int) $existing_new_row->log_count) {
+            $this->db->where('login_name', $new_key)->update('ip_login_log', [
+                'log_count'            => $legacy_row->log_count,
+                'log_create_timestamp' => $legacy_row->log_create_timestamp,
+            ]);
+        }
+
+        $this->db->where('login_name', $legacy_key)->delete('ip_login_log');
     }
 
     private function _password_reset_token_log_key(string $token): string
