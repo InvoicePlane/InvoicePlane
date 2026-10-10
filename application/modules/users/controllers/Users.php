@@ -230,8 +230,15 @@ class Users extends Admin_Controller
             // the acting user's own session when they changed their own password.
             if ((string) $user_id === $acting_user_id) {
                 $this->load->helper('ip_security');
-                $new_hash = (string) $this->mdl_users->get_by_id($user_id)->user_password;
-                $this->session->set_userdata('user_credential', session_credential_fingerprint($new_hash));
+                $updated_user = $this->mdl_users->get_by_id($user_id);
+                // save_change_password() also increments user_auth_version, and
+                // User_Controller checks that before the credential fingerprint —
+                // refreshing only the fingerprint here left the acting user's own
+                // session logged out by the auth_version check it had just caused.
+                $this->session->set_userdata([
+                    'user_credential'   => session_credential_fingerprint((string) $updated_user->user_password),
+                    'user_auth_version' => (int) $updated_user->user_auth_version,
+                ]);
             }
 
             redirect('users/form/' . $user_id);
