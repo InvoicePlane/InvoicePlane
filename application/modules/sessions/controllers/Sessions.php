@@ -550,12 +550,14 @@ class Sessions extends Base_Controller
             return;
         }
 
-        // A value shaped like one of the five namespaced keys can never be a genuine pre-fix
+        // A value shaped like one of the six namespaced keys can never be a genuine pre-fix
         // legacy row — it's either a real row belonging to a different counter, or a forged
         // email/token crafted to equal one. Treating it as "this account's legacy row" would
         // let an attacker steal or clobber another counter's row through the migration path
-        // itself, reopening the exact forgery this fix closes. Refuse to touch it.
-        if (preg_match('/^(?:login_account|login_ip|password_reset_ip|password_reset_email|password_reset_token):[0-9a-f]{64}$/', $legacy_key)) {
+        // itself, reopening the exact forgery this fix closes. Refuse to touch it. This
+        // includes cron_key: (Cron::recur()'s per-IP throttle), which is not itself part of
+        // this fix but shares the same ip_login_log.login_name column.
+        if (preg_match('/^(?:login_account|login_ip|cron_key|password_reset_ip|password_reset_email|password_reset_token):[0-9a-f]{64}$/', $legacy_key)) {
             return;
         }
 
