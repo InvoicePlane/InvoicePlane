@@ -46,7 +46,7 @@
                 <div class="input-group">
                     <span class="input-group-addon"><?php _trans('price'); ?></span>
                     <input type="text" name="item_price" class="form-control amount" value="">
-                    <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                    <div class="input-group-addon"><?php echo htmlsc(get_setting('currency_symbol')); ?></div>
                 </div>
             </td>
 <?php
@@ -60,7 +60,8 @@ if ( ! $legacy_calculation) {
                     <select name="item_tax_rate_id" class="form-control">
                         <option value="0"><?php _trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
-                            <option value="<?php echo $tax_rate->tax_rate_id; ?>">
+                            <option value="<?php echo $tax_rate->tax_rate_id; ?>"
+                                <?php check_select(get_setting('default_item_tax_rate'), $tax_rate->tax_rate_id); ?>>
                                 <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
                             </option>
                         <?php } ?>
@@ -153,7 +154,7 @@ foreach ($items as $item) {
                         <span class="input-group-addon"><?php _trans('price'); ?></span>
                         <input type="text" name="item_price" class="form-control amount"
                                value="<?php echo format_amount($item->item_price); ?>">
-                        <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
+                        <div class="input-group-addon"><?php echo htmlsc(get_setting('currency_symbol')); ?></div>
                     </div>
                 </td>
 <?php
