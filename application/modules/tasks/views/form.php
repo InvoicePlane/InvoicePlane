@@ -68,7 +68,7 @@ if ($this->mdl_tasks->form_value('task_id')) {
                                 <input type="text" name="task_price" id="task_price" class="amount form-control"
                                        value="<?php echo format_amount($this->mdl_tasks->form_value('task_price')); ?>" required>
                                 <div class="input-group-addon">
-                                    <?php echo get_setting('currency_symbol') ?>
+                                    <?php echo htmlsc(get_setting('currency_symbol')) ?>
                                 </div>
                             </div>
                         </div>
