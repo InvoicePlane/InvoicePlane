@@ -303,3 +303,41 @@ function verify_get_csrf_token(): bool
     // Timing-safe comparison
     return hash_equals($expected_token, $submitted_token);
 }
+
+/**
+ * Encode a string for safe inclusion in a JavaScript string literal.
+ *
+ * Security: Prevents XSS by escaping characters that can break out of JavaScript
+ * string contexts. This encoding is specifically for values being embedded in
+ * JavaScript string literals (single or double quoted).
+ *
+ * This handles:
+ * - Backslash escaping (to prevent escape sequences)
+ * - Quote escaping (to prevent string breakout)
+ * - Line terminators (U+2028, U+2029, \r, \n)
+ * - Forward slash (for HTML </script> termination)
+ *
+ * Example:
+ *   weekStart: '<?php echo encode_for_javascript_string($day); ?>'
+ *
+ * @param mixed $string Value to encode (casts to string)
+ *
+ * @return string JavaScript-safe string
+ */
+function encode_for_javascript_string($string)
+{
+    $string = (string) $string;
+
+    $replacements = [
+        '\\' => '\\\\',
+        '"' => '\"',
+        "'" => "\'",
+        "\r" => '\r',
+        "\n" => '\n',
+        "\u{2028}" => ' ',
+        "\u{2029}" => ' ',
+        '/' => '\/',
+    ];
+
+    return str_replace(array_keys($replacements), array_values($replacements), $string);
+}
