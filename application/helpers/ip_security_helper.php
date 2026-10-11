@@ -132,3 +132,16 @@ function generate_secure_salt(): string
         throw new RuntimeException('Unable to generate secure salt');
     }
 }
+
+/**
+ * Fingerprint of the password an authenticated session was created with.
+ *
+ * Stored in the session at login and compared on every request (User_Controller), so changing or
+ * resetting a password ends every other session of that user on its next request, whatever the
+ * session driver. HMAC with the encryption key so the session never carries anything derived from
+ * the bare password hash.
+ */
+function session_credential_fingerprint(string $password_hash): string
+{
+    return hash_hmac('sha256', $password_hash, (string) config_item('encryption_key'));
+}
