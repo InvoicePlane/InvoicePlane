@@ -242,6 +242,20 @@ class Sumex
         $this->_canton      = self::CANTONS[$CI->mdl_settings->setting('sumex_canton')];
     }
 
+    /**
+     * Writes the SUMEX XML to storage/temp/ under a name an outsider cannot guess (CWE-377): the invoice number alone
+     * is sequential and public-ish, so "Invoice_<number>.xml" could be fetched by anyone who can reach the directory.
+     * The file is also made owner-only.
+     */
+    private function writeTempXml(string $filename): string
+    {
+        $path = STORAGE_TEMP_FOLDER . $filename . '_' . bin2hex(random_bytes(8)) . '.xml';
+        file_put_contents($path, $this->xml());
+        chmod($path, 0600);
+
+        return $path;
+    }
+
     public function pdf($invoice_template = null): bool|string
     {
         $xml = $this->xml();
@@ -334,8 +348,7 @@ class Sumex
         $CI->load->helper('file_security');
         $filename = trans('invoice') . '_' . sanitize_document_number_for_filename($this->invoice->invoice_number);
         // Create the SUMEX XML file (embed) in storage/temp/
-        $path = STORAGE_TEMP_FOLDER . $filename . '.xml';
-        file_put_contents($path, $this->xml());
+        $path = $this->writeTempXml($filename);
         $associatedFiles = [[
             'path'           => $path,
             'name'           => 'sumex.xml', // todo: what's need in real
