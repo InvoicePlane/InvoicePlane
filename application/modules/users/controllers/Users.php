@@ -231,13 +231,8 @@ class Users extends Admin_Controller
             if ((string) $user_id === $acting_user_id) {
                 $this->load->helper('ip_security');
                 $updated_user = $this->mdl_users->get_by_id($user_id);
-                // save_change_password() also increments user_auth_version, and
-                // User_Controller checks that before the credential fingerprint —
-                // refreshing only the fingerprint here left the acting user's own
-                // session logged out by the auth_version check it had just caused.
                 $this->session->set_userdata([
-                    'user_credential'   => session_credential_fingerprint((string) $updated_user->user_password),
-                    'user_auth_version' => (int) $updated_user->user_auth_version,
+                    'user_credential' => session_credential_fingerprint((string) $updated_user->user_password),
                 ]);
             }
 
