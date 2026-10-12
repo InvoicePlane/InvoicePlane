@@ -211,7 +211,7 @@ test.describe('Guest view — PDF guards', () => {
 
     /* Act + Assert */
     const response = await page.request.get(`/guest/view/generate_sumex_pdf/${invoice.key}`, { maxRedirects: 0 });
-    expect([404, 302, 303, 500]).toContain(response.status());
+    expect(response.status()).toBe(404);
   });
 
   test('it returns 404 for quote pdf on an unknown key', async ({ page }) => {

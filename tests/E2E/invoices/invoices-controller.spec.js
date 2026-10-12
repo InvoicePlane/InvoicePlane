@@ -12,6 +12,7 @@ import { test, expect } from '../test.js';
 import { createInvoice } from '../support/fixtures.js';
 import { dbExec, dbInsert, dbQuery } from '../support/db.js';
 import { postForm } from '../support/http.js';
+import { expectSavedFlash } from '../support/forms.js';
 
 function setStatus(invoiceId, statusId) {
   dbExec(`UPDATE ip_invoices SET invoice_status_id = ${statusId} WHERE invoice_id = ${invoiceId}`);
@@ -65,8 +66,18 @@ test.describe('Invoices — delete', () => {
     /* Act */
     await deleteViaRow(page, doomed.id);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
+    await page.goto('/invoices/status/all');
+    await expect(page.locator(`form[action*="invoices/delete/${doomed.id}"]`)).toHaveCount(0);
+    await expect(page.locator(`form[action*="invoices/delete/${kept.id}"]`)).toHaveCount(1);
+
+    /* Assert: Database confirms hard delete */
     expect(dbQuery(`SELECT invoice_id FROM ip_invoices WHERE invoice_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other invoice unaffected */
     expect(dbQuery(`SELECT invoice_id FROM ip_invoices WHERE invoice_id = ${kept.id}`)).toHaveLength(1);
   });
 
@@ -96,18 +107,6 @@ test.describe('Invoices — delete', () => {
     expect([301, 302, 303]).toContain(response.status());
     expect(dbQuery(`SELECT invoice_id FROM ip_invoices WHERE invoice_id = ${invoice.id}`)).toHaveLength(1);
   });
-
-  test('it deletes a sent invoice when global invoice deletion is enabled', async () => {
-    test.skip(true, 'needs a server with ENABLE_INVOICE_DELETION=true — see tests/E2E/README.md');
-  });
-
-  test('it still deletes a draft invoice when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
-
-  test('it does not delete an invoice when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
 });
 
 test.describe('Invoices — tax rates', () => {
@@ -128,10 +127,6 @@ test.describe('Invoices — tax rates', () => {
     expect([301, 302, 303]).toContain(response.status());
     expect(dbQuery(`SELECT invoice_tax_rate_id FROM ip_invoice_tax_rates WHERE invoice_tax_rate_id = ${removeId}`)).toEqual([]);
     expect(dbQuery(`SELECT invoice_tax_rate_id FROM ip_invoice_tax_rates WHERE invoice_tax_rate_id = ${keepId}`)).toHaveLength(1);
-  });
-
-  test('it does not remove an invoice tax rate when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
   });
 });
 

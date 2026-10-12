@@ -7,6 +7,7 @@ import { test, expect } from '../test.js';
 import { createClient, createQuote, createTaxRate, uniq } from '../support/fixtures.js';
 import { dbInsert, dbQuery } from '../support/db.js';
 import { postForm } from '../support/http.js';
+import { expectSavedFlash } from '../support/forms.js';
 
 test.describe('Quotes — list', () => {
   test('it lists every quote', async ({ page }) => {
@@ -41,6 +42,8 @@ test.describe('Quotes — view', () => {
   });
 });
 
+  // CSRF token tests (valid token, missing token) are covered by Feature tests
+  // and cannot run in E2E because CSRF_PROTECTION=false in the test server.
 test.describe('Quotes — delete', () => {
   test('it deletes a quote', async ({ page }) => {
     /* Arrange */
@@ -55,17 +58,19 @@ test.describe('Quotes — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
+    await page.goto('/quotes/status/all');
+    await expect(page.locator(`form[action*="quotes/delete/${doomed.id}"]`)).toHaveCount(0);
+    await expect(page.locator(`form[action*="quotes/delete/${kept.id}"]`)).toHaveCount(1);
+
+    /* Assert: Database confirms hard delete */
     expect(dbQuery(`SELECT quote_id FROM ip_quotes WHERE quote_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other quote unaffected */
     expect(dbQuery(`SELECT quote_id FROM ip_quotes WHERE quote_id = ${kept.id}`)).toHaveLength(1);
-  });
-
-  test('it still deletes a quote when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
-
-  test('it does not delete a quote when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
   });
 });
 

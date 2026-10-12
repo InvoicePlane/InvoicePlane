@@ -127,57 +127,42 @@ of tests, the schema build was incomplete: just re-run `make docker-db-prepare
 DOCKER_PROJECT_DIR=…`. (The old recipe used `mysql --force`, which swallowed the deadlock and
 left the columns missing.)
 
-### Bootstrapping `vendor/` in the Claude Code web sandbox
+### Bootstrapping `vendor/` in resource-constrained environments
 
-**IMPORTANT: This only applies to Claude Code on the web (remote sandbox). Local development and CI are unaffected.**
+**Applies to:** Claude Code web sandbox, remote sessions with proxy restrictions, or any environment where `composer install` times out on dev dependencies.
 
-The web sandbox container starts with no `vendor/` and `composer install` fails due to proxy policies blocking `api.github.com` and `codeload.github.com`. Git reaches GitHub through the proxy, but Composer's HTTP **dist** downloads do not. Always use `--prefer-source` (git clones) for all composer operations in the sandbox.
+The environment may have `vendor/` missing or `composer install` fails due to proxy policies blocking `api.github.com` and `codeload.github.com`. Git reaches GitHub through the proxy, but Composer's HTTP **dist** downloads do not. Always use `--prefer-source` (git clones) for all composer operations.
 
-**Standard approach (fails in sandbox):**
+**The Problem:**
 ```bash
-# ❌ DO NOT do this in the web sandbox — it will time out:
+# ❌ This will time out:
 composer install --prefer-source --ignore-platform-req=ext-bcmath
+# Reason: phpstan is a dist-only phar behind blocked hosts, and it's a transitive dev dep
 ```
 
-**Working approach: install runtime deps FIRST, then add dev deps to a throwaway project:**
+**The Working Solution — one script, not a manual copy-paste:**
 
 ```bash
-# Setup: create a token-free Composer home (required for --prefer-source to work)
-CH=$(mktemp -d)
-printf '{}\n' > "$CH/auth.json"
-printf '{"config":{}}\n' > "$CH/config.json"
-export COMPOSER_HOME="$CH"
-
-# STEP 1: Install runtime dependencies (no dev) — phpstan blocks, so --no-dev avoids it
-COMPOSER_HOME="$CH" composer install --prefer-source --no-dev --ignore-platform-req=ext-bcmath
-# This completes successfully, creating vendor/autoload.php
-
-# STEP 2: Install PHPUnit in a throwaway project (not in the main repo)
-mkdir -p /tmp/punit
-cd /tmp/punit
-COMPOSER_HOME="$CH" composer require --prefer-source --dev phpunit/phpunit:^10.5 --ignore-platform-req=ext-bcmath
-# Now /tmp/punit/vendor/bin/phpunit exists and can be used
-
-# STEP 3: Re-add Tests\ PSR-4 autoload mapping (step 1's --no-dev removed it)
-cd <repo-root>
-COMPOSER_HOME="$CH" composer dump-autoload --dev
-
-# STEP 4: Run tests using the throwaway project's phpunit
-php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
+bash tests/Support/sandbox-bootstrap.sh
 ```
 
-**Why this works:**
-- `phpstan` (dist-only phar, blocked by proxy) is a transitive dev dep that breaks the full install
-- `--no-dev` skips the phpstan chain, allowing runtime install to complete
-- PHPUnit installs faster in isolation (throwaway project)
-- `dump-autoload --dev` re-adds the Tests\ PSR-4 mapping that step 1 dropped
-- The throwaway project's phpunit binary can run tests against the main repo
+This is idempotent (safe to re-run if it fails partway — it resumes) and does exactly
+the same 4 steps documented for years in this file by hand: `--no-dev` runtime install →
+throwaway PHPUnit install → `dump-autoload --dev` to restore the `Tests\` mapping →
+plain-HTTPS PHPStan phar download. The one thing it changes from the old manual version:
+**all state lives under `$REPO/.sandbox-tools/` (gitignored), never `/tmp`.** `/tmp` in
+this environment is not guaranteed to survive the session, and mixing throwaway installer
+state into a shared temp directory has caused collisions before — a repo-local, gitignored
+directory is both safer and easier to inspect/clean (`rm -rf .sandbox-tools/`).
 
-**Critical gotchas:**
-1. `--no-dev` omits the `Tests\` PSR-4 mapping, so step 3 (`dump-autoload --dev`) is **mandatory**
-2. Do **not** put a real GitHub token in `auth.json` — the proxy won't rewrite it
-3. Do **not** export `DB_*` environment variables before running phpunit — see the MariaDB section below for why
-4. Each session requires this full setup; there is no persistent vendor cache
+It prints the exact `phpunit` / `phpstan` invocations to run afterward. Read the script's
+header comment for what each step does and why; don't re-derive this by hand again.
+
+**Critical gotchas (still apply — the script doesn't paper over these):**
+1. Do **not** put a real GitHub token in `COMPOSER_HOME/auth.json` — the proxy won't rewrite it (the script writes an empty one).
+2. Do **not** export `DB_*` environment variables before running phpunit — see the MariaDB section below for why.
+3. Each session requires this full setup; there is no persistent vendor cache across sessions (only within one session, via the idempotency checks).
+4. If the throwaway PHPUnit install times out, just re-run the script — it skips completed steps and retries only what's missing.
 
 ### MariaDB test database in the sandbox (Feature/Integration tests)
 
@@ -194,20 +179,32 @@ baseline, and writes `ipconfig.php` — matching `.github/workflows/phpunit.yml`
 
 ```bash
 bash tests/Support/sandbox-mariadb.sh          # provision (safe to re-run)
+bash tests/Support/sandbox-bootstrap.sh        # provision phpunit/phpstan (safe to re-run)
 # Do NOT export DB_* here — see the gotcha below. The script writes ipconfig.php,
 # and the parent phpunit process reads its DB config from there via env().
-php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
+php .sandbox-tools/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php
 ```
 
-Expected result once the DB parent connection actually works (see next gotcha):
-**562 tests, ~17 skipped, 1298 assertions**, with **3 pre-existing failures** in
-`Tests\Feature\Integrations\LetsPeppolFlowTest` (see "Pre-existing failures" below).
-The ~17 skips are the genuine guards (snapshot / "requires running server" / manual
-code-review). A run that reports **562 / 0 failures / ~200 skipped / 891 assertions**
-is **not** green — it is the *masked* profile where the DB-backed integration tests
-never ran (183 of them silently skipped). CI on prep/v180 currently shows exactly this
-masked profile (verified: run 30726779008, `Skipped: 200`, MariaDB log full of
-`Access denied for user ''@'…'`), so those integration tests provide **zero coverage in CI**.
+**Current known state, verified 2026-09-23 against ivpldock (confirmed identically in CI,
+runs 35827324398/35822902549/... — this is not new, it's been red on `prep/v180` since at
+least 2026-09-22): 1131 tests, 3054 assertions, 100 errors, 27 failures, 1 warning. This is
+NOT green — do not trust an older "0 failures" claim in this file's history, it was
+verified against the wrong checkout.** Root causes identified so far (see
+`~/projects/invoiceplane/_notes/` for the full incident writeup): the vast majority trace
+to two test-support methods (`databaseCount()`, `databaseInsertGetId()`) that were deleted
+from `tests/Concerns/InteractsWithDatabase.php` in a refactor but never removed from ~15
+call sites that came in from a different lineage, plus a root `index.php` that was
+deliberately removed (commit `82bf7ef1`) but silently reintroduced by a later merge
+(`dfeb8118`). A smaller residual set (LetsPeppol/Qonto/SuperPdp error-path assertions,
+password-reset token expiry, Stripe JPY handling, a couple of view-rendering assertions)
+are separate, narrower issues — check git history/notes for current status before assuming
+any of this is fixed.
+
+Any run that reports **0 failures but a suspiciously large skip count** (observed shape:
+~562/0/~200 skipped/891 assertions) is **not** green either — it is the *masked* profile
+where the DB-backed integration tests never ran. Re-verify the actual skip count is small
+(genuine guards only — snapshot / "requires running server" / manual code-review) before
+trusting a "0 failures" result.
 
 Gotchas learned the hard way:
 - `mysqld_safe` can be reaped in the sandbox; re-running the script restarts it. If a run
@@ -225,15 +222,20 @@ Gotchas learned the hard way:
   it → `null` and 891 assertions / 200 skips. Same mechanism hits CI, where `DB_*` is a
   job-level `env:` (so CI skips the 183 too). If you must have `DB_*` exported for other
   tooling, unset them just for phpunit: `env -u DB_HOSTNAME -u DB_PORT -u DB_DATABASE
-  -u DB_USERNAME -u DB_PASSWORD php /tmp/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php`.
+  -u DB_USERNAME -u DB_PASSWORD php .sandbox-tools/punit/vendor/bin/phpunit --bootstrap tests/bootstrap.php`.
 
-Pre-existing failures (on a clean prep/v180, unrelated to any merge): the 3
-`LetsPeppolFlowTest::it_returns_an_error_when_send_invoice_*` tests assume
-`show_error()` becomes a catchable `RuntimeException`. That only holds in-process — under
-the real `proc_open` request subprocess, `show_error()` renders a **500 error page** (body
-`merchant_client_not_found`) and the child returns `exception: null`, so `expectException`
-fails. These surface only once the parent DB connection works (otherwise they skip). They
-are broken *test* assumptions, not app bugs — the controller behaves correctly.
+**Correction (2026-09-23): the note that used to be here claiming this was "fixed" was
+wrong** — it was verified against a different checkout (`ivplv1`, upstream
+`InvoicePlane/InvoicePlane`, not this repo) by mistake. On `prep/v180` itself, this is
+currently **worse than the original 3-test note ever said**: `LetsPeppolFlowTest`'s 3
+error-path tests now *expect* 404 (someone updated the test assertions to the `c45f534a`-era
+behavior) but the controller on this branch still calls `show_error()` and returns 500 — the
+matching controller fix (`7fe13ea4`, "return 404 for invalid merchant/invoice requests") was
+never actually merged into `prep/v180`. And `QontoFlowTest`/`SuperPdpFlowTest` have the
+*original* 3-tests-each `RuntimeException`/`show_error()` mismatch this note used to describe
+(9 tests total across the 3 files). Don't "fix" this by just changing assertions again without
+checking whether the controller fix needs merging too — check current status before assuming
+either side is right.
 - Session identity in the harness (`actingAsAdmin()`) must be **string-typed** (`user_type
   => '1'`), because `User_Controller` guards with `!== (string)$required_val` and a real
   DB-backed login stores strings. Int-typed session data silently redirects every admin
@@ -279,11 +281,12 @@ proxy — that's how the PHPStan phar is fetched below. Only the composer api/co
 ### Static analysis (PHPStan) in the sandbox
 
 Composer cannot install `phpstan/phpstan` here (dist-only phar behind the blocked hosts above),
-but the release phar downloads fine via the HTTPS proxy:
+but the release phar downloads fine via the HTTPS proxy. `tests/Support/sandbox-bootstrap.sh`
+(see above) fetches it to `.sandbox-tools/phpstan.phar` as part of the same idempotent setup:
 
 ```bash
-curl -sSL -o /tmp/phpstan.phar https://github.com/phpstan/phpstan/releases/download/1.12.34/phpstan.phar
-php /tmp/phpstan.phar analyse --memory-limit=1G     # config: phpstan.neon (level 0)
+bash tests/Support/sandbox-bootstrap.sh             # no-op if phpstan.phar already present
+php .sandbox-tools/phpstan.phar analyse --memory-limit=1G     # config: phpstan.neon (level 0)
 ```
 
 CI3 has **no PSR-4 autoloading or classmap**, so PHPStan needs help resolving symbols. The

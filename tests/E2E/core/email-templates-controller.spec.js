@@ -7,7 +7,7 @@
 import { test, expect } from '../test.js';
 import { seedEmailTemplate, uniq } from '../support/fixtures.js';
 import { dbQuery } from '../support/db.js';
-import { expectBlockedByRequired } from '../support/forms.js';
+import { expectBlockedByRequired, expectSavedFlash } from '../support/forms.js';
 import { postForm } from '../support/http.js';
 
 const body = (over = {}) => ({
@@ -115,17 +115,19 @@ test.describe('Email templates — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
+    await page.goto('/email_templates');
+    await expect(page.locator('#content')).not.toContainText(doomed.title);
+    await expect(page.locator('#content')).toContainText(kept.title);
+
+    /* Assert: Database confirms hard delete */
     expect(dbQuery(`SELECT email_template_id FROM ip_email_templates WHERE email_template_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other template unaffected */
     expect(dbQuery(`SELECT email_template_id FROM ip_email_templates WHERE email_template_id = ${kept.id}`)).toHaveLength(1);
-  });
-
-  test('it still deletes an email template when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
-
-  test('it does not delete an email template when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
   });
 });
 

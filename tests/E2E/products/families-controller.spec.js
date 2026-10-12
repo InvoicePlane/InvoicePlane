@@ -6,7 +6,8 @@
 
 import { test, expect } from '../test.js';
 import { createFamily, uniq } from '../support/fixtures.js';
-import { expectBlockedByRequired, expectErrorFlash } from '../support/forms.js';
+import { dbQuery } from '../support/db.js';
+import { expectBlockedByRequired, expectSavedFlash, expectErrorFlash } from '../support/forms.js';
 
 test.describe('Families — list', () => {
   test('it lists every family', async ({ page }) => {
@@ -105,6 +106,8 @@ test.describe('Families — update', () => {
   });
 });
 
+  // CSRF token tests (valid token, missing token) are covered by Feature tests
+  // and cannot run in E2E because CSRF_PROTECTION=false in the test server.
 test.describe('Families — delete', () => {
   test('it deletes a family', async ({ page }) => {
     /* Arrange */
@@ -118,18 +121,19 @@ test.describe('Families — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
     await page.goto('/families');
     await expect(page.getByRole('link', { name: doomed.name })).toHaveCount(0);
     await expect(page.getByRole('link', { name: kept.name })).toBeVisible();
-  });
 
-  test('it still deletes a family when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
+    /* Assert: Database confirms hard delete */
+    expect(dbQuery(`SELECT family_id FROM ip_families WHERE family_id = ${doomed.id}`)).toEqual([]);
 
-  test('it does not delete a family when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
+    /* Assert: Other family unaffected */
+    expect(dbQuery(`SELECT family_id FROM ip_families WHERE family_id = ${kept.id}`)).toHaveLength(1);
   });
 });
 

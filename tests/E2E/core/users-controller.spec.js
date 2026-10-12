@@ -14,6 +14,7 @@ import { createSecondaryUser, seedUser, uniq } from '../support/fixtures.js';
 import { dbQuery } from '../support/db.js';
 import { loginAs } from '../support/auth.js';
 import { postForm } from '../support/http.js';
+import { expectSavedFlash } from '../support/forms.js';
 
 const createBody = (over = {}) => ({
   user_type: '2',
@@ -163,9 +164,21 @@ test.describe('Users — delete', () => {
     /* Act */
     const response = await postForm(page, `/users/delete/${doomed.id}`, {});
 
-    /* Assert */
+    /* Assert: Response redirects */
     expect([301, 302, 303]).toContain(response.status());
+
+    /* Assert: Flash message confirms deletion */
+    await page.goto('/users');
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
+    await expect(page.locator('#content')).not.toContainText(doomed.name);
+    await expect(page.locator('#content')).toContainText(kept.name);
+
+    /* Assert: Database confirms hard delete */
     expect(exists(doomed.id)).toBe(false);
+
+    /* Assert: Other user unaffected */
     expect(exists(kept.id)).toBe(true);
   });
 
@@ -188,14 +201,6 @@ test.describe('Users — delete', () => {
     /* Assert */
     expect(response.status()).toBe(404);
     expect(exists(user.id)).toBe(true);
-  });
-
-  test('it still deletes a user when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
-
-  test('it does not delete a user when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
   });
 });
 

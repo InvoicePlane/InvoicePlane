@@ -7,7 +7,7 @@
 import { test, expect } from '../test.js';
 import { createPaymentMethod, uniq } from '../support/fixtures.js';
 import { dbQuery } from '../support/db.js';
-import { expectBlockedByRequired, expectErrorFlash } from '../support/forms.js';
+import { expectBlockedByRequired, expectErrorFlash, expectSavedFlash } from '../support/forms.js';
 
 test.describe('Payment methods — list', () => {
   test('it lists every payment method', async ({ page }) => {
@@ -114,17 +114,19 @@ test.describe('Payment methods — delete', () => {
     page.once('dialog', (dialog) => dialog.accept());
     await Promise.all([page.waitForLoadState('load'), row.locator('button.dropdown-button').click()]);
 
-    /* Assert */
+    /* Assert: Flash message confirms deletion */
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
+    await page.goto('/payment_methods');
+    await expect(page.locator('#content')).not.toContainText(doomed.name);
+    await expect(page.locator('#content')).toContainText(kept.name);
+
+    /* Assert: Database confirms hard delete */
     expect(dbQuery(`SELECT payment_method_id FROM ip_payment_methods WHERE payment_method_id = ${doomed.id}`)).toEqual([]);
+
+    /* Assert: Other method unaffected */
     expect(dbQuery(`SELECT payment_method_id FROM ip_payment_methods WHERE payment_method_id = ${kept.id}`)).toHaveLength(1);
-  });
-
-  test('it still deletes a payment method when csrf protection is on and the token is valid', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
-
-  test('it does not delete a payment method when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
   });
 });
 

@@ -14,6 +14,7 @@ import { test, expect } from '../test.js';
 import { createInvoiceWithBalance, createPayment, uniq } from '../support/fixtures.js';
 import { dbInsert, dbQuery } from '../support/db.js';
 import { postForm } from '../support/http.js';
+import { expectSavedFlash } from '../support/forms.js';
 
 /** Raw payment row (does not recompute the invoice balance), like PHPUnit's seedPayment. */
 function seedPayment(invoiceId, amount) {
@@ -113,13 +114,33 @@ test.describe('Payments — delete', () => {
     /* Arrange */
     const invoice = await createInvoiceWithBalance(page, '100.00');
     const payment = await createPayment(page, invoice.id, { payment_amount: '50.00' });
+    const otherPaymentId = dbInsert('ip_payments', {
+      invoice_id: invoice.id,
+      payment_method_id: 0,
+      payment_date: new Date().toISOString().slice(0, 10),
+      payment_amount: '20.00',
+      payment_note: 'other',
+    });
 
     /* Act */
     const response = await postForm(page, `/payments/delete/${payment.id}`, {});
 
-    /* Assert */
+    /* Assert: Response redirects */
     expect([301, 302, 303]).toContain(response.status());
+
+    /* Assert: Flash message confirms deletion */
+    await page.goto('/payments');
+    await expectSavedFlash(page);
+
+    /* Assert: UI shows deletion */
+    await expect(page.locator(`form[action*="payments/delete/${payment.id}"]`)).toHaveCount(0);
+    await expect(page.locator(`form[action*="payments/delete/${otherPaymentId}"]`)).toHaveCount(1);
+
+    /* Assert: Database confirms hard delete */
     expect(dbQuery(`SELECT payment_id FROM ip_payments WHERE payment_id = ${payment.id}`)).toEqual([]);
+
+    /* Assert: Other payment unaffected */
+    expect(dbQuery(`SELECT payment_id FROM ip_payments WHERE payment_id = ${otherPaymentId}`)).toHaveLength(1);
   });
 });
 

@@ -76,14 +76,20 @@ class PaypalRequestExecutorTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function it_logs_action_messages(): void
+    public function it_executes_successfully_with_a_custom_action_label(): void
     {
+        // log_message() is a global CI3 helper stubbed as a true no-op in
+        // tests/bootstrap.php for the plain-TestCase unit tests — there's no seam
+        // to intercept or assert its calls here. What's actually verifiable
+        // without that seam: an arbitrary $action label passed to execute() (used
+        // only for the log lines) doesn't change the success-path return shape.
         $response = new Response(200);
         $callback = fn () => $response;
 
-        $this->executor->execute($callback, 'complex operation');
+        $result = $this->executor->execute($callback, 'complex operation');
 
-        $this->assertTrue(true); // Log verification would require mocking log_message
+        $this->assertTrue($result['status']);
+        $this->assertSame($response, $result['response']);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

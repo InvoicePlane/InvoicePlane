@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Core;
 
+use Ajax;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
@@ -11,7 +12,7 @@ use Tests\AbstractTestCase;
  * is route-exercising + real filtering behavior + SQL-injection safety,
  * rather than required-field validation.
  */
-#[CoversClass(\Ajax::class)]
+#[CoversClass(Ajax::class)]
 class FilterAjaxControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

@@ -4,12 +4,13 @@ namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Setup;
 use Tests\AbstractTestCase;
 
 /**
  * SetupController Feature Tests.
  */
-#[CoversClass(\Setup::class)]
+#[CoversClass(Setup::class)]
 class SetupControllerTest extends AbstractTestCase
 {
     protected function setUp(): void

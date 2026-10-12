@@ -53,7 +53,7 @@ class User_Controller extends Base_Controller
         $current = null;
         if ($user_id) {
             $current = $this->db
-                ->select('user_type, user_active, user_password')
+                ->select('user_type, user_active, user_password, user_auth_version')
                 ->where('user_id', $user_id)
                 ->get('ip_users')
                 ->row();
@@ -63,6 +63,16 @@ class User_Controller extends Base_Controller
             || (int) $current->user_active !== 1
             || (string) $current->user_type !== $required_val
         ) {
+            session_destroy();
+            redirect('sessions/login');
+
+            return;
+        }
+
+        // Verify auth_version matches to detect password changes and revoke stale sessions
+        $session_auth_version = (int) $this->session->userdata('user_auth_version');
+        $current_auth_version = (int) $current->user_auth_version;
+        if ($session_auth_version !== $current_auth_version) {
             session_destroy();
             redirect('sessions/login');
 

@@ -369,6 +369,11 @@ class Sessions extends Base_Controller
             return false;
         }
 
+        // Validate email format to prevent forged counter keys
+        if ( ! filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
         $this->load->model('mdl_sessions');
 
         // IP-based rate limiting mirrors the password-reset throttle.
@@ -379,21 +384,35 @@ class Sessions extends Base_Controller
             return false;
         }
 
-        // Per-account lockout (email-keyed).
-        $login_log = $this->_login_log_check($email_address);
+        // Per-account lockout (email-keyed with namespace to prevent counter spoofing).
+        $login_log_key = $this->_login_account_log_key($email_address);
+        $login_log = $this->_login_log_check($login_log_key);
         if (empty($login_log) || $login_log->log_count < 10) {
             if ($this->mdl_sessions->auth($email_address, $password)) {
-                $this->_login_log_reset($email_address);
+                $this->_login_log_reset($login_log_key);
                 $this->_reset_ip_login_attempts();
 
                 return true;
             }
 
-            $this->_login_log_addfailure($email_address);
+            $this->_login_log_addfailure($login_log_key);
             $this->_record_ip_login_attempt();
         }
 
         return false;
+    }
+
+    /**
+     * Generate a namespaced login counter key to prevent spoofing other rate limiters.
+     * Format: login_account:<sha256(lowercase_email)>
+     *
+     * @param string $email_address
+     *
+     * @return string
+     */
+    private function _login_account_log_key(string $email_address): string
+    {
+        return 'login_account:' . hash('sha256', mb_strtolower($email_address));
     }
 
     /**

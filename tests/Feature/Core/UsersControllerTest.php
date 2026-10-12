@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\PerformsCsrfProtectedRequests;
+use Users;
 
 /**
  * Users controller — application/modules/users/controllers/Users.php.
@@ -19,7 +20,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * UserClientsControllerTest.
  */
 #[Group('users')]
-#[CoversClass(\Users::class)]
+#[CoversClass(Users::class)]
 class UsersControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;
@@ -484,7 +485,7 @@ class UsersControllerTest extends AbstractTestCase
     }
 
     /** @param array<string,mixed> $overrides */
-    private function seedUser(array $overrides = []): int
+    protected function seedUser(array $overrides = []): int
     {
         return $this->databaseInsert('ip_users', array_merge([
             'user_type'          => 2,

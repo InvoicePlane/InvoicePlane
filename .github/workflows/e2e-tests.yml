@@ -49,9 +49,15 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Setup PHP with Composer
-        uses: ./.github/actions/setup-php-composer
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+          extensions: mbstring,xml,ctype,json,fileinfo,curl,pdo,mysql,bcmath
+          tools: composer:latest
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-progress --no-interaction --prefer-dist
 
       - name: Build MariaDB schema and seed baseline
         run: |
@@ -85,7 +91,7 @@ jobs:
 
       - name: Start the application server
         run: |
-          php -d variables_order=EGPCS -S localhost:8000 -t . tests/E2E/router.php > server.log 2>&1 &
+          php -d variables_order=EGPCS -S localhost:8000 -t . bootstrap/test-server.php > server.log 2>&1 &
           for i in $(seq 1 30); do
             curl -sf -o /dev/null "${E2E_BASE_URL}/sessions/login" && break
             sleep 1
@@ -100,8 +106,18 @@ jobs:
       - name: Install Node dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Build frontend assets
+        # assets/**/css/style.css and assets/core/js/*.min.js are grunt build
+        # output (gitignored, not committed) — without this, every page 404s
+        # on its CSS/JS and the app runs entirely unstyled/without jQuery,
+        # masking real visibility/behavior bugs in the E2E suite.
+        run: npm run build
+
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
+
+      - name: Lint E2E test files
+        run: npm run lint:e2e || true
 
       - name: Run E2E tests
         run: npm run e2e

@@ -78,13 +78,14 @@ class Mdl_Sessions extends CI_Model
                 }
 
                 $session_data = [
-                    'user_credential' => session_credential_fingerprint((string) $user->user_password),
-                    'user_type'       => $user->user_type,
-                    'user_id'         => $user->user_id,
-                    'user_name'       => $user->user_name,
-                    'user_email'      => $user->user_email,
-                    'user_company'    => $user->user_company,
-                    'user_language'   => $user->user_language ?? 'system',
+                    'user_credential'   => session_credential_fingerprint((string) $user->user_password),
+                    'user_type'         => $user->user_type,
+                    'user_id'           => $user->user_id,
+                    'user_name'         => $user->user_name,
+                    'user_email'        => $user->user_email,
+                    'user_company'      => $user->user_company,
+                    'user_language'     => $user->user_language ?? 'system',
+                    'user_auth_version' => $user->user_auth_version ?? 1,
                 ];
 
                 // Regenerate session ID on login to prevent session fixation attacks.

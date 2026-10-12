@@ -4,6 +4,8 @@ if ( ! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require_once APPPATH . 'modules/guest/libraries/PaymentCallbackLock.php';
+
 /*
  * InvoicePlane
  *
@@ -18,7 +20,7 @@ use Stripe\StripeClient;
 #[AllowDynamicProperties]
 class Stripe extends Base_Controller
 {
-    protected StripeClient $stripe;
+    protected ?StripeClient $stripe = null;
 
     protected $Mdl_settings;
 
@@ -31,8 +33,6 @@ class Stripe extends Base_Controller
         $this->load->helper(['currency', 'stripe']);
 
         $this->useTestHttpClientIfConfigured();
-
-        $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
     }
 
     /**
@@ -43,7 +43,7 @@ class Stripe extends Base_Controller
      *
      * @return void
      */
-    public function create_checkout_session($invoice_url_key)
+    public function create_checkout_session($invoice_url_key = null)
     {
         // Require POST request to prevent CSRF attacks
         if ($this->input->method() !== 'post') {
@@ -54,7 +54,7 @@ class Stripe extends Base_Controller
 
         // Security: Verify the invoice exists and is guest-visible
         if ( ! $invoice) {
-            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted checkout session creation for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_url_key));
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted checkout session creation for non-public or non-existent invoice with key: ' . sanitize_for_logging((string) $invoice_url_key));
             show_404();
         }
 
@@ -65,7 +65,7 @@ class Stripe extends Base_Controller
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
         }
 
-        $checkout_session = $this->stripe->checkout->sessions->create([
+        $checkout_session = $this->stripeClient()->checkout->sessions->create([
             'mode'                => 'payment',
             'ui_mode'             => 'embedded',
             'return_url'          => site_url('guest/gateways/stripe/callback/{CHECKOUT_SESSION_ID}'),
@@ -105,7 +105,7 @@ class Stripe extends Base_Controller
 
         try {
             // Retrieve the Checkout Session from Stripe
-            $session = $this->stripe->checkout->sessions->retrieve($checkout_session_id);
+            $session = $this->stripeClient()->checkout->sessions->retrieve($checkout_session_id);
 
             // Debug logging
             log_message('debug', __CLASS__ . '::' . __FUNCTION__ . ' reached, status: ' . $session->status . ' payment_status: ' . $session->payment_status . ', checkout_session_id: ' . sanitize_for_logging($checkout_session_id));
@@ -137,46 +137,81 @@ class Stripe extends Base_Controller
                     throw new Exception('Invalid payment intent ID');
                 }
 
-                // Check if this payment_intent has already been processed (deduplication check)
-                $existing_payment = $this->db
-                    ->where('payment_external_id', $payment_intent)
-                    ->get('ip_payments')
-                    ->row();
+                // Serialize concurrent callbacks for this invoice (CWE-362/367 TOCTOU):
+                // without this, two callbacks racing on the same invoice can both pass
+                // the balance check below before either commits its payment. The loser
+                // waits here, then re-reads the now up-to-date balance once it gets the
+                // lock, so it correctly falls into the "already paid" branch instead of
+                // also recording a payment.
+                $payment_lock = new PaymentCallbackLock($this->db);
 
-                if ($existing_payment) {
-                    // Duplicate payment attempt detected
-                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. Payment intent: ' . sanitize_for_logging($payment_intent) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
-                    $paid     = false; // Mark as not paid to show info message instead of success
-                    $user_msg = trans('online_payment_already_processed');
-                } elseif ($invoice->invoice_balance <= 0) {
-                    // Invoice is already fully paid
-                    log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . sanitize_for_logging($invoice->invoice_number) . ' already fully paid. Balance: ' . sanitize_for_logging($invoice->invoice_balance));
-                    $paid     = false; // Mark as not paid to show info message instead of success
-                    $user_msg = trans('invoice_already_paid');
+                if ( ! $payment_lock->acquire($invoice->invoice_id)) {
+                    log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Unable to acquire payment lock for invoice: ' . sanitize_for_logging($invoice->invoice_id));
+                    $paid     = false;
+                    $user_msg = trans('online_payment_payment_failed');
                 } else {
-                    // Validate currency and amount before recording payment
-                    $expected_currency = mb_strtoupper((string) get_setting('gateway_stripe_currency'));
-                    $capture_currency  = StripeResponseExtractor::extractCurrency($session);
-                    $capture_amount    = amount_from_minor_units(StripeResponseExtractor::extractAmountTotalMinor($session), stripe_minor_unit_multiplier($capture_currency));
+                    try {
+                        // The balance read into $invoice before the lock was acquired may
+                        // already be stale; re-read it now that concurrent callbacks for
+                        // this invoice are serialized.
+                        $fresh_invoice = $this->mdl_invoices->guest_visible()->where('ip_invoices.invoice_id', $invoice->invoice_id)->get()->row();
+                        if ($fresh_invoice) {
+                            $invoice = $fresh_invoice;
+                        }
 
-                    if ($capture_currency !== $expected_currency) {
-                        log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: currency mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . $expected_currency . ', received: ' . $capture_currency);
-                        $paid     = false;
-                        $user_msg = trans('online_payment_payment_failed');
-                    } elseif ((float) $capture_amount + 0.0001 < (float) $invoice->invoice_balance) {
-                        log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: amount mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . sanitize_for_logging($invoice->invoice_balance) . ', received: ' . sanitize_for_logging($capture_amount));
-                        $paid     = false;
-                        $user_msg = trans('online_payment_payment_failed');
-                    } else {
-                        // Save the payment (visible in guest user)
-                        $this->mdl_payments->save(null, [
-                            'invoice_id'          => $invoice->invoice_id,
-                            'payment_date'        => date('Y-m-d'),
-                            'payment_amount'      => $capture_amount,
-                            'payment_method_id'   => get_setting('gateway_stripe_payment_method'),
-                            'payment_note'        => trans('online_payment_intent_id') . ': ' . $payment_intent,
-                            'payment_external_id' => $payment_intent,
-                        ]);
+                        // Check if this payment_intent has already been processed (deduplication check)
+                        $existing_payment = $this->db
+                            ->where('payment_external_id', $payment_intent)
+                            ->get('ip_payments')
+                            ->row();
+
+                        if ($existing_payment) {
+                            // Duplicate payment attempt detected
+                            log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Duplicate payment attempt blocked. Payment intent: ' . sanitize_for_logging($payment_intent) . ' already exists as payment_id: ' . sanitize_for_logging($existing_payment->payment_id));
+                            $paid     = false; // Mark as not paid to show info message instead of success
+                            $user_msg = trans('online_payment_already_processed');
+                        } elseif ($invoice->invoice_balance <= 0) {
+                            // Invoice is already fully paid
+                            log_message('warning', __CLASS__ . '::' . __FUNCTION__ . ' - Payment rejected. Invoice ' . sanitize_for_logging($invoice->invoice_number) . ' already fully paid. Balance: ' . sanitize_for_logging($invoice->invoice_balance));
+                            $paid     = false; // Mark as not paid to show info message instead of success
+                            $user_msg = trans('invoice_already_paid');
+                        } else {
+                            // Validate currency and amount before recording payment
+                            $expected_currency = mb_strtoupper((string) get_setting('gateway_stripe_currency'));
+                            $capture_currency  = StripeResponseExtractor::extractCurrency($session);
+                            $capture_amount    = amount_from_minor_units(StripeResponseExtractor::extractAmountTotalMinor($session), stripe_minor_unit_multiplier($capture_currency));
+
+                            if ($capture_currency !== $expected_currency) {
+                                log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: currency mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . $expected_currency . ', received: ' . $capture_currency);
+                                $paid     = false;
+                                $user_msg = trans('online_payment_payment_failed');
+                            } elseif ((float) $capture_amount + 0.0001 < (float) $invoice->invoice_balance) {
+                                log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: amount mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . sanitize_for_logging($invoice->invoice_balance) . ', received: ' . sanitize_for_logging($capture_amount));
+                                $paid     = false;
+                                $user_msg = trans('online_payment_payment_failed');
+                            } elseif ((float) $capture_amount - 0.0001 > (float) $invoice->invoice_balance) {
+                                // The checkout session was created against a balance that has
+                                // since shrunk (e.g. a payment recorded through another channel
+                                // landed first). Recording the full stale capture would drive
+                                // invoice_balance negative; refuse it for manual reconciliation
+                                // instead of silently over-crediting the invoice.
+                                log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: amount exceeds current balance for invoice ' . sanitize_for_logging($invoice_key) . '. Balance: ' . sanitize_for_logging($invoice->invoice_balance) . ', received: ' . sanitize_for_logging($capture_amount));
+                                $paid     = false;
+                                $user_msg = trans('online_payment_payment_failed');
+                            } else {
+                                // Save the payment (visible in guest user)
+                                $this->mdl_payments->save(null, [
+                                    'invoice_id'          => $invoice->invoice_id,
+                                    'payment_date'        => date('Y-m-d'),
+                                    'payment_amount'      => $capture_amount,
+                                    'payment_method_id'   => get_setting('gateway_stripe_payment_method'),
+                                    'payment_note'        => trans('online_payment_intent_id') . ': ' . $payment_intent,
+                                    'payment_external_id' => $payment_intent,
+                                ]);
+                            }
+                        }
+                    } finally {
+                        $payment_lock->release();
                     }
                 }
             }
@@ -227,6 +262,21 @@ class Stripe extends Base_Controller
             // Attempt to redirect them to the invoice. invoice_url_key? No, return to invoices view
             redirect('guest/view/invoice' . (empty($invoice?->invoice_url_key) ? 's' : '/' . $invoice?->invoice_url_key));
         }
+    }
+
+    /**
+     * Built lazily, after guard clauses have already run — the Stripe SDK
+     * validates the API key format in its constructor, so building this
+     * eagerly meant every request to this controller (including a plain
+     * method/invoice guard check) 500'd whenever Stripe isn't configured.
+     */
+    private function stripeClient(): StripeClient
+    {
+        if ($this->stripe === null) {
+            $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
+        }
+
+        return $this->stripe;
     }
 
     /**

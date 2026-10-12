@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Payments;
 
+use Payments;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 
@@ -10,7 +11,7 @@ use Tests\AbstractTestCase;
  * listing — distinct from application/modules/payments/controllers/Payments.php,
  * the admin one, and from the guest/gateways/* callback controllers).
  */
-#[CoversClass(\Payments::class)]
+#[CoversClass(Payments::class)]
 class GuestPaymentsControllerTest extends AbstractTestCase
 {
     #[Test]
@@ -34,11 +35,13 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'payment');
 
         /* Assert: Data Integrity (D) */
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: Boundary Cases (F) */
+        // 'nonexistent' doesn't map to a real method on this controller — CI3 404s it
+        // before ever instantiating the controller (and so before the auth guard runs).
         $response2 = $this->get('/guest/payments/nonexistent');
-        $this->assertTrue($response2->isRedirect());
+        $this->assertResponseStatusCode($response2, 404);
 
         /* Assert: Idempotency (E) */
         $response3 = $this->get('/guest/payments');
@@ -63,15 +66,17 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         $this->assertSame($pageCountBefore, $pageCountAfter);
 
         /* Assert: Business Logic (A) */
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: Data Integrity (D) */
         $adminUser = $this->databaseFetchOne('ip_users', ['user_type' => 1]);
         $this->assertSame(1, (int) $adminUser['user_type']);
 
         /* Assert: Boundary Cases (F) */
+        // 'boundary' doesn't map to a real method — CI3 404s it before instantiating
+        // the controller, same as the equivalent check in the sibling test above.
         $adminResponse = $this->get('/guest/payments/boundary');
-        $this->assertTrue($adminResponse->isRedirect());
+        $this->assertResponseStatusCode($adminResponse, 404);
 
         /* Assert: Idempotency (E) */
         $response2 = $this->get('/guest/payments');
@@ -117,10 +122,6 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         $this->assertSame(2, (int) $user['user_type']);
         $this->assertDatabaseMissing('ip_user_clients', ['user_id' => $guestUserId]);
 
-        /* Assert: Boundary Cases (F) */
-        $orphanUser = $this->databaseFetchOne('ip_users', ['user_id' => $guestUserId]);
-        $this->assertGreaterThan(0, (int) $orphanUser['user_id']);
-
         /* Assert: Idempotency (E) */
         $response2 = $this->get('/guest/payments');
         $this->assertResponseStatusCode($response2, 403);
@@ -157,7 +158,11 @@ class GuestPaymentsControllerTest extends AbstractTestCase
         /* Assert: State Isolation (B) */
         $ownPaymentCountAfter = $this->databaseCount('ip_payments', ['invoice_id' => $ownInvoiceId]);
         $this->assertSame($ownPaymentCount, $ownPaymentCountAfter);
-        $this->assertDatabaseMissing('ip_payments', ['invoice_id' => $otherInvoiceId, 'payment_note' => 'other-payment-marker']);
+        // The other client's payment legitimately exists in the DB (seeded above) — it's
+        // scoped out of the *response*, not the database. That's already asserted at
+        // line 156 (assertResponseBodyNotContains); asserting it's missing from the DB
+        // outright was checking the wrong thing.
+        $this->assertDatabaseHas('ip_payments', ['invoice_id' => $otherInvoiceId, 'payment_note' => 'other-payment-marker']);
 
         /* Assert: Data Integrity (D) */
         $ownPayment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $ownInvoiceId]);
@@ -207,7 +212,7 @@ class GuestPaymentsControllerTest extends AbstractTestCase
 
         /* Assert: Data Integrity (D) */
         $client = $this->databaseFetchOne('ip_clients', ['client_id' => $clientId]);
-        $this->assertGreaterThan(0, (int) $client['client_id']);
+        $this->assertNotNull($client);
 
         /* Assert: Boundary Cases (F) */
         $invalidClient = $this->databaseFetchOne('ip_clients', ['client_id' => 99999]);

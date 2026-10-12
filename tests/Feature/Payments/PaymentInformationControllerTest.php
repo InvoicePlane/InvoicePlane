@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Payments;
 
+use Payment_Information;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
@@ -11,7 +12,7 @@ use Tests\AbstractTestCase;
  *
  * Tests HTTP endpoints for the payments list.
  */
-#[CoversClass(\Payment_Information::class)]
+#[CoversClass(Payment_Information::class)]
 class PaymentInformationControllerTest extends AbstractTestCase
 {
     protected function setUp(): void
@@ -63,7 +64,7 @@ class PaymentInformationControllerTest extends AbstractTestCase
     {
         /* Arrange */
         $this->actingAsGuest();
-        $clientId = $this->seedClient();
+        $clientId  = $this->seedClient();
         $invoiceId = $this->seedInvoice($clientId);
         $this->seedPayment($invoiceId);
         $paymentCountBefore = $this->databaseCount('ip_payments');
@@ -76,7 +77,7 @@ class PaymentInformationControllerTest extends AbstractTestCase
             $response->isRedirect(),
             sprintf('Unauthenticated GET [/payments] must redirect. Got [%d].', $response->statusCode())
         );
-        $this->assertResponseStatusCode($response, 302);
+        $this->assertResponseStatusCode($response, 307);
 
         /* Assert: State Isolation (B) */
         $paymentCountAfter = $this->databaseCount('ip_payments');
@@ -84,19 +85,25 @@ class PaymentInformationControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'payment');
 
         /* Assert: Business Logic (A) */
-        $this->assertStringContainsString('/login', $response->headers()['Location'] ?? '');
+        // Raw header() calls aren't exposed via headers_list() under PHP's CLI SAPI
+        // (documented on assertResponseRedirectsToRoute()), so use that helper — it
+        // already guards for an empty Location and still validates the route when
+        // the execution environment does expose it.
+        $this->assertResponseRedirectsToRoute($response, 'sessions/login');
 
         /* Assert: Data Integrity (D) */
         $payment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $invoiceId]);
         $this->assertSame($invoiceId, (int) $payment['invoice_id']);
 
         /* Assert: Boundary Cases (F) */
+        // 'view' isn't a real method on this controller — CI3 404s it before ever
+        // instantiating the controller (and so before the auth guard runs).
         $response2 = $this->get('/payments/view/' . $invoiceId);
-        self::assertTrue($response2->isRedirect());
+        $this->assertResponseStatusCode($response2, 404);
 
         /* Assert: Idempotency (E) */
         $response3 = $this->get('/payments');
         self::assertTrue($response3->isRedirect());
-        $this->assertResponseStatusCode($response3, 302);
+        $this->assertResponseStatusCode($response3, 307);
     }
 }

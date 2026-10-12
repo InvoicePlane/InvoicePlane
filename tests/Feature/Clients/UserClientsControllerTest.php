@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\AbstractTestCase;
 use Tests\Concerns\PerformsCsrfProtectedRequests;
+use User_Clients;
 
 /**
  * User_Clients controller — application/modules/user_clients/controllers/User_clients.php.
@@ -20,7 +21,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * UserClientsServiceTest and Issue1694UserClientsDeleteCsrfTest.
  */
 #[Group('user_clients')]
-#[CoversClass(\User_Clients::class)]
+#[CoversClass(User_Clients::class)]
 class UserClientsControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;
@@ -217,14 +218,14 @@ class UserClientsControllerTest extends AbstractTestCase
         $this->assertResponseBodyNotContains($response, 'Secret Assigned Client');
     }
 
-    private function seedSecondaryUser(): int
+    protected function seedSecondaryUser(): int
     {
         // Delegate to the shared seedModel() row-builder instead of
         // duplicating its ip_users defaults here; only the type differs.
         return (int) $this->seedModel('User', ['user_type' => 2])->user_id;
     }
 
-    private function seedAssignment(int $userId, int $clientId): int
+    protected function seedAssignment(int $userId, int $clientId): int
     {
         return $this->databaseInsert('ip_user_clients', ['user_id' => $userId, 'client_id' => $clientId]);
     }

@@ -10,9 +10,41 @@ $base = dirname(__DIR__);
 
 require_once $base . '/vendor/autoload.php';
 
+// Guard against the "masked DB run": mirror OS-env DB_* into $_ENV before
+// phpdotenv loads, so it doesn't skip them thinking they're already set.
+// When DB_* are exported but variables_order omits 'E', phpdotenv's createImmutable
+// sees them in getenv() but not in $_ENV and skips them; app's env() reads only $_ENV,
+// finds nothing, and every DB-backed test silently skips with "~600 skipped".
+if (defined('CI_TESTING') || defined('CI_INTEGRATION_TESTING')) {
+    foreach (['DB_HOSTNAME', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD', 'DB_DRIVER'] as $key) {
+        $value = getenv($key);
+        if ($value !== false && ! array_key_exists($key, $_ENV)) {
+            $_ENV[$key] = $value;
+        }
+    }
+}
+
 if (file_exists($base . '/ipconfig.php')) {
     $dotenv = Dotenv\Dotenv::createImmutable($base, 'ipconfig.php');
     $dotenv->safeLoad();
+}
+
+if ( ! function_exists('env')) {
+    function env(string $key, mixed $default = null): mixed
+    {
+        return $_ENV[$key] ?? $default;
+    }
+}
+
+if ( ! function_exists('env_bool')) {
+    function env_bool(string $key, bool $default = false): bool
+    {
+        $value = $_ENV[$key] ?? null;
+
+        return $value === null
+            ? $default
+            : filter_var($value, FILTER_VALIDATE_BOOLEAN);
+    }
 }
 
 // Application environment + error reporting. Ported from the legacy root

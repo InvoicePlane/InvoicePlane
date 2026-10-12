@@ -4,6 +4,7 @@ namespace Tests\Feature\Core;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tax_Rates;
 use Tests\AbstractTestCase;
 use Tests\Concerns\PerformsCsrfProtectedRequests;
 
@@ -14,7 +15,7 @@ use Tests\Concerns\PerformsCsrfProtectedRequests;
  * Absorbs the former TaxRatesServiceTest and Issue1694TaxRatesDeleteCsrfTest.
  */
 #[Group('tax_rates')]
-#[CoversClass(\Tax_Rates::class)]
+#[CoversClass(Tax_Rates::class)]
 class TaxRatesControllerTest extends AbstractTestCase
 {
     use PerformsCsrfProtectedRequests;

@@ -85,24 +85,9 @@ test.describe('Settings — remove logo', () => {
     expect(getSetting('invoice_logo')).toBe('keep-me.png');
   });
 
-  test('it does not remove a logo when the csrf token is missing', async () => {
-    test.skip(true, 'needs a CSRF_PROTECTION=true server — see tests/E2E/README.md');
-  });
 });
 
-test.describe('Settings — setup-security warnings (config dependent)', () => {
-  test('it warns admins when setup security flags are not enabled', async () => {
-    test.fixme(true, 'needs DISABLE_SETUP=false in ipconfig — covered by SettingsControllerTest');
-  });
-
-  test('it warns when a saved custom invoice template is missing from ipconfig', async () => {
-    test.fixme(true, 'needs a CUSTOM_INVOICE_TEMPLATES_PDF env change — covered by SettingsControllerTest');
-  });
-
-  test('it does not warn when a saved custom invoice template is allowlisted in ipconfig', async () => {
-    test.fixme(true, 'needs a CUSTOM_INVOICE_TEMPLATES_PDF env change — covered by SettingsControllerTest');
-  });
-});
+/* Config-dependent tests (DISABLE_SETUP, CUSTOM_INVOICE_TEMPLATES_PDF) are covered by SettingsControllerTest.php */
 
 test.describe('Settings — guest access', () => {
   test.use({ storageState: { cookies: [], origins: [] } });

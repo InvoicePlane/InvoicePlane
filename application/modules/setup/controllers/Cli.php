@@ -35,7 +35,7 @@ class Cli extends MX_Controller
 
         $this->load->library('session');
 
-        $lang = env('DEFAULT_LANGUAGE') ?: 'english';
+        $lang = $this->cliEnv('DEFAULT_LANGUAGE') ?: 'english';
         $lang = mb_strtolower($lang);
 
         if ( ! is_dir(APPPATH . 'language/' . $lang)) {
@@ -68,10 +68,10 @@ class Cli extends MX_Controller
             return;
         }
 
-        $email          = env('DEFAULT_ADMIN_EMAIL') ?: 'admin@localhost';
-        $name           = env('DEFAULT_ADMIN_NAME') ?: 'admin';
-        $plain_password = env('DEFAULT_ADMIN_PASSWORD') ?: bin2hex(random_bytes(12));
-        $generated      = ! env('DEFAULT_ADMIN_PASSWORD');
+        $email          = $this->cliEnv('DEFAULT_ADMIN_EMAIL') ?: 'admin@localhost';
+        $name           = $this->cliEnv('DEFAULT_ADMIN_NAME') ?: 'admin';
+        $plain_password = $this->cliEnv('DEFAULT_ADMIN_PASSWORD') ?: bin2hex(random_bytes(12));
+        $generated      = ! $this->cliEnv('DEFAULT_ADMIN_PASSWORD');
 
         $this->load->library('crypt');
 
@@ -133,5 +133,29 @@ class Cli extends MX_Controller
         }
 
         echo 'Migrations completed successfully.' . PHP_EOL;
+    }
+
+    /**
+     * Read a one-shot CLI bootstrap value (DEFAULT_ADMIN_*, DEFAULT_LANGUAGE) — never
+     * persistent app config, so unlike the app-wide env() helper this deliberately also
+     * checks getenv(), not just $_ENV.
+     *
+     * env() (bootstrap/kernel.php) reads only $_ENV by design, to stop Dotenv's
+     * createImmutable()->safeLoad() silently losing ipconfig.php values when a DB_* key
+     * is already present in the OS env (see that file's comment). That risk doesn't apply
+     * here: these keys are never set in ipconfig.php, so there's nothing for Dotenv to
+     * skip. Without this fallback, `DEFAULT_ADMIN_EMAIL=x php public/index.php
+     * setup/cli/create_default_user` silently no-ops on any host where PHP's
+     * variables_order omits 'E' (PHP's own shipped default), which this container's does.
+     */
+    private function cliEnv(string $key, ?string $default = null): ?string
+    {
+        if (array_key_exists($key, $_ENV)) {
+            return (string) $_ENV[$key];
+        }
+
+        $value = getenv($key);
+
+        return $value === false ? $default : $value;
     }
 }

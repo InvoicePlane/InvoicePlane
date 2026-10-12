@@ -18,7 +18,7 @@
 foreach ($payment_logs as $log) {
     ?>
                     <tr>
-                        <td><?php echo $log->merchant_response_id; ?></td>
+                        <td><?php echo htmlsc($log->merchant_response_id); ?></td>
                         <td>
                             <a href="<?php echo site_url('invoices/view/' . $log->invoice_id); ?>"
                                title="<?php _trans('invoice'); ?>">
@@ -29,11 +29,11 @@ foreach ($payment_logs as $log) {
                             <i class="fa <?php echo $log->merchant_response_successful ? 'fa-check text-success' : 'fa-ban text-danger'; ?>"></i>
                         </td>
                         <td><?php echo date_from_mysql($log->merchant_response_date); ?></td>
-                        <td><?php echo $log->merchant_response_driver; ?></td>
+                        <td><?php echo htmlsc($log->merchant_response_driver); ?></td>
                         <td class="small text-<?php echo $log->merchant_response_successful ? 'success' : 'danger'; ?>">
-                            <?php echo $log->merchant_response; ?>
+                            <?php echo htmlsc($log->merchant_response); ?>
                         </td>
-                        <td><?php echo $log->merchant_response_reference; ?></td>
+                        <td><?php echo htmlsc($log->merchant_response_reference); ?></td>
                     </tr>
 <?php
 } // End foreach
