@@ -115,7 +115,7 @@ class Mdl_Sessions extends CI_Model
             $this->load->helper('file_security');
         }
 
-        $session_path = $this->session->sess_save_path;
+        $session_path = (string) $this->config->item('sess_save_path');
 
         if ( ! is_dir($session_path)) {
             return;
@@ -138,12 +138,11 @@ class Mdl_Sessions extends CI_Model
                     continue;
                 }
 
-                $session_data = @unserialize(file_get_contents($file_path), ['allowed_classes' => false]);
-                if ($session_data === false || ! is_array($session_data)) {
-                    continue;
-                }
-
-                if (isset($session_data['user_id']) && (string) $session_data['user_id'] === (string) $user_id) {
+                // Session files are written with session.serialize_handler=php ("key|serialized;"),
+                // which unserialize() cannot parse, so read the user_id entry directly.
+                $raw = (string) @file_get_contents($file_path);
+                if (preg_match('/(?:^|[;}])user_id\|(?:s:\d+:"(\d+)"|i:(\d+));/', $raw, $m)
+                    && ($m[1] !== '' ? $m[1] : ($m[2] ?? '')) === (string) (int) $user_id) {
                     @unlink($file_path);
                 }
             }
