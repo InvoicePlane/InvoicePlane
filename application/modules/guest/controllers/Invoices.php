@@ -37,10 +37,14 @@ class Invoices extends Guest_Controller
      */
     public function status(string $status = 'open', $page = 0): void
     {
+        // Guests never see drafts or cancelled invoices (the detail view answers 404 for them), so
+        // every listing is scoped to guest-visible statuses. The paid filter alone is not enough:
+        // a draft has a 0.00 balance and so matches its "balance = 0.00" arm.
+        $this->mdl_invoices->guest_visible();
+
         // Determine which group of invoices to load
         switch ($status) {
             case 'all':
-                $this->mdl_invoices->guest_visible();
                 break;
             case 'paid':
                 $this->mdl_invoices->is_paid();
