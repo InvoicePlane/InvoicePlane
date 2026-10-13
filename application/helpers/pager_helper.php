@@ -23,6 +23,9 @@ function pager(string $base_url, $model): string
 {
     $CI = &get_instance();
 
+    // The base URL can carry a segment of the request URI; it goes into href attributes below.
+    $base_url = htmlsc($base_url);
+
     $pager = '<div class="model-pager btn-group btn-group-sm">';
 
     if (($previous_page = $CI->{$model}->previous_offset) >= 0) {
