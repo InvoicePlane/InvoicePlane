@@ -331,7 +331,7 @@ function encode_for_javascript_string($string)
 {
     return substr(
         json_encode(
-            $string,
+            (string) $string,
             JSON_THROW_ON_ERROR
                 | JSON_HEX_TAG
                 | JSON_HEX_AMP
