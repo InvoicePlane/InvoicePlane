@@ -319,6 +319,7 @@ function verify_get_csrf_token(): bool
  * - All & are converted to \u0026.
  * - All ' are converted to \u0027.
  * - All " are converted to \u0022.
+ * - Unicode characters are encoded (`æøå` becomes `\u00e6\u00f8\u00e5`)
  *
  * Example:
  *   weekStart: '<?php echo encode_for_javascript_string($day); ?>'
