@@ -315,7 +315,10 @@ function verify_get_csrf_token(): bool
  * - Backslash escaping (to prevent escape sequences)
  * - Quote escaping (to prevent string breakout)
  * - Line terminators (U+2028, U+2029, \r, \n)
- * - Forward slash (for HTML </script> termination)
+ * - All < and > are converted to \u003C and \u003E.  (for HTML </script> termination)
+ * - All & are converted to \u0026.
+ * - All ' are converted to \u0027.
+ * - All " are converted to \u0022.
  *
  * Example:
  *   weekStart: '<?php echo encode_for_javascript_string($day); ?>'
@@ -326,18 +329,17 @@ function verify_get_csrf_token(): bool
  */
 function encode_for_javascript_string($string)
 {
-    $string = (string) $string;
-
-    $replacements = [
-        '\\' => '\\\\',
-        '"' => '\"',
-        "'" => "\'",
-        "\r" => '\r',
-        "\n" => '\n',
-        "\u{2028}" => "\x20",
-        "\u{2029}" => "\x20",
-        '/' => '\/',
-    ];
-
-    return str_replace(array_keys($replacements), array_values($replacements), $string);
+    return substr(
+        json_encode(
+            $string,
+            JSON_THROW_ON_ERROR
+                | JSON_HEX_TAG
+                | JSON_HEX_AMP
+                | JSON_HEX_APOS
+                | JSON_HEX_QUOT
+        ),
+        1,
+        -1
+    );
 }
+
