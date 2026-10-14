@@ -345,6 +345,31 @@ $(function () {
         }
     });
 
+    // Default timeout for every jQuery AJAX request, so a stalled connection eventually fires
+    // its error handler instead of leaving a form's submit spinner stuck forever. A call that
+    // needs a different value (e.g. a fast-failing external fallback) can still pass its own
+    // 'timeout' to override this.
+    $.ajaxSetup({
+        timeout: 30000
+    });
+
+    // Most $.post()/$.ajax() calls in the app views only handle the success case, so a failed
+    // or timed-out request leaves the '.ajax-loader' spinner showing with no feedback at all.
+    // This catches every such request (calls that already handle their own errors can opt out
+    // with 'global: false', as the update-checker on the settings page does).
+    $(document).ajaxError(function (event, jqXHR, settings, thrownError) {
+        close_loader();
+        var reason = thrownError || jqXHR.statusText || 'unknown error';
+        var $notice = $('<div class="alert alert-danger"></div>');
+        $('<h3></h3>').text('⚠ Request failed: ' + reason).appendTo($notice);
+        if ($('#content .alert-danger').length) {
+            $('#content .alert-danger').prepend($notice.html());
+        } else {
+            $('#content').prepend($notice);
+        }
+        console.error('AJAX request failed:', settings.url, reason);
+    });
+
     // Update CSRF token on all form submissions
     $('form').on('submit', function(){
         $('input[name="' + csrf_token_name + '"]').prop('value', csrf_token_value);

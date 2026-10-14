@@ -39,6 +39,8 @@
         $.ajax({
             'url': 'https://ids.invoiceplane.com/updatecheck?cv=' + ip_version,
             'dataType': 'json',
+            'timeout': 8000,
+            'global': false,
             success: function(data) {
                 <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                 var updatecheck = data.current_version;
@@ -60,6 +62,8 @@
                 $.ajax({
                     'url': 'https://ids.invoiceplane.org/updatecheck?cv=' + ip_version,
                     'dataType': 'json',
+                    'timeout': 8000,
+                    'global': false,
                     success: function(data) {
                         <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                         var updatecheck = data.current_version;
@@ -89,6 +93,8 @@
         $.ajax({
             'url': 'https://ids.invoiceplane.com/get_news',
             'dataType': 'json',
+            'timeout': 8000,
+            'global': false,
             'success': function(data) {
                 <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                 setTimeout(function() {
@@ -108,6 +114,8 @@
                 $.ajax({
                     'url': 'https://ids.invoiceplane.org/get_news',
                     'dataType': 'json',
+                    'timeout': 8000,
+                    'global': false,
                     'success': function(data) {
                         <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
                         setTimeout(function() {
