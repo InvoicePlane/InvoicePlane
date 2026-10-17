@@ -102,9 +102,15 @@ class Mdl_Payments extends Response_Model
         $invoice_balance = (float) $invoice->invoice_balance;
 
         if ($payment_id) {
-            $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();
+            $payment = $this->db
+                ->where('payment_id', $payment_id)
+                ->where('invoice_id', $invoice_id)
+                ->get('ip_payments')
+                ->row();
 
-            $invoice_balance += (float) $payment->payment_amount;
+            if ($payment !== null) {
+                $invoice_balance += (float) $payment->payment_amount;
+            }
         }
 
         if ($amount > $invoice_balance) {
