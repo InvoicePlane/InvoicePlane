@@ -302,7 +302,9 @@ class Paypal extends Base_Controller
                         'merchant_response_date'       => date('Y-m-d'),
                         'merchant_response_driver'     => 'paypal',
                         'merchant_response'            => 'PENDING - awaiting settlement',
-                        'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id,
+                        // The capture id is what PayPal reports when the pending capture settles or
+                        // is denied, so without it the row cannot be reconciled later.
+                        'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id . ($capture_id ? ', Capture ID:' . $capture_id : ''),
                     ]);
                 }
 
