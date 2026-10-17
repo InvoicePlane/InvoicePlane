@@ -604,10 +604,12 @@ class Sessions extends Base_Controller
         if ((int) $legacy_row->log_count > (int) $existing_new_row->log_count) {
             // The count condition makes the write atomic: a request that raised the namespaced
             // row between the two reads above is not overwritten with the staler legacy count.
-            $this->db->where('login_name', $new_key)->where('log_count <', (int) $legacy_row->log_count)->update('ip_login_log', [
-                'log_count'            => $legacy_row->log_count,
-                'log_create_timestamp' => $legacy_row->log_create_timestamp,
-            ]);
+            $this->db->where('login_name', $new_key)
+                ->where('log_count <', (int) $legacy_row->log_count)
+                ->update('ip_login_log', [
+                    'log_count'            => $legacy_row->log_count,
+                    'log_create_timestamp' => $legacy_row->log_create_timestamp,
+                ]);
         }
 
         $this->db->where('login_name', $legacy_key)->delete('ip_login_log');
