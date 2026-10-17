@@ -178,8 +178,11 @@ class Sessions extends Base_Controller
             $this->_clear_password_reset_token($user_id);
 
             // Delete failed login attempts from login_log table
-            $user = $this->db->where('user_id', $user_id)->get('ip_users')->row();
-            $this->_login_log_reset($this->_login_account_log_key($user->user_email));
+            // Reuse the user row fetched above (it still has the email), and migrate a pre-namespacing
+            // row first so the reset clears it too instead of leaving the account locked.
+            $login_log_key = $this->_login_account_log_key((string) $user->user_email);
+            $this->_migrate_legacy_login_log_key((string) $user->user_email, $login_log_key);
+            $this->_login_log_reset($login_log_key);
 
             // Redirect back to the login form
             redirect('sessions/login');
