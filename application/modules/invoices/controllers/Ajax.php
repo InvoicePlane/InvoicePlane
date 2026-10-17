@@ -133,6 +133,8 @@ class Ajax extends Admin_Controller
 
                     $this->db->trans_rollback();
                     $this->json_encode_ajax($response);
+
+                    return;
                 }
             }
 
@@ -156,6 +158,8 @@ class Ajax extends Admin_Controller
 
                     $this->db->trans_rollback();
                     $this->json_encode_ajax($response);
+
+                    return;
                 }
             }
 
@@ -273,6 +277,8 @@ class Ajax extends Admin_Controller
                 ];
 
                 $this->json_encode_ajax($response);
+
+                return;
             }
         }
 
