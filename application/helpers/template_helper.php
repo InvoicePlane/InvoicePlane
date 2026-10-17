@@ -39,20 +39,22 @@ function render_template_view(string $template_subpath, array $data, bool $retur
             // built-in one (e.g. InvoicePlane_Web.php) calls $this->layout->load_view(...),
             // and $this is otherwise undefined inside this plain function.
             //
-            // $_ci_path (not $file_path) holds the include target: extract() below runs with
-            // EXTR_OVERWRITE and would clobber a same-named local, so it must survive under a
-            // name $data can't realistically carry -- the same reason CI's own Loader::_ci_load()
-            // extracts view data into locals named _ci_path / _ci_vars rather than plain ones.
-            $render = Closure::bind(function () use ($file_path, $data) {
-                $_ci_path = $file_path;
-                extract($data);
+            // The include target is read via func_get_arg() rather than `use`, so no $file_path
+            // local exists before extract() runs; $_ci_path is then the only pre-existing local,
+            // and EXTR_SKIP leaves it alone no matter what key $data carries -- including a
+            // '_ci_path' key, which a plain extract($data) (even with the target renamed) would
+            // still let hijack the include. $data's own keys, 'file_path' included, still reach
+            // the template exactly as the caller provided them.
+            $render = Closure::bind(function () {
+                $_ci_path = func_get_arg(0);
+                extract(func_get_arg(1), EXTR_SKIP);
                 ob_start();
                 include $_ci_path;
 
                 return ob_get_clean();
             }, $CI, $CI);
 
-            $output = $render();
+            $output = $render($file_path, $data);
 
             if ($return) {
                 return $output;
