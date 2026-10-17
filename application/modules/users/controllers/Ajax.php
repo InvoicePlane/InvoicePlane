@@ -113,6 +113,14 @@ class Ajax extends Admin_Controller
         // clients to other users. A peer administrator is limited to their own
         // account (CWE-862 / CWE-269).
         if ( ! empty($user_id)) {
+            // Only a plain integer id may pass: "2.9" is authorised as user 2 by the (int) cast below,
+            // but the INT column it is stored in rounds it to user 3.
+            if ( ! ctype_digit((string) $user_id)) {
+                show_error(trans('access_denied'), 403);
+
+                return;
+            }
+
             $current_user_id = (int) $this->session->userdata('user_id');
             $target_user_id  = (int) $user_id;
 
