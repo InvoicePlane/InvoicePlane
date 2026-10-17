@@ -234,6 +234,11 @@ class Users extends Admin_Controller
                 $this->session->set_userdata([
                     'user_credential' => session_credential_fingerprint((string) $updated_user->user_password),
                 ]);
+
+                // A copy of this very session (a stolen cookie) shares its id with the session that
+                // just changed the password and would pass the refreshed check above. A new id, with
+                // the old session destroyed, ends it.
+                $this->session->sess_regenerate(true);
             }
 
             redirect('users/form/' . $user_id);
