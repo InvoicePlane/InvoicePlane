@@ -194,15 +194,15 @@ class Sumex
         $this->_patient['zip']        = $this->sanitizeXmlText($this->invoice->client_zip);
         $this->_patient['city']       = $this->sanitizeXmlText($this->invoice->client_city);
         $this->_patient['phone']      = ($this->invoice->client_phone == '' ? null : $this->sanitizeXmlText($this->invoice->client_phone));
-        $this->_patient['avs']        = $this->invoice->client_avs;
+        $this->_patient['avs']        = $this->sanitizeXmlText($this->invoice->client_avs);
 
         $this->_company['name']   = $this->sanitizeXmlText($this->invoice->user_company);
         $this->_company['street'] = $this->sanitizeXmlText($this->invoice->user_address_1);
         $this->_company['zip']    = $this->sanitizeXmlText($this->invoice->user_zip);
         $this->_company['city']   = $this->sanitizeXmlText($this->invoice->user_city);
         $this->_company['phone']  = $this->sanitizeXmlText($this->invoice->user_phone);
-        $this->_company['gln']    = $this->invoice->user_gln;
-        $this->_company['rcc']    = $this->invoice->user_rcc;
+        $this->_company['gln']    = $this->sanitizeXmlText($this->invoice->user_gln);
+        $this->_company['rcc']    = $this->sanitizeXmlText($this->invoice->user_rcc);
 
         // Security: restrict to a strict character allowlist before these values are
         // embedded as XML attribute values / used to build the ESR coding line, so a
@@ -213,8 +213,8 @@ class Sumex
         $this->_subscriberNumber = $this->sanitizeSubscriberNumber($this->invoice->user_subscribernumber);
 
         $this->_casedate   = $this->invoice->sumex_casedate;
-        $this->_casenumber = $this->invoice->sumex_casenumber;
-        $this->_insuredid  = $this->invoice->client_insurednumber;
+        $this->_casenumber = $this->sanitizeXmlText($this->invoice->sumex_casenumber);
+        $this->_insuredid  = $this->sanitizeXmlText($this->invoice->client_insurednumber);
 
         $treatments = [
             'disease',
@@ -240,6 +240,43 @@ class Sumex
         $this->_role        = self::ROLES[$CI->mdl_settings->setting('sumex_role')];
         $this->_place       = self::PLACES[$CI->mdl_settings->setting('sumex_place')];
         $this->_canton      = self::CANTONS[$CI->mdl_settings->setting('sumex_canton')];
+    }
+
+    /**
+     * Writes the SUMEX XML to storage/temp/ under a name an outsider cannot guess (CWE-377): the invoice number alone
+     * is sequential and public-ish, so "Invoice_<number>.xml" could be fetched by anyone who can reach the directory.
+     * The file is also made owner-only.
+     */
+    private function writeTempXml(string $filename): ?string
+    {
+        $xml = $this->xml();
+        if ($xml === false) {
+            log_message('error', 'Sumex: the invoice XML could not be generated, no temporary file written');
+
+            return null;
+        }
+
+        $path = STORAGE_TEMP_FOLDER . $filename . '_' . bin2hex(random_bytes(8)) . '.xml';
+
+        // The file holds patient and billing data, so it is created owner-only from the start: with the
+        // process umask alone it would be readable by others between the write and a later chmod().
+        $previousUmask = umask(0177);
+
+        try {
+            $written = @file_put_contents($path, $xml, LOCK_EX);
+        } finally {
+            umask($previousUmask);
+        }
+
+        // Hand out the path only when the content is complete and the permissions are enforced.
+        if ($written !== strlen($xml) || ! @chmod($path, 0600)) {
+            @unlink($path);
+            log_message('error', 'Sumex: unable to write the temporary XML file with owner-only permissions');
+
+            return null;
+        }
+
+        return $path;
     }
 
     public function pdf($invoice_template = null): bool|string
@@ -334,8 +371,11 @@ class Sumex
         $CI->load->helper('file_security');
         $filename = trans('invoice') . '_' . sanitize_document_number_for_filename($this->invoice->invoice_number);
         // Create the SUMEX XML file (embed) in storage/temp/
-        $path = STORAGE_TEMP_FOLDER . $filename . '.xml';
-        file_put_contents($path, $this->xml());
+        $path = $this->writeTempXml($filename);
+        if ($path === null) {
+            return false;
+        }
+
         $associatedFiles = [[
             'path'           => $path,
             'name'           => 'sumex.xml', // todo: what's need in real
@@ -390,7 +430,9 @@ class Sumex
 
     /**
      * Strips XML control characters (U+0000-U+0008, U+000B, U+000C, U+000E-U+001F, U+007F)
-     * that DOMNode::nodeValue does not escape, before the value is embedded in the SUMEX XML.
+     * that make the document not well-formed, before the value is embedded in the SUMEX XML.
+     * Text content is added through createTextNode(), because assigning DOMNode::nodeValue
+     * reads an '&' as the start of an entity reference and truncates the value.
      */
     protected function sanitizeXmlText(?string $value): ?string
     {
@@ -569,7 +611,7 @@ class Sumex
         $node = $this->doc->createElement('invoice:esrRed');
 
         $reason            = $this->doc->createElement('invoice:payment_reason');
-        $reason->nodeValue = $this->_invoiceNumber;
+        $reason->appendChild($this->doc->createTextNode((string) $this->_invoiceNumber));
 
         $subNumb = $this->_subscriberNumber;
         // postal_account: coding_line2
@@ -610,7 +652,7 @@ class Sumex
     protected function xmlInvoiceRemark()
     {
         $node            = $this->doc->createElement('invoice:remark');
-        $node->nodeValue = $this->_treatment['observations'];
+        $node->appendChild($this->doc->createTextNode((string) $this->_treatment['observations']));
 
         return $node;
     }
@@ -698,7 +740,7 @@ class Sumex
         // <invoice:company>
         $bcompany                 = $this->doc->createElement('invoice:company');
         $bcompany_name            = $this->doc->createElement('invoice:companyname');
-        $bcompany_name->nodeValue = $this->_company['name'];
+        $bcompany_name->appendChild($this->doc->createTextNode((string) $this->_company['name']));
 
         $bcompany->appendChild($bcompany_name);
 
@@ -707,7 +749,7 @@ class Sumex
 
         $bcompany_telecom                  = $this->doc->createElement('invoice:telecom');
         $bcompany_telecom_phone            = $this->doc->createElement('invoice:phone');
-        $bcompany_telecom_phone->nodeValue = $this->_company['phone'];
+        $bcompany_telecom_phone->appendChild($this->doc->createTextNode((string) $this->_company['phone']));
 
         $bcompany_telecom->appendChild($bcompany_telecom_phone);
         $bcompany->appendChild($bcompany_telecom);
@@ -721,13 +763,13 @@ class Sumex
         $postal = $this->doc->createElement('invoice:postal');
 
         $postal_street            = $this->doc->createElement('invoice:street');
-        $postal_street->nodeValue = $street;
+        $postal_street->appendChild($this->doc->createTextNode((string) $street));
 
         $postal_zip            = $this->doc->createELement('invoice:zip');
-        $postal_zip->nodeValue = $zip;
+        $postal_zip->appendChild($this->doc->createTextNode((string) $zip));
 
         $postal_city            = $this->doc->createElement('invoice:city');
-        $postal_city->nodeValue = $city;
+        $postal_city->appendChild($this->doc->createTextNode((string) $city));
 
         $postal->appendChild($postal_street);
         $postal->appendChild($postal_zip);
@@ -741,10 +783,10 @@ class Sumex
         $person = $this->doc->createElement('invoice:person');
 
         $familyName            = $this->doc->createElement('invoice:familyname');
-        $familyName->nodeValue = $this->_patient['familyName'];
+        $familyName->appendChild($this->doc->createTextNode((string) $this->_patient['familyName']));
 
         $givenName            = $this->doc->createElement('invoice:givenname');
-        $givenName->nodeValue = $this->_patient['givenName'];
+        $givenName->appendChild($this->doc->createTextNode((string) $this->_patient['givenName']));
 
         $postal = $this->generatePostal($street, $zip, $city);
 
@@ -764,7 +806,7 @@ class Sumex
     {
         $telecom          = $this->doc->createElement('invoice:telecom');
         $phone            = $this->doc->createElement('invoice:phone');
-        $phone->nodeValue = $phoneNr;
+        $phone->appendChild($this->doc->createTextNode((string) $phoneNr));
 
         $telecom->appendChild($phone);
 
@@ -798,7 +840,7 @@ class Sumex
             $diag = $this->doc->createElement('invoice:diagnosis');
             $diag->setAttribute('type', 'freetext');
             //$diag->setAttribute('code', );
-            $diag->nodeValue = $this->_treatment['diagnosis'];
+            $diag->appendChild($this->doc->createTextNode((string) $this->_treatment['diagnosis']));
             $node->appendChild($diag);
         }
 
@@ -839,7 +881,7 @@ class Sumex
         //$node->setAttribute('validate', 0);
         //$node->setAttribute('service_attributes', 0);
         //$node->setAttribute('obligation', 0);
-        $node->setAttribute('name', $item->item_name);
+        $node->setAttribute('name', (string) $this->sanitizeXmlText((string) $item->item_name));
 
         //var_dump($item);
         return $node;
@@ -921,7 +963,7 @@ class Sumex
         // <invoice:company>
         $bcompany                 = $this->doc->createElement('invoice:company');
         $bcompany_name            = $this->doc->createElement('invoice:companyname');
-        $bcompany_name->nodeValue = $this->_insurance['name'];
+        $bcompany_name->appendChild($this->doc->createTextNode((string) $this->_insurance['name']));
 
         $bcompany->appendChild($bcompany_name);
 
@@ -930,7 +972,7 @@ class Sumex
 
         /*$bcompany_telecom = $this->doc->createElement('invoice:telecom');
         $bcompany_telecom_phone = $this->doc->createElement('invoice:phone');
-        $bcompany_telecom_phone->nodeValue = $this->_company['phone'];
+        $bcompany_telecom_phone->appendChild($this->doc->createTextNode((string) $this->_company['phone']));
         $bcompany_telecom->appendChild($bcompany_telecom_phone);
         $bcompany->appendChild($bcompany_telecom);*/
 
