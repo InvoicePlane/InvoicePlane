@@ -171,12 +171,9 @@ if (get_setting('invoice_logo')) {
                                 <div class="alert alert-danger">
                                     <strong><?php _trans('warning'); ?>:</strong>
                                     <?php _trans('svg_logo_blocked_security'); ?>
-                                    <form method="post" action="<?php echo base_url(); ?>settings/remove_logo/invoice" style="display:inline;">
-                                        <?php _csrf_field(); ?>
-                                        <button type="submit" class="btn btn-link" style="padding:0; border:0; background:none; text-decoration:underline; cursor:pointer;">
+                                    <button type="submit" formaction="<?php echo base_url(); ?>settings/remove_logo/invoice" formmethod="post" formnovalidate class="btn btn-link" style="padding:0; border:0; background:none; text-decoration:underline; cursor:pointer;">
                                             <?php _trans('remove_logo'); ?>
-                                        </button>
-                                    </form>
+                                    </button>
                                 </div>
 <?php
     } else {
@@ -185,12 +182,9 @@ if (get_setting('invoice_logo')) {
                                 <img class="personal_logo"
                                      src="<?php echo base_url(); ?>uploads/<?php echo htmlsc($invoice_logo_file); ?>">
                                 <br>
-                                <form method="post" action="<?php echo base_url(); ?>settings/remove_logo/invoice" style="display:inline;">
-                                    <?php _csrf_field(); ?>
-                                    <button type="submit" class="btn btn-link" style="padding:0; border:0; background:none; text-decoration:underline; cursor:pointer;">
+                                <button type="submit" formaction="<?php echo base_url(); ?>settings/remove_logo/invoice" formmethod="post" formnovalidate class="btn btn-link" style="padding:0; border:0; background:none; text-decoration:underline; cursor:pointer;">
                                         <?php _trans('remove_logo'); ?>
-                                    </button>
-                                </form>
+                                </button>
                                 <br/>
 <?php
     }
