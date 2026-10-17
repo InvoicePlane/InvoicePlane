@@ -126,6 +126,31 @@
                 legacyUpdateCheck();
             },
         });
+        // Render the legacy IDS news list. Every field is set as text, never concatenated into HTML,
+        // so a compromised or spoofed IDS answer cannot inject markup.
+        function renderLegacyNews(list) {
+            $('#ipnews-loading').addClass('hidden');
+            list.forEach(function(news) {
+                if (!news || typeof news !== 'object') {
+                    return;
+                }
+                var ipnews = $('<div/>', {'class': 'alert alert-' + String(news.type || 'info').replace(/[^a-z0-9_-]/gi, '')});
+                ipnews.append($('<b/>').text(String(news.title || '')));
+                ipnews.append($('<br/>'));
+                String(news.text || '').split(/\r?\n/).forEach(function(line, index) {
+                    if (index > 0) {
+                        ipnews.append($('<br/>'));
+                    }
+                    ipnews.append(document.createTextNode(line));
+                });
+                ipnews.append($('<br/>'));
+                if (news.newsdate && news.newsdate.date) {
+                    ipnews.append($('<small/>').text(<?php echo json_encode(trans('date')); ?> + ': ' + String(news.newsdate.date).substr(0, 11)));
+                    ipnews.append($('<br/>'));
+                }
+                $('#ipnews-container').append(ipnews);
+            });
+        }
         // Second IDS host for the legacy news: used when the first one fails or does not answer with a list
         function legacyNewsOrg() {
             $.ajax({
@@ -140,18 +165,7 @@
                         $('#ipnews-failed').removeClass('hidden');
                         return;
                     }
-                    setTimeout(function() {
-                        $('#ipnews-loading').addClass('hidden');
-                        data.forEach(function(news) {
-                            var ipnews = '<div class="alert alert-' + news.type + '">';
-                            ipnews += '<b>' + news.title + '</b><br/>';
-                            ipnews += news.text + '<br/>';
-                            if(news.newsdate.date) ipnews += '<small><?php echo trans('date')?>: ' + news.newsdate.date.substr(0, 11) + '</b><br/>';
-                            ipnews += '</div>';
-                            ipnews = ipnews.replace(/\n/g, "<br />");
-                            $('#ipnews-container').append(ipnews);
-                        });
-                    }, checktime);
+                    setTimeout(function() { renderLegacyNews(data); }, checktime);
                 },
                 'error': function(data) {
                     <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
@@ -173,18 +187,7 @@
                         legacyNewsOrg();
                         return;
                     }
-                    setTimeout(function() {
-                        $('#ipnews-loading').addClass('hidden');
-                        data.forEach(function(news) {
-                            var ipnews = '<div class="alert alert-' + news.type + '">';
-                            ipnews += '<b>' + news.title + '</b><br/>';
-                            ipnews += news.text + '<br/>';
-                            if(news.newsdate.date) ipnews += '<small><?php echo trans('date')?>: ' + news.newsdate.date.substr(0, 11) + '</b><br/>';
-                            ipnews += '</div>';
-                            ipnews = ipnews.replace(/\n/g, "<br />");
-                            $('#ipnews-container').append(ipnews);
-                        });
-                    }, checktime);
+                    setTimeout(function() { renderLegacyNews(data); }, checktime);
                 },
                 'error': function(data) {
                     legacyNewsOrg();
@@ -286,6 +289,10 @@
             <div id="ipnews-results">
                 <div id="ipnews-loading" class="btn btn-default btn-sm disabled">
                     <i class="fa fa-circle-o-notch fa-spin"></i> <?php _trans('checking_for_news'); ?>
+                </div>
+
+                <div id="ipnews-failed" class="btn btn-danger btn-sm disabled hidden">
+                    <?php _trans('updatecheck_failed'); ?>
                 </div>
 
                 <div id="ipnews-container"></div>
