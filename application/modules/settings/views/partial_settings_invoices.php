@@ -171,12 +171,10 @@ if (get_setting('invoice_logo')) {
                                 <div class="alert alert-danger">
                                     <strong><?php _trans('warning'); ?>:</strong>
                                     <?php _trans('svg_logo_blocked_security'); ?>
-                                    <form method="post" action="<?php echo base_url(); ?>settings/remove_logo/invoice" style="display:inline;">
-                                        <?php _csrf_field(); ?>
-                                        <button type="submit" class="btn btn-link" style="padding:0; border:0; background:none; text-decoration:underline; cursor:pointer;">
+                                    <?php // Not a <form>: these partials render inside form-settings and forms cannot nest. The button posts that form (it carries the CSRF field) to remove_logo instead. ?>
+                                    <button type="submit" formaction="<?php echo base_url(); ?>settings/remove_logo/invoice" formmethod="post" formnovalidate class="btn btn-link" style="padding:0; border:0; background:none; text-decoration:underline; cursor:pointer;">
                                             <?php _trans('remove_logo'); ?>
-                                        </button>
-                                    </form>
+                                    </button>
                                 </div>
 <?php
     } else {
@@ -185,12 +183,10 @@ if (get_setting('invoice_logo')) {
                                 <img class="personal_logo"
                                      src="<?php echo base_url(); ?>uploads/<?php echo htmlsc($invoice_logo_file); ?>">
                                 <br>
-                                <form method="post" action="<?php echo base_url(); ?>settings/remove_logo/invoice" style="display:inline;">
-                                    <?php _csrf_field(); ?>
-                                    <button type="submit" class="btn btn-link" style="padding:0; border:0; background:none; text-decoration:underline; cursor:pointer;">
+                                <?php // Not a <form>: these partials render inside form-settings and forms cannot nest. The button posts that form (it carries the CSRF field) to remove_logo instead. ?>
+                                <button type="submit" formaction="<?php echo base_url(); ?>settings/remove_logo/invoice" formmethod="post" formnovalidate class="btn btn-link" style="padding:0; border:0; background:none; text-decoration:underline; cursor:pointer;">
                                         <?php _trans('remove_logo'); ?>
-                                    </button>
-                                </form>
+                                </button>
                                 <br/>
 <?php
     }
