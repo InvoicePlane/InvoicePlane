@@ -194,7 +194,7 @@ class Sumex
         $this->_patient['zip']        = $this->sanitizeXmlText($this->invoice->client_zip);
         $this->_patient['city']       = $this->sanitizeXmlText($this->invoice->client_city);
         $this->_patient['phone']      = ($this->invoice->client_phone == '' ? null : $this->sanitizeXmlText($this->invoice->client_phone));
-        $this->_patient['avs']        = $this->invoice->client_avs;
+        $this->_patient['avs']        = $this->sanitizeXmlText($this->invoice->client_avs);
 
         $this->_company['name']   = $this->sanitizeXmlText($this->invoice->user_company);
         $this->_company['street'] = $this->sanitizeXmlText($this->invoice->user_address_1);
