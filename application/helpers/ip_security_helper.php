@@ -145,3 +145,30 @@ function session_credential_fingerprint(string $password_hash): string
 {
     return hash_hmac('sha256', $password_hash, (string) config_item('encryption_key'));
 }
+
+if ( ! function_exists('security_frame_headers')) {
+    /**
+     * The clickjacking headers, derived from X_FRAME_OPTIONS.
+     *
+     * Only SAMEORIGIN and DENY are valid values; anything else (ALLOWALL, ALLOW-FROM ..., a typo)
+     * falls back to SAMEORIGIN so a bad setting can never produce an invalid X-Frame-Options that
+     * browsers ignore. The CSP frame-ancestors follows the same choice, so DENY blocks framing in
+     * browsers that read the CSP instead of X-Frame-Options.
+     *
+     * @return string[] complete header lines
+     */
+    function security_frame_headers(): array
+    {
+        $ancestors = ['SAMEORIGIN' => "'self'", 'DENY' => "'none'"];
+        $option    = mb_strtoupper(trim((string) env('X_FRAME_OPTIONS', 'SAMEORIGIN')));
+
+        if ( ! isset($ancestors[$option])) {
+            $option = 'SAMEORIGIN';
+        }
+
+        return [
+            'X-Frame-Options: ' . $option,
+            "Content-Security-Policy: frame-ancestors {$ancestors[$option]}; object-src 'none'; base-uri 'self'",
+        ];
+    }
+}
