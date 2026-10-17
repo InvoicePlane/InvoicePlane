@@ -247,11 +247,34 @@ class Sumex
      * is sequential and public-ish, so "Invoice_<number>.xml" could be fetched by anyone who can reach the directory.
      * The file is also made owner-only.
      */
-    private function writeTempXml(string $filename): string
+    private function writeTempXml(string $filename): ?string
     {
+        $xml = $this->xml();
+        if ($xml === false) {
+            log_message('error', 'Sumex: the invoice XML could not be generated, no temporary file written');
+
+            return null;
+        }
+
         $path = STORAGE_TEMP_FOLDER . $filename . '_' . bin2hex(random_bytes(8)) . '.xml';
-        file_put_contents($path, $this->xml());
-        chmod($path, 0600);
+
+        // The file holds patient and billing data, so it is created owner-only from the start: with the
+        // process umask alone it would be readable by others between the write and a later chmod().
+        $previousUmask = umask(0177);
+
+        try {
+            $written = @file_put_contents($path, $xml, LOCK_EX);
+        } finally {
+            umask($previousUmask);
+        }
+
+        // Hand out the path only when the content is complete and the permissions are enforced.
+        if ($written !== strlen($xml) || ! @chmod($path, 0600)) {
+            @unlink($path);
+            log_message('error', 'Sumex: unable to write the temporary XML file with owner-only permissions');
+
+            return null;
+        }
 
         return $path;
     }
@@ -349,6 +372,10 @@ class Sumex
         $filename = trans('invoice') . '_' . sanitize_document_number_for_filename($this->invoice->invoice_number);
         // Create the SUMEX XML file (embed) in storage/temp/
         $path = $this->writeTempXml($filename);
+        if ($path === null) {
+            return false;
+        }
+
         $associatedFiles = [[
             'path'           => $path,
             'name'           => 'sumex.xml', // todo: what's need in real
