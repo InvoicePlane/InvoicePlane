@@ -38,10 +38,16 @@ function render_template_view(string $template_subpath, array $data, bool $retur
             // Bind the include to the controller instance: a custom template copied from a
             // built-in one (e.g. InvoicePlane_Web.php) calls $this->layout->load_view(...),
             // and $this is otherwise undefined inside this plain function.
+            //
+            // $_ci_path (not $file_path) holds the include target: extract() below runs with
+            // EXTR_OVERWRITE and would clobber a same-named local, so it must survive under a
+            // name $data can't realistically carry -- the same reason CI's own Loader::_ci_load()
+            // extracts view data into locals named _ci_path / _ci_vars rather than plain ones.
             $render = Closure::bind(function () use ($file_path, $data) {
+                $_ci_path = $file_path;
                 extract($data);
                 ob_start();
-                include $file_path;
+                include $_ci_path;
 
                 return ob_get_clean();
             }, $CI, $CI);
