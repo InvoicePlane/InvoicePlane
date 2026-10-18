@@ -25,8 +25,9 @@ Thanks to [@hariprakash6969-create](https://github.com/hariprakash6969-create),
 [@medamineelhatimi](https://github.com/medamineelhatimi), [@T0x1cG](https://github.com/T0x1cG),
 [@fr1d4yy](https://github.com/fr1d4yy), [@sharma19d](https://github.com/sharma19d),
 [@mkax0](https://github.com/mkax0), [@crypto-nidh](https://github.com/crypto-nidh),
-[@RekhanshRajput](https://github.com/RekhanshRajput), and
-[@0x0Axlw](https://github.com/0x0Axlw) for responsibly disclosing the issues resolved or in progress
+[@RekhanshRajput](https://github.com/RekhanshRajput),
+[@0x0Axlw](https://github.com/0x0Axlw), and
+[@cray4367](https://github.com/cray4367) for responsibly disclosing the issues resolved or in progress
 in this release.
 
 ### Security Vulnerability Summary
@@ -64,6 +65,7 @@ in this release.
 | Stripe callback replaced a specific refusal message (duplicate, already paid, mismatch) with the generic one | — | — | — | [#1773](https://github.com/InvoicePlane/InvoicePlane/pull/1773) |
 | Pager printed an unescaped base URL into `href` attributes | — | — | — | [#1774](https://github.com/InvoicePlane/InvoicePlane/pull/1774) |
 | `log_message('warning')` entries were silently dropped by the CodeIgniter logger, including security events | — | — | — | [#1782](https://github.com/InvoicePlane/InvoicePlane/pull/1782) |
+| Stored XSS via unescaped `system_theme` setting, reaching the unauthenticated login page (CWE-79 / CWE-116 / CWE-20 / CWE-693) | High | — | [@cray4367](https://github.com/cray4367) | [#1805](https://github.com/InvoicePlane/InvoicePlane/pull/1805) |
 
 ### Security fixes
 
@@ -158,6 +160,8 @@ in this release.
 - **Remaining SUMEX XML fields sanitised; `&` no longer truncates names (CWE-91):** the 1.7.2 fix added `sanitizeXmlText()` but left `item_name`, the company GLN and RCC, the case number, the insured number and the patient AVS number unsanitised, so a control character in any of them still produced a document that is not well-formed; and text assigned through `DOMNode::nodeValue` was cut at an `&`. Those fields are sanitised and text is now added as text nodes. Thanks to [@Char0n1507](https://github.com/Char0n1507) and [@yeshwanthmoota](https://github.com/yeshwanthmoota) for responsible disclosure. ([GHSA-j7f7-999x-v4gx](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-j7f7-999x-v4gx), [#1770](https://github.com/InvoicePlane/InvoicePlane/pull/1770))
 
 - **`verify_csrf_token()` trusted CodeIgniter's CSRF check even for URIs it never checked:** the fix for the "unable to delete an invoice" error (#1694) accepted a POST whose submitted token was `null` on the assumption that CodeIgniter had already validated and consumed it. For a URI in `csrf_exclude_uris` the framework returns early and never touches the token, so a tokenless POST would have been accepted there. The shortcut now applies only to URIs that are not CSRF-excluded; excluded URIs go through the explicit token comparison. Thanks to [@venkatesh2003631](https://github.com/venkatesh2003631) for responsible disclosure. ([GHSA-mhvh-4j3w-7pvj](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-mhvh-4j3w-7pvj), [#1784](https://github.com/InvoicePlane/InvoicePlane/pull/1784))
+
+- **Stored XSS via unescaped `system_theme` setting (CWE-79, leading to CWE-116 / CWE-20 / CWE-693):** `system_theme` was persisted by `Settings::index()` with no server-side allowlist — unlike `first_day_of_week`, which already has a guard in the same loop — and echoed unescaped by `_theme_asset()` into a double-quoted `href="..."` attribute on 18 views, including the unauthenticated login page, so a value planted by any administrator (not just the primary one) executed in the browser of every visitor, logged in or not. An attribute-breakout payload (`x" onerror="..." x="`) contains no `<` and matches none of `xss_clean()`'s tag- or keyword-gated filters, so the global input filter did not stop it either. **Fix:** `Settings::index()` now validates `system_theme` against the same theme list its own `<select>` is built from, and `_theme_asset()` escapes the value on output as defense-in-depth. Thanks to [@cray4367](https://github.com/cray4367) for responsible disclosure. [#1805](https://github.com/InvoicePlane/InvoicePlane/pull/1805)
 
 ### Bug fixes
 
