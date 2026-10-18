@@ -94,6 +94,19 @@ class Settings extends Admin_Controller
                             redirect('settings');
                         }
                     }
+                    // Security: Validate system_theme to prevent stored XSS (CWE-79) -- this
+                    // setting was previously persisted with no server-side allowlist and echoed
+                    // unescaped by _theme_asset() on every view, including the unauthenticated
+                    // login page. Validate against the same theme list the <select> itself is
+                    // built from.
+                    if ($key === 'system_theme') {
+                        if ( ! in_array($value, array_keys($this->mdl_settings->get_themes()), true)) {
+                            $safe_value = is_scalar($value) ? sanitize_for_logging((string) $value) : '[non-scalar]';
+                            log_message('error', sprintf('Invalid system_theme value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
                     $batch_settings[$key] = $value;
                 }
 
