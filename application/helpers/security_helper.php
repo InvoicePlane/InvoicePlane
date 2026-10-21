@@ -326,8 +326,11 @@ function verify_get_csrf_token(): bool
     $token_name      = config_item('csrf_token_name');
     $submitted_token = $CI->input->get($token_name);
 
-    // Token the browser holds in the CSRF cookie
-    $cookie_name    = config_item('csrf_cookie_name');
+    // Token the browser holds in the CSRF cookie. CodeIgniter's own Security
+    // library prepends cookie_prefix to csrf_cookie_name when it actually sets
+    // and reads the cookie (see CI_Security::__construct()); mirror that here
+    // or a non-default cookie_prefix makes every logout link fail validation.
+    $cookie_name    = config_item('cookie_prefix') . config_item('csrf_cookie_name');
     $expected_token = $CI->input->cookie($cookie_name);
 
     // Enforce non-empty string tokens to prevent bypass when both are null
