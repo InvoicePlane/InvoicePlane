@@ -63,7 +63,7 @@
                         <?php _csrf_field(); ?>
                         <button type="submit" class="tip icon logout" data-placement="bottom"
                                 title="<?php _trans('logout'); ?>"
-                                style="background: none; border: none; padding: 0; margin: 0; font: inherit; color: inherit; cursor: pointer;">
+                                style="background: none; border: none; padding: 15px; margin: 0; font: inherit; color: inherit; cursor: pointer;">
                             <span class="visible-xs">&nbsp;<?php _trans('logout'); ?></span>
                             <i class="fa fa-power-off"></i>
                         </button>
