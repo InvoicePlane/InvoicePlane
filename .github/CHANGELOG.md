@@ -34,6 +34,7 @@ in progress in this release.
 
 | Vulnerability | Severity | Security Advisory (GHSA) | Reported By | Fixed In |
 |---|---|---|---|---|
+| Login response-time oracle reveals account existence despite uniform error message (CWE-208 / CWE-204) | — | — | [@krishnan-tech](https://github.com/krishnan-tech) | [#1808](https://github.com/InvoicePlane/InvoicePlane/pull/1808) |
 | CSRF on logout — plain GET with no token destroys the session (CWE-352) | Low | — | [@krishnan-tech](https://github.com/krishnan-tech) | [#1807](https://github.com/InvoicePlane/InvoicePlane/pull/1807) |
 | Payment-amount validation race (TOCTOU, CWE-362 / CWE-367) | — | [GHSA-c2qp-26qj-6gf6](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-c2qp-26qj-6gf6) | [@hariprakash6969-create](https://github.com/hariprakash6969-create) | [#1756](https://github.com/InvoicePlane/InvoicePlane/pull/1756) |
 | PayPal `PENDING` capture treated as settled payment | — | [GHSA-w6fv-2f29-rc6g](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-w6fv-2f29-rc6g) | [@santhoshdodo2721](https://github.com/santhoshdodo2721) | [#1724](https://github.com/InvoicePlane/InvoicePlane/pull/1724), [#1772](https://github.com/InvoicePlane/InvoicePlane/pull/1772) |
@@ -69,6 +70,8 @@ in progress in this release.
 | Stored XSS via unescaped `system_theme` setting, reaching the unauthenticated login page (CWE-79 / CWE-116 / CWE-20 / CWE-693) | High | — | [@cray4367](https://github.com/cray4367) | [#1805](https://github.com/InvoicePlane/InvoicePlane/pull/1805) |
 
 ### Security fixes
+
+- **Login response-time oracle reveals account existence despite a uniform error message (CWE-208 / CWE-204):** `Sessions::login()` deliberately returns the same generic "credentials incorrect" message for every failed login, but `Mdl_Sessions::auth()` only reached the bcrypt `password_verify()` call when a row for the submitted email existed, returning immediately otherwise. This produced a measurable, reproducible response-time difference (~2x in testing) that revealed whether an email was a registered account, narrowing targets for password-reset abuse, phishing, and credential stuffing. **Fix:** `auth()` now runs a bcrypt comparison against a fixed decoy hash when no account exists, so the non-existent-email path takes about as long as the real one. Thanks to [@krishnan-tech](https://github.com/krishnan-tech) for responsible disclosure. [#1808](https://github.com/InvoicePlane/InvoicePlane/pull/1808)
 
 - **CSRF on logout — a plain GET with no token destroys the session (CWE-352):** `Sessions::logout()` destroyed the session on a plain GET with no CSRF check. Because the session cookie can carry on a top-level cross-site navigation (a link click, `window.location`, a redirect), an attacker page could force an authenticated victim's session to end simply by getting them to navigate to `/sessions/logout`. **Fix:** guarded the same way `generate_pdf`'s GET-based state change was guarded in [#1674](https://github.com/InvoicePlane/InvoicePlane/pull/1674) — the logout link now embeds a CSRF token via `_csrf_query()`, and logout only destroys the session when `verify_get_csrf_token()` confirms it matches the CSRF cookie. Thanks to [@krishnan-tech](https://github.com/krishnan-tech) for responsible disclosure. [#1807](https://github.com/InvoicePlane/InvoicePlane/pull/1807)
 
