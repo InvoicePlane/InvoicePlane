@@ -60,18 +60,23 @@ class Sessions extends Base_Controller
 
     public function logout()
     {
-        // Security: logout is a state-changing GET (it must stay a plain link,
-        // not a POST form), so it is guarded the same way as generate_pdf's
-        // GET-based state change (#1674) -- a same-origin link embeds the CSRF
-        // token via _csrf_query(), and a cross-site top-level navigation (the
-        // only way the session cookie can ride along on a SameSite=Lax/None
-        // deployment) cannot supply a matching token, so it no longer destroys
-        // the session (CWE-352).
-        if ( ! function_exists('verify_get_csrf_token')) {
+        // Security (CWE-352): logout is a state change, so it follows the same POST +
+        // CSRF-field pattern as every other state-changing action in this app, rather than
+        // staying a plain GET link. Sessions is a Base_Controller, not an Admin_Controller, so
+        // it cannot call ensure_valid_post_request() -- this mirrors that check inline, the
+        // same way the password-change POST above does.
+        if ($this->input->method() !== 'post') {
+            $this->session->set_flashdata('alert_error', trans('invalid_request'));
+            redirect('sessions/login');
+
+            return;
+        }
+
+        if ( ! function_exists('verify_csrf_token')) {
             $this->load->helper('security');
         }
 
-        if (verify_get_csrf_token()) {
+        if (verify_csrf_token()) {
             $this->session->sess_destroy();
         } else {
             $this->session->set_flashdata('alert_error', trans('invalid_request'));
