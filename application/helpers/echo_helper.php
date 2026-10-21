@@ -119,7 +119,11 @@ function _csrf_query(): string
 function _theme_asset($asset): void
 {
     $asset = IP_DEBUG ? strtr($asset, ['.min.' => '.']) : $asset;
-    echo base_url() . 'assets/' . get_setting('system_theme', 'invoiceplane');
+    // Security: Defense-in-depth escaping (CWE-79) -- system_theme is validated against the
+    // shipped theme list in Settings::index(), but this sink is reached on 18 views, including
+    // the unauthenticated login page, so it escapes on output too rather than trusting that
+    // every value already in the database was written after that validation existed.
+    echo base_url() . 'assets/' . get_setting('system_theme', 'invoiceplane', true);
     echo '/' . $asset . '?v=' . get_setting('current_version');
 }
 
