@@ -20,7 +20,7 @@ class Layout extends MX_Controller
 
     /**
      * CodeIgniter calls _remap() only when a URL routes to this controller; other controllers use
-     * buffer()/set()/render() directly. Without this, /layout/load_view/... and /layout/render/...
+     * buffer()/set()/render() directly. Without this, /layout/layout/render and /layout/layout/load_view/...
      * rendered views for anyone, logged in or not.
      */
     public function _remap($method, $params = []): void
