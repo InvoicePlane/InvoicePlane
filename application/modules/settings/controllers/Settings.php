@@ -94,6 +94,30 @@ class Settings extends Admin_Controller
                             redirect('settings');
                         }
                     }
+                    // Security: Validate system_theme to prevent stored XSS (CWE-79) -- this
+                    // setting was previously persisted with no server-side allowlist and echoed
+                    // unescaped by _theme_asset() on every view, including the unauthenticated
+                    // login page. Validate against the same theme list the <select> itself is
+                    // built from.
+                    //
+                    // array_key_exists(), not in_array(..., array_keys(...), true): PHP
+                    // normalizes a purely-numeric string array key (e.g. a theme directory
+                    // literally named "42") to an int, so array_keys() would return 42 (int)
+                    // and strict in_array('42', [42], true) would never match -- rejecting a
+                    // real, legitimately-shipped theme. array_key_exists('42', $themes) looks
+                    // the submitted string up against the array directly, so PHP's own key
+                    // normalization works for it instead of against it. is_string() is checked
+                    // first because array_key_exists() throws a TypeError for a non-int/string
+                    // key (e.g. a crafted settings[system_theme][]=x array), where in_array()
+                    // would have just returned false.
+                    if ($key === 'system_theme') {
+                        if ( ! is_string($value) || ! array_key_exists($value, $this->mdl_settings->get_themes())) {
+                            $safe_value = is_scalar($value) ? sanitize_for_logging((string) $value) : '[non-scalar]';
+                            log_message('error', sprintf('Invalid system_theme value attempted by user %d: %s', $this->session->userdata('user_id'), $safe_value));
+                            $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                            redirect('settings');
+                        }
+                    }
                     $batch_settings[$key] = $value;
                 }
 
