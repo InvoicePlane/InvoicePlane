@@ -763,10 +763,8 @@ class Sessions extends Base_Controller
      */
     private function _reject_expired_password_reset_token($user): void
     {
-        if (empty($user->user_passwordreset_token_expiry)) {
-            return;
-        }
-
+        // A token without a stored expiry is rejected like a malformed one: tokens are always written
+        // together with their expiry, so a row without one must not stay valid forever.
         try {
             // Initialize UTC timezone if not already done
             if ( ! isset(self::$utc_timezone)) {
