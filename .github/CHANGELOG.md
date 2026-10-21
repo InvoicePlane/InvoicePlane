@@ -26,14 +26,15 @@ Thanks to [@hariprakash6969-create](https://github.com/hariprakash6969-create),
 [@fr1d4yy](https://github.com/fr1d4yy), [@sharma19d](https://github.com/sharma19d),
 [@mkax0](https://github.com/mkax0), [@crypto-nidh](https://github.com/crypto-nidh),
 [@RekhanshRajput](https://github.com/RekhanshRajput),
-[@0x0Axlw](https://github.com/0x0Axlw), and
-[@cray4367](https://github.com/cray4367) for responsibly disclosing the issues resolved or in progress
-in this release.
+[@0x0Axlw](https://github.com/0x0Axlw), [@cray4367](https://github.com/cray4367), and
+[@krishnan-tech](https://github.com/krishnan-tech) for responsibly disclosing the issues resolved or
+in progress in this release.
 
 ### Security Vulnerability Summary
 
 | Vulnerability | Severity | Security Advisory (GHSA) | Reported By | Fixed In |
 |---|---|---|---|---|
+| CSRF on logout — plain GET with no token destroys the session (CWE-352) | Low | — | [@krishnan-tech](https://github.com/krishnan-tech) | [#1807](https://github.com/InvoicePlane/InvoicePlane/pull/1807) |
 | Payment-amount validation race (TOCTOU, CWE-362 / CWE-367) | — | [GHSA-c2qp-26qj-6gf6](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-c2qp-26qj-6gf6) | [@hariprakash6969-create](https://github.com/hariprakash6969-create) | [#1756](https://github.com/InvoicePlane/InvoicePlane/pull/1756) |
 | PayPal `PENDING` capture treated as settled payment | — | [GHSA-w6fv-2f29-rc6g](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-w6fv-2f29-rc6g) | [@santhoshdodo2721](https://github.com/santhoshdodo2721) | [#1724](https://github.com/InvoicePlane/InvoicePlane/pull/1724), [#1772](https://github.com/InvoicePlane/InvoicePlane/pull/1772) |
 | Unauthenticated disclosure of sensitive financial data via static-file exposure (CWE-538 / CWE-284 / CWE-22 / CWE-668) | — | [GHSA-qq8q-gf24-576m](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-qq8q-gf24-576m) | [@nirtem](https://github.com/nirtem), [@sharma19d](https://github.com/sharma19d), [@mkax0](https://github.com/mkax0) | [#1716](https://github.com/InvoicePlane/InvoicePlane/pull/1716), [#1783](https://github.com/InvoicePlane/InvoicePlane/pull/1783) |
@@ -68,6 +69,8 @@ in this release.
 | Stored XSS via unescaped `system_theme` setting, reaching the unauthenticated login page (CWE-79 / CWE-116 / CWE-20 / CWE-693) | High | — | [@cray4367](https://github.com/cray4367) | [#1805](https://github.com/InvoicePlane/InvoicePlane/pull/1805) |
 
 ### Security fixes
+
+- **CSRF on logout — a plain GET with no token destroys the session (CWE-352):** `Sessions::logout()` destroyed the session on a plain GET with no CSRF check. Because the session cookie can carry on a top-level cross-site navigation (a link click, `window.location`, a redirect), an attacker page could force an authenticated victim's session to end simply by getting them to navigate to `/sessions/logout`. **Fix:** guarded the same way `generate_pdf`'s GET-based state change was guarded in [#1674](https://github.com/InvoicePlane/InvoicePlane/pull/1674) — the logout link now embeds a CSRF token via `_csrf_query()`, and logout only destroys the session when `verify_get_csrf_token()` confirms it matches the CSRF cookie. Thanks to [@krishnan-tech](https://github.com/krishnan-tech) for responsible disclosure. [#1807](https://github.com/InvoicePlane/InvoicePlane/pull/1807)
 
 - **Stored XSS via `first_day_of_week` setting (JavaScript context injection)** ([GHSA-x3r7-qm3m-hc48](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-x3r7-qm3m-hc48)): the `first_day_of_week` setting was echoed directly into a JavaScript string literal in the datepicker initialization in `head.php`, with only HTML escaping applied — which does not protect a JavaScript string context. An authenticated administrator could set the value to a payload that breaks out of the string literal and executes arbitrary JavaScript in the browser of every authenticated user who loads a page with a datepicker. **Fix:** a new `encode_for_javascript_string()` helper escapes backslashes, quotes, line terminators, and forward slashes before the value is embedded in the script, and `Settings::index()` now validates `first_day_of_week` against the valid `0`–`6` range server-side, rejecting and logging anything else. Thanks to [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh) for responsible disclosure. [#1751](https://github.com/InvoicePlane/InvoicePlane/pull/1751)
 
