@@ -126,7 +126,7 @@ class Ajax extends Admin_Controller
         }
 
         $this->load->model('clients/mdl_clients');
-        $this->load->model('users/mdl_user_clients');
+        $this->load->model('user_clients/mdl_user_clients');
 
         $client = $this->mdl_clients->get_by_id($client_id);
         if ($client) {
@@ -164,7 +164,7 @@ class Ajax extends Admin_Controller
                 'user_clients' => $this->mdl_clients->where_in('ip_clients.client_id', $session_user_clients)->get()->result(),
             ];
         } else {
-            $this->load->model('users/mdl_user_clients');
+            $this->load->model('user_clients/mdl_user_clients');
 
             $data = [
                 'id'           => $this->input->post('user_id'),
@@ -183,7 +183,7 @@ class Ajax extends Admin_Controller
             $clients          = $this->mdl_clients->where_not_in('ip_clients.client_id', $session_user_clients)->get()->result();
             $assigned_clients = [];
         } else {
-            $this->load->model('users/mdl_user_clients');
+            $this->load->model('user_clients/mdl_user_clients');
             $assigned_clients_query = $this->mdl_user_clients->where('ip_user_clients.user_id', $user_id)->get()->result();
             $assigned_clients       = [];
 
