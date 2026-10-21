@@ -18,9 +18,11 @@ class Mdl_Sessions extends CI_Model
 {
     /**
      * Fixed bcrypt hash of an unguessable decoy password, used only to keep
-     * the non-existent-account path in auth() as slow as the real one (see
-     * the num_rows() === 0 branch below). Never intended to validate against
-     * any real password.
+     * every login-failure path in auth() as slow as a real check_password()
+     * call (see the num_rows() === 0 branch and the legacy-md5-mismatch
+     * branch below). Never intended to validate against any real password.
+     * Generated at Crypt::BCRYPT_COST (currently 10) -- if that cost ever
+     * changes, regenerate this at the same cost.
      */
     private const DUMMY_PASSWORD_HASH = '$2y$10$woAI/YEapjthjnbqbsEgy.RldV3enm6I417RVNYwcybNGrt9MVpX.';
 
@@ -69,7 +71,13 @@ class Mdl_Sessions extends CI_Model
                     $this->db->where('user_email', $email);
                     $user = $this->db->get('ip_users')->row();
                 } else {
-                    // The password didn't verify against original md5
+                    // Security: the password didn't verify against the legacy md5 hash. Still run a
+                    // bcrypt comparison against the fixed decoy hash so this legacy-account failure
+                    // takes as long as the modern-path checks elsewhere in this method, and a legacy
+                    // (pre-1.2.0, no user_psalt) account can't be distinguished from any other by
+                    // response time alone (CWE-208 / CWE-204).
+                    $this->crypt->check_password(self::DUMMY_PASSWORD_HASH, (string) $password);
+
                     return false;
                 }
             }
