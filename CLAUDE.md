@@ -106,8 +106,10 @@ Tests live in `tests/`. Use plain `\PHPUnit\Framework\TestCase` — no Laravel `
 - **Never audit, grep, or diff against a local working-tree checkout without fetching first.**
   A stale local branch silently answers "is X present on `develop`?" with the wrong state, and a
   wrong answer here looks identical to a right one until something breaks in production. Always
-  `git fetch origin develop --quiet` and check against `origin/develop`, not a local branch that
-  may have been checked out earlier in the session for an unrelated reason.
+  `git fetch <remote> develop --quiet` (where `<remote>` is the remote that points at
+  `InvoicePlane/InvoicePlane`: `upstream` in a fork, `origin` in a direct clone) and check against
+  `<remote>/develop`, not a local branch that may have been checked out earlier in the session for
+  an unrelated reason.
 - When auditing whether a merge dropped or duplicated content (e.g. a `CHANGELOG.md` entry),
   diff the merge commit against its actual first parent (`git diff <parent> <merge-sha> --
   <file>`), not the combined/`diff --cc` output `git show <merge-sha>` gives for a two-parent
