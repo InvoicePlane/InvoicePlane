@@ -59,7 +59,7 @@
 
             <ul class="nav navbar-nav navbar-right settings">
                 <li>
-                    <a href="<?php echo site_url('sessions/logout'); ?>"
+                    <a href="<?php echo site_url('sessions/logout') . '?' . _csrf_query(); ?>"
                        class="tip icon logout" data-placement="bottom"
                        title="<?php _trans('logout'); ?>">
                         <span class="visible-xs">&nbsp;<?php _trans('logout'); ?></span>
