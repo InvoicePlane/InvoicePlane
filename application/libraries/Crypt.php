@@ -16,6 +16,16 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Crypt
 {
+    /**
+     * Explicit bcrypt cost for generate_password(). Pinned rather than left to
+     * PASSWORD_BCRYPT's implicit default: Mdl_Sessions::DUMMY_PASSWORD_HASH is
+     * a precomputed hash used to keep the non-existent-account login path's
+     * timing matched to a real one (see Mdl_Sessions::auth()), and that only
+     * holds if both are generated at the same cost. If this value changes,
+     * regenerate that constant at the same cost.
+     */
+    public const BCRYPT_COST = 10;
+
     public function salt(): string
     {
         // Load project-specific crypto helper for cryptographically secure token generation
@@ -35,7 +45,7 @@ class Crypt
      */
     public function generate_password($password, string $salt = ''): string
     {
-        return password_hash($password, PASSWORD_BCRYPT);
+        return password_hash($password, PASSWORD_BCRYPT, ['cost' => self::BCRYPT_COST]);
     }
 
     /**
