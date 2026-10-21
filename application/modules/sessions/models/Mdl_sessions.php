@@ -17,6 +17,14 @@ if ( ! defined('BASEPATH')) {
 class Mdl_Sessions extends CI_Model
 {
     /**
+     * Fixed bcrypt hash of an unguessable decoy password, used only to keep
+     * the non-existent-account path in auth() as slow as the real one (see
+     * the num_rows() === 0 branch below). Never intended to validate against
+     * any real password.
+     */
+    private const DUMMY_PASSWORD_HASH = '$2y$10$woAI/YEapjthjnbqbsEgy.RldV3enm6I417RVNYwcybNGrt9MVpX.';
+
+    /**
      * @param $email
      * @param $password
      *
@@ -91,6 +99,13 @@ class Mdl_Sessions extends CI_Model
 
                 return true;
             }
+        } else {
+            // Security: no account exists for this email. Still run a bcrypt
+            // comparison against a fixed decoy hash so the response time matches
+            // the real-account path above and does not reveal account existence
+            // via timing (CWE-208 / CWE-204).
+            $this->load->library('crypt');
+            $this->crypt->check_password(self::DUMMY_PASSWORD_HASH, (string) $password);
         }
 
         return false;
