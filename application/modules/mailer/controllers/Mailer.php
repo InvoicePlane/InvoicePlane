@@ -194,6 +194,12 @@ class Mailer extends Admin_Controller
         $cc  = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
 
+        // Authorize CC/BCC addresses to internal domain
+        if (!$this->authorize_cc_bcc_addresses($cc, $bcc)) {
+            $this->session->set_flashdata('alert_danger', 'CC and BCC addresses must be internal (authorized domain only)');
+            redirect('mailer/invoice/' . $invoice_id);
+        }
+
         $this->load->model('upload/mdl_uploads');
         $attachment_files = $this->mdl_uploads->get_invoice_uploads($invoice_id);
 
@@ -252,6 +258,12 @@ class Mailer extends Admin_Controller
         $cc  = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
 
+        // Authorize CC/BCC addresses to internal domain
+        if (!$this->authorize_cc_bcc_addresses($cc, $bcc)) {
+            $this->session->set_flashdata('alert_danger', 'CC and BCC addresses must be internal (authorized domain only)');
+            redirect('mailer/quote/' . $quote_id);
+        }
+
         $this->load->model('upload/mdl_uploads');
         $attachment_files = $this->mdl_uploads->get_quote_uploads($quote_id);
 
@@ -265,5 +277,88 @@ class Mailer extends Admin_Controller
         }
 
         redirect('mailer/quote/' . $quote_id);
+    }
+
+    /**
+     * Authorize CC and BCC addresses to the internal domain.
+     *
+     * CC/BCC addresses must match the organization's internal domain to prevent
+     * information disclosure (sending branded PDFs to unauthorized recipients).
+     * The internal domain is determined by:
+     * 1. mailer_internal_domain setting (if set)
+     * 2. Domain extracted from smtp_mail_from setting
+     *
+     * @param string $cc  Comma-separated CC addresses
+     * @param string $bcc Comma-separated BCC addresses
+     * @return bool True if all addresses authorized, false otherwise
+     */
+    private function authorize_cc_bcc_addresses(string $cc, string $bcc): bool
+    {
+        // Empty CC/BCC always authorized
+        $cc = trim($cc);
+        $bcc = trim($bcc);
+        if (empty($cc) && empty($bcc)) {
+            return true;
+        }
+
+        // Get internal domain from settings
+        $internal_domain = get_setting('mailer_internal_domain');
+        if (empty($internal_domain)) {
+            // Fallback: extract domain from smtp_mail_from
+            $smtp_from = get_setting('smtp_mail_from');
+            if (!empty($smtp_from) && strpos($smtp_from, '@') !== false) {
+                $internal_domain = substr($smtp_from, strpos($smtp_from, '@') + 1);
+            }
+        }
+
+        // If no domain configured, authorize all (lenient default)
+        if (empty($internal_domain)) {
+            return true;
+        }
+
+        // Validate CC addresses
+        if (!empty($cc)) {
+            $cc_addresses = array_map('trim', explode(',', $cc));
+            foreach ($cc_addresses as $addr) {
+                if (!$this->is_address_authorized($addr, $internal_domain)) {
+                    return false;
+                }
+            }
+        }
+
+        // Validate BCC addresses
+        if (!empty($bcc)) {
+            $bcc_addresses = array_map('trim', explode(',', $bcc));
+            foreach ($bcc_addresses as $addr) {
+                if (!$this->is_address_authorized($addr, $internal_domain)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if an email address belongs to the authorized internal domain.
+     *
+     * @param string $address Email address to check
+     * @param string $internal_domain Authorized domain (e.g., "company.internal")
+     * @return bool True if address matches domain
+     */
+    private function is_address_authorized(string $address, string $internal_domain): bool
+    {
+        // RFC email syntax validation (already done by form validation)
+        if (!filter_var($address, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
+        // Extract domain from email and compare
+        if (strpos($address, '@') === false) {
+            return false;
+        }
+
+        $address_domain = substr($address, strpos($address, '@') + 1);
+        return strcasecmp($address_domain, $internal_domain) === 0;
     }
 }
