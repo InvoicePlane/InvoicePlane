@@ -397,13 +397,26 @@ $(function () {
     // Automatic CSRF protection for all jQuery POST requests
     // Uses meta tag value or header X-' + csrf_token_name'
     $.ajaxPrefilter(function (options) {
-        if (options.type === 'post' || options.type === 'POST' || options.type === 'Post') {
-            if (options.data === '') {
-                options.data += '?' + csrf_token_name + '=' + csrf_token_value;
-            } else {
-                options.data += '&' + csrf_token_name + '=' + csrf_token_value;
-            }
+        if (typeof options.type !== 'string' || options.type.toUpperCase() !== 'POST') {
+            return;
         }
+
+        // File uploads: jQuery hands over the FormData itself; turning it into a string would drop
+        // every field, so the token goes in as one more field.
+        if (typeof FormData !== 'undefined' && options.data instanceof FormData) {
+            if (!options.data.has(csrf_token_name)) {
+                options.data.append(csrf_token_name, csrf_token_value);
+            }
+            return;
+        }
+
+        // Any other non-string body (processData: false with a raw object) is left untouched.
+        if (options.data !== undefined && options.data !== null && typeof options.data !== 'string') {
+            return;
+        }
+
+        const token_pair = encodeURIComponent(csrf_token_name) + '=' + encodeURIComponent(csrf_token_value);
+        options.data = options.data ? options.data + '&' + token_pair : token_pair;
     });
 
     // javascript get header in $(document).ajaxComplete
