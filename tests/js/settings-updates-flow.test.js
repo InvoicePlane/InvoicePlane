@@ -23,8 +23,8 @@ function inlineScript() {
     const php = fs.readFileSync(VIEW, "utf8");
 
     return php
-        .match(/<script[^>]*>([\s\S]*?)<\/script>/g)
-        .map((block) => block.replace(/<\/?script[^>]*>/g, ""))
+        .match(/<script[^>]*>([\s\S]*?)<\/script>/gi)
+        .map((block) => block.replace(/<\/?script[^>]*>/gi, ""))
         .join("\n")
         .replace(/<\?php echo json_encode\(trans\('date'\)\); \?>/g, '"Date"')
         .replace(/<\?php echo trans\('date'\)\s*\?>/g, "Date")
