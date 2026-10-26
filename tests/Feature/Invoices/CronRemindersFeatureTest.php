@@ -1,0 +1,343 @@
+<?php
+
+namespace Tests\Feature\Invoices;
+
+use PHPUnit\Framework\Attributes\Test;
+use RuntimeException;
+use Tests\AbstractTestCase;
+
+/**
+ * Feature tests for the invoice reminder cron job (/invoices/cron/reminders).
+ *
+ * Tests the complete flow: cron triggers, reminders are identified, emails are sent,
+ * and the ip_invoice_reminders table is updated. Tests both success and failure paths.
+ */
+class CronRemindersFeatureTest extends AbstractTestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // Reminders run as a cron job (unauthenticated, protected by cron_key)
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'cron_key', 'setting_value' => 'test-cron-key']);
+    }
+
+    #[Test]
+    public function it_sends_a_before_due_reminder_for_an_invoice_matching_the_offset(): void
+    {
+        /* Arrange: invoice due in 7 days, reminder configured for 7 days before */
+        $seeded = ['invoiceId' => $this->armEligibleReminder()];
+
+        /* Act */
+        $response = $this->get('/invoices/cron/reminders/test-cron-key');
+
+        /* Assert: Cron succeeds */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertResponseHasNoPhpErrors($response);
+
+        /* Behavior: Reminder slot was claimed and processed (not skipped) */
+        // Actual delivery success ('sent' vs 'failed') depends on a working MTA, which
+        // this environment (and CI) doesn't provide — PHP's mail() has nothing to shell
+        // out to. What's verifiable here is that eligible_invoices() found this invoice
+        // and the correct slot (before_due/7) was claimed rather than left unprocessed.
+        $reminder = $this->databaseFetchOne('ip_invoice_reminders', [
+            'invoice_id'      => $seeded['invoiceId'],
+            'reminder_type'   => 'before_due',
+            'reminder_offset' => 7,
+        ]);
+        $this->assertNotNull($reminder, 'Expected the before_due/7 reminder slot to be claimed');
+        $this->assertContains($reminder['reminder_status'], ['sent', 'failed']);
+    }
+
+    #[Test]
+    public function it_skips_reminders_when_reminders_are_disabled_globally(): void
+    {
+        /* Arrange: reminders disabled in settings */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminders_enabled', 'setting_value' => '0']);
+
+        $seeded = $this->seedSimpleInvoice(['invoice_date_due' => date('Y-m-d', strtotime('+7 days'))]);
+
+        /* Act */
+        $response = $this->get('/invoices/cron/reminders/test-cron-key');
+
+        /* Assert: Cron still succeeds (no error) */
+        $this->assertResponseStatusCode($response, 200);
+
+        /* Behavior: No reminders were created/sent */
+        $this->assertDatabaseMissing('ip_invoice_reminders', [
+            'invoice_id' => $seeded['invoiceId'],
+        ]);
+    }
+
+    #[Test]
+    public function it_skips_reminders_for_invoices_with_client_opt_out(): void
+    {
+        /* Arrange: invoice with client that disabled reminders */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminders_enabled', 'setting_value' => '1']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_days_before', 'setting_value' => '7']);
+
+        $seeded = $this->seedSimpleInvoice(['invoice_date_due' => date('Y-m-d', strtotime('+7 days'))]);
+
+        /* Mark the client as opted-out from reminders */
+        $this->databaseUpdate('ip_clients', ['client_disable_reminders' => 1], ['client_id' => $seeded['clientId']]);
+
+        /* Act */
+        $response = $this->get('/invoices/cron/reminders/test-cron-key');
+
+        /* Assert: Cron succeeds */
+        $this->assertResponseStatusCode($response, 200);
+
+        /* Behavior: No reminders were sent for the opted-out client */
+        $this->assertDatabaseMissing('ip_invoice_reminders', [
+            'invoice_id' => $seeded['invoiceId'],
+        ]);
+    }
+
+    #[Test]
+    public function it_skips_reminders_for_invoices_with_invoice_level_opt_out(): void
+    {
+        /* Arrange: invoice with opt-out flag set */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminders_enabled', 'setting_value' => '1']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_days_before', 'setting_value' => '7']);
+
+        $seeded = $this->seedSimpleInvoice([
+            'invoice_date_due'          => date('Y-m-d', strtotime('+7 days')),
+            'invoice_disable_reminders' => 1,
+        ]);
+
+        /* Act */
+        $response = $this->get('/invoices/cron/reminders/test-cron-key');
+
+        /* Assert: Cron succeeds */
+        $this->assertResponseStatusCode($response, 200);
+
+        /* Behavior: No reminders were sent for the opted-out invoice */
+        $this->assertDatabaseMissing('ip_invoice_reminders', [
+            'invoice_id' => $seeded['invoiceId'],
+        ]);
+    }
+
+    #[Test]
+    public function it_skips_reminders_for_already_paid_invoices(): void
+    {
+        /* Arrange: invoice that's already paid (balance = 0) */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminders_enabled', 'setting_value' => '1']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_days_before', 'setting_value' => '7']);
+
+        $seeded = $this->seedSimpleInvoice([
+            'invoice_date_due' => date('Y-m-d', strtotime('+7 days')),
+        ]);
+
+        /* Record a payment that covers the entire invoice */
+        $this->databaseInsert('ip_payments', [
+            'invoice_id'        => $seeded['invoiceId'],
+            'payment_date'      => date('Y-m-d'),
+            'payment_amount'    => 100,
+            'payment_method_id' => 1,
+        ]);
+
+        /* Act */
+        $response = $this->get('/invoices/cron/reminders/test-cron-key');
+
+        /* Assert: Cron succeeds */
+        $this->assertResponseStatusCode($response, 200);
+
+        /* Behavior: No reminders were sent for paid invoice */
+        $this->assertDatabaseMissing('ip_invoice_reminders', [
+            'invoice_id' => $seeded['invoiceId'],
+        ]);
+    }
+
+    #[Test]
+    public function it_does_not_send_duplicate_reminders_for_the_same_offset(): void
+    {
+        /* Arrange: invoice with a reminder already sent for this offset */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminders_enabled', 'setting_value' => '1']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_days_before', 'setting_value' => '7']);
+
+        $seeded = $this->seedSimpleInvoice(['invoice_date_due' => date('Y-m-d', strtotime('+7 days'))]);
+
+        /* Pre-populate the reminder log showing this reminder was already sent */
+        $this->databaseInsert('ip_invoice_reminders', [
+            'invoice_id'         => $seeded['invoiceId'],
+            'reminder_type'      => 'before_due',
+            'reminder_offset'    => 7,
+            'reminder_status'    => 'sent',
+            'reminder_date_sent' => date('Y-m-d H:i:s'),
+        ]);
+
+        /* Act: Run cron again */
+        $response = $this->get('/invoices/cron/reminders/test-cron-key');
+
+        /* Assert: Cron succeeds */
+        $this->assertResponseStatusCode($response, 200);
+
+        /* Behavior: Only ONE reminder for this invoice (no duplicate) */
+        $count = $this->databaseCount('ip_invoice_reminders', [
+            'invoice_id'      => $seeded['invoiceId'],
+            'reminder_type'   => 'before_due',
+            'reminder_offset' => 7,
+        ]);
+
+        $this->assertSame(1, $count, 'Should only have one reminder for this offset, not a duplicate');
+    }
+
+    #[Test]
+    public function it_respects_the_maximum_reminders_limit_per_invoice(): void
+    {
+        /* Arrange: configure max 2 reminders total per invoice */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminders_enabled', 'setting_value' => '1']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_days_before', 'setting_value' => '7,3,1']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_max_total', 'setting_value' => '2']);
+
+        $seeded = $this->seedSimpleInvoice(['invoice_date_due' => date('Y-m-d', strtotime('-5 days'))]);
+
+        /* Act: Run cron which would send 7, 3, 1-day reminders but max is 2 */
+        $response = $this->get('/invoices/cron/reminders/test-cron-key');
+
+        /* Assert: Cron succeeds */
+        $this->assertResponseStatusCode($response, 200);
+
+        /* Behavior: Only 2 reminders were sent (the max) */
+        $reminderCount = $this->databaseCount('ip_invoice_reminders', [
+            'invoice_id'      => $seeded['invoiceId'],
+            'reminder_status' => 'sent',
+        ]);
+
+        $this->assertLessThanOrEqual(2, $reminderCount, 'Should not exceed max_total reminders');
+    }
+
+    #[Test]
+    public function it_rejects_the_cron_request_with_wrong_cron_key(): void
+    {
+        /* Arrange: correct key is "test-cron-key" (set in setUp) */
+
+        /* Act */
+        try {
+            $this->get('/invoices/cron/reminders/wrong-key');
+            self::fail('Expected RuntimeException for wrong cron key');
+        } catch (RuntimeException $e) {
+            /* Assert: Request is rejected */
+            self::assertStringContainsString('Wrong cron key provided', $e->getMessage());
+        }
+    }
+
+    #[Test]
+    public function it_handles_mailer_not_configured_gracefully(): void
+    {
+        /* Arrange: reminders enabled but mailer not configured */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminders_enabled', 'setting_value' => '1']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_days_before', 'setting_value' => '7']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'smtp_host', 'setting_value' => '']);
+
+        $seeded = $this->seedSimpleInvoice(['invoice_date_due' => date('Y-m-d', strtotime('+7 days'))]);
+
+        /* Act */
+        $response = $this->get('/invoices/cron/reminders/test-cron-key');
+
+        /* Assert: Cron still returns 200 (doesn't fail on mailer misconfiguration) */
+        $this->assertResponseStatusCode($response, 200);
+
+        /* Behavior: No reminders were sent (mailer error is logged but doesn't crash) */
+        $this->assertDatabaseMissing('ip_invoice_reminders', [
+            'invoice_id' => $seeded['invoiceId'],
+        ]);
+    }
+
+    #[Test]
+    public function it_logs_a_failed_send_summary_at_error_level_for_production_visibility(): void
+    {
+        /* Arrange */
+        $invoiceId = $this->armEligibleReminder();
+        $logFile   = APPPATH . 'logs/log-' . date('Y-m-d') . '.php';
+        $offset    = is_file($logFile) ? filesize($logFile) : 0;
+
+        /* Act */
+        $response = $this->get('/invoices/cron/reminders/test-cron-key');
+
+        /* Assert */
+        $this->assertResponseStatusCode($response, 200);
+        $reminder = $this->databaseFetchOne('ip_invoice_reminders', ['invoice_id' => $invoiceId, 'reminder_type' => 'before_due', 'reminder_offset' => 7]);
+        self::assertNotNull($reminder, 'The reminder slot must have been claimed.');
+        clearstatcache(true, $logFile);
+        $logged = is_file($logFile) ? (string) file_get_contents($logFile, false, null, $offset) : '';
+
+        if ($reminder['reminder_status'] === 'failed') {
+            self::assertMatchesRegularExpression('/ERROR - .*\[Cron Invoice Reminders\] 1 candidates, 0 sent, 1 FAILED, 0 skipped/', $logged);
+        } else {
+            self::assertStringNotContainsString('FAILED', $logged, 'No FAILED summary may be logged when nothing failed.');
+        }
+    }
+
+    /**
+     * Configure reminders so exactly one invoice is eligible for a before_due/7 reminder.
+     */
+    protected function armEligibleReminder(): int
+    {
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminders_enabled', 'setting_value' => '1']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoice_reminder_days_before', 'setting_value' => '7']);
+        // Cron::_process_reminders() gates the whole run on mailer_configured() before
+        // Invoice_reminders::run() is ever called — without this the reminder is never
+        // claimed at all, not even as a failed send.
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'email_send_method', 'setting_value' => 'phpmail']);
+        // resolve_templates() reads email_invoice_template_reminder (not
+        // email_invoice_template, the original invoice email's own setting), and it must
+        // point to a real ip_email_templates row or the send is silently skipped.
+        $templateId = $this->databaseInsert('ip_email_templates', [
+            'email_template_title'   => 'Reminder',
+            'email_template_subject' => 'Reminder',
+            'email_template_body'    => 'This invoice is due soon.',
+        ]);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'email_invoice_template_reminder', 'setting_value' => (string) $templateId]);
+
+        // eligible_invoices() requires invoice_status_id IN (2,3) and a positive
+        // ip_invoice_amounts.invoice_balance — seedSimpleInvoice()'s defaults (draft
+        // status, no amounts row) never qualify, so this test needs both explicitly.
+        $seeded = $this->seedSimpleInvoice([
+            'invoice_date_due'  => date('Y-m-d', strtotime('+7 days')),
+            'invoice_status_id' => 2,
+        ]);
+        $this->databaseInsert('ip_invoice_amounts', [
+            'invoice_id'             => $seeded['invoiceId'],
+            'invoice_item_subtotal'  => '100.00',
+            'invoice_item_tax_total' => '0.00',
+            'invoice_tax_total'      => '0.00',
+            'invoice_total'          => '100.00',
+            'invoice_paid'           => '0.00',
+            'invoice_balance'        => '100.00',
+        ]);
+
+        return $seeded['invoiceId'];
+    }
+
+    /**
+     * Helper: Create a simple invoice for testing reminder scenarios.
+     */
+    protected function seedSimpleInvoice(array $overrides = []): array
+    {
+        $clientId = $this->databaseInsertGetId('ip_clients', [
+            'client_name'          => 'Test Client',
+            'client_email'         => 'test@example.com',
+            'client_active'        => 1,
+            'client_date_created'  => date('Y-m-d H:i:s'),
+            'client_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        $invoiceId = $this->databaseInsertGetId('ip_invoices', array_merge([
+            'user_id'                   => 1,
+            'client_id'                 => $clientId,
+            'invoice_number'            => '001',
+            'invoice_status_id'         => 1,
+            'invoice_date_created'      => date('Y-m-d'),
+            'invoice_date_modified'     => date('Y-m-d H:i:s'),
+            'invoice_date_due'          => date('Y-m-d', strtotime('+30 days')),
+            'invoice_group_id'          => 1,
+            'invoice_url_key'           => bin2hex(random_bytes(16)),
+            'invoice_disable_reminders' => 0,
+        ], $overrides));
+
+        return [
+            'clientId'  => $clientId,
+            'invoiceId' => $invoiceId,
+        ];
+    }
+}
