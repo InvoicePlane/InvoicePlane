@@ -97,7 +97,7 @@ SESS_EXPIRATION=864000
 # CSRF token expiration: lifetime of CSRF tokens in seconds (default: 1 hour = 3600 seconds).
 # INDEPENDENT of SESS_EXPIRATION. CSRF tokens should be short-lived for security.
 # Do NOT set this to 0 — it must always be a positive number.
-CSRF_TOKEN_EXPIRATION=3600
+CSRF_EXPIRE=3600
 SESS_MATCH_IP=true
 # Database table used to store sessions when SESS_DRIVER=database.
 # Only needed if you override the default table name.
