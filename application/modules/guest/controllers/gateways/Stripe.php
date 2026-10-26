@@ -41,7 +41,7 @@ class Stripe extends Base_Controller
      *
      * @return json the client secret in a json format
      */
-    public function create_checkout_session($invoice_url_key)
+    public function create_checkout_session($invoice_url_key = null)
     {
         // Require POST request to prevent CSRF attacks
         if ($this->input->method() !== 'post') {
