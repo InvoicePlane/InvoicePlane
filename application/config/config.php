@@ -522,7 +522,11 @@ $config['global_xss_filtering'] = false;
 $config['csrf_protection']   = env_bool('CSRF_PROTECTION', 'true');
 $config['csrf_token_name']   = '_ip_csrf';
 $config['csrf_cookie_name']  = 'ip_csrf_cookie';
-$config['csrf_expire']       = env('SESS_EXPIRATION', 3600);
+// CSRF token expiration: 1 hour by default, INDEPENDENT of SESS_EXPIRATION.
+// NEVER source this from SESS_EXPIRATION — that caused a critical bug where
+// SESS_EXPIRATION=0 made the CSRF cookie Max-Age=0, discarding it immediately.
+// Users can override via CSRF_TOKEN_EXPIRATION env var if needed.
+$config['csrf_expire']       = env('CSRF_TOKEN_EXPIRATION', 3600);
 $config['csrf_regenerate']   = env_bool('CSRF_REGENERATE', 'false');
 $config['csrf_exclude_uris'] = [];
 
