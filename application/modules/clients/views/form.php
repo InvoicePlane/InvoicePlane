@@ -61,6 +61,13 @@ $einvoicingOpt = $req_einvoicing ? $einvoicingTip . trans('optional') . ')"' : '
                     </div>
                     <div class="panel-body">
                         <div class="form-group">
+                            <label for="client_number">
+                                <?php _trans('client_number'); ?>
+                            </label>
+                            <input id="client_number" name="client_number" type="text" class="form-control"
+                                   value="<?php echo $this->mdl_clients->form_value('client_number', true); ?>">
+                        </div>
+                        <div class="form-group">
                             <label for="client_name">
                                 <?php _trans('client_name'); ?>
                             </label>
