@@ -200,7 +200,7 @@ in progress in this release.
 
 ### Bug fixes
 
-- **Setup no longer fails on MySQL 8 at migration 043:** `043_1.7.2.sql` compared the DATE column `client_birthdate` with the literal `'0000-00-00'`, which MySQL 8's default `sql_mode` (`NO_ZERO_DATE`) rejects (error 1525). Setup recorded an SQL error for 043, and with `ENABLE_DEBUG=true` it stopped there without applying the later migrations. The column is now compared as text; legacy zero dates still become NULL, and MySQL 5.7 and MariaDB behave as before. Reported and fixed by [@bharath32](https://github.com/bharath32). [#1827](https://github.com/InvoicePlane/InvoicePlane/issues/1827)
+- **Empty client birthdates are now cleared on MySQL 8 too:** `043_1.7.2.sql` compared the DATE column `client_birthdate` with the literal `'0000-00-00'`, which MySQL 8's default `sql_mode` (`NO_ZERO_DATE`) rejects (error 1525), so on MySQL 8 that cleanup never ran. The 1.7.3 migration now runs the same cleanup comparing the column as text, which works on MySQL 8, MySQL 5.7 and MariaDB. `043_1.7.2.sql` itself is unchanged. Reported and fixed by [@bharath32](https://github.com/bharath32). [#1827](https://github.com/InvoicePlane/InvoicePlane/issues/1827)
 
 - **Empty `SESS_SAVE_PATH` no longer breaks session startup — fixed in code, not just
   packaging.** 1.7.3 shipped `ipconfig.php.example` with the line commented out, but any
