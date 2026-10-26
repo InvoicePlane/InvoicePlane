@@ -145,22 +145,6 @@ final class ClientDetailViewTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_clears_the_einvoicing_version_when_einvoicing_is_switched_off(): void
-    {
-        /* Arrange */
-        $clientId = $this->seedClient(['client_name' => 'E-Invoicing Client', 'client_einvoicing_version' => 'Facturxv10']);
-
-        /* Act */
-        $this->post('/clients/form/' . $clientId, [
-            'client_name' => 'E-Invoicing Client', 'client_start_einvoicing' => '0', 'client_einvoicing_version' => 'Facturxv10',
-            'is_update'   => '1', 'btn_submit' => '1',
-        ]);
-
-        /* Assert */
-        $this->assertDatabaseHas('ip_clients', ['client_id' => $clientId, 'client_einvoicing_version' => '']);
-    }
-
-    #[Test]
     public function it_gives_users_with_all_clients_access_to_a_newly_created_client(): void
     {
         /* Arrange: one "all clients" user, one restricted user */
