@@ -139,7 +139,12 @@ final class SetupModelInstallTest extends TestCase
     #[Test]
     public function it_converts_a_leftover_myisam_table_when_the_hook_runs_again(): void
     {
+        // upgrade_046_innodb_conversion() was added in v1.8 and does not exist in develop (v1.7.x).
         $model = new Mdl_Setup();
+        if ( ! method_exists($model, 'upgrade_046_innodb_conversion')) {
+            $this->markTestSkipped('upgrade_046_innodb_conversion not present in this branch.');
+        }
+
         $model->install_tables();
         $model->upgrade_tables();
         $this->db->query('CREATE TABLE ip_legacy_probe (id INT) ENGINE=MyISAM');

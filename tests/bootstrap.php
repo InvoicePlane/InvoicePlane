@@ -16,6 +16,9 @@ if ( ! function_exists('log_message')) {
 
 require_once $basePath . '/tests/Support/UnitCodeIgniter.php';
 
+// CI3 gateway libraries have no namespace — PSR-4 autoloading won't find them.
+require_once $basePath . '/application/libraries/gateways/PaypalLib.php';
+
 $_SERVER['REQUEST_URI'] = '/';
 $_SERVER['SCRIPT_NAME'] = '/index.php';
 $_SERVER['PHP_SELF']    = '/index.php';

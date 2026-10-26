@@ -3,6 +3,7 @@
 namespace Tests\Feature\Settings;
 
 use Tests\AbstractTestCase;
+use Tests\Concerns\PerformsCsrfProtectedRequests;
 
 /**
  * Logo removal functionality tests.
@@ -13,6 +14,7 @@ use Tests\AbstractTestCase;
  */
 final class LogoRemovalTest extends AbstractTestCase
 {
+    use PerformsCsrfProtectedRequests;
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_removes_invoice_logo_as_admin(): void
     {
@@ -27,7 +29,7 @@ final class LogoRemovalTest extends AbstractTestCase
         $response = $this->postWithValidCsrfToken('/settings/remove_logo/invoice');
 
         /* Assert */
-        $this->assertEquals(302, $response->status());
+        $this->assertEquals(302, $response->statusCode());
         $this->assertStringContainsString('/settings', $response->header('Location'));
         $this->assertDatabaseHas('ip_settings', [
             'setting_key'   => 'invoice_logo',
@@ -49,7 +51,7 @@ final class LogoRemovalTest extends AbstractTestCase
         $response = $this->postWithValidCsrfToken('/settings/remove_logo/login');
 
         /* Assert */
-        $this->assertEquals(302, $response->status());
+        $this->assertEquals(302, $response->statusCode());
         $this->assertStringContainsString('/settings', $response->header('Location'));
         $this->assertDatabaseHas('ip_settings', [
             'setting_key'   => 'login_logo',
@@ -70,7 +72,7 @@ final class LogoRemovalTest extends AbstractTestCase
         $response = $this->request('POST', '/settings/remove_logo/invoice');
 
         /* Assert */
-        $this->assertEquals(307, $response->status());
+        $this->assertEquals(307, $response->statusCode());
         $this->assertStringContainsString('/sessions/login', $response->header('Location'));
         $this->assertDatabaseHas('ip_settings', [
             'setting_key'   => 'invoice_logo',
@@ -92,7 +94,7 @@ final class LogoRemovalTest extends AbstractTestCase
         $response = $this->request('POST', '/settings/remove_logo/invoice');
 
         /* Assert */
-        $this->assertEquals(403, $response->status());
+        $this->assertEquals(403, $response->statusCode());
         $this->assertDatabaseHas('ip_settings', [
             'setting_key'   => 'invoice_logo',
             'setting_value' => 'test_invoice_logo.png',
@@ -109,7 +111,7 @@ final class LogoRemovalTest extends AbstractTestCase
         $response = $this->postWithValidCsrfToken('/settings/remove_logo/invoice');
 
         /* Assert */
-        $this->assertEquals(302, $response->status());
+        $this->assertEquals(302, $response->statusCode());
         $this->assertStringContainsString('/settings', $response->header('Location'));
     }
 
@@ -126,7 +128,7 @@ final class LogoRemovalTest extends AbstractTestCase
         /* Act: Render settings page and extract the removal URL from button */
         $this->withEnvironment(['REMOVE_INDEXPHP' => 'false']);
         $settingsResponse = $this->request('GET', '/settings');
-        $this->assertEquals(200, $settingsResponse->status());
+        $this->assertEquals(200, $settingsResponse->statusCode());
 
         preg_match(
             '/formaction="([^"]*settings\/remove_logo\/invoice[^"]*)"/',
@@ -139,7 +141,7 @@ final class LogoRemovalTest extends AbstractTestCase
         $response = $this->postWithValidCsrfToken($removalUrl);
 
         /* Assert */
-        $this->assertEquals(302, $response->status());
+        $this->assertEquals(302, $response->statusCode());
         $this->assertDatabaseHas('ip_settings', [
             'setting_key'   => 'invoice_logo',
             'setting_value' => '',
@@ -151,6 +153,6 @@ final class LogoRemovalTest extends AbstractTestCase
             'setting_value' => 'logo2.png',
         ]);
         $directResponse = $this->postWithValidCsrfToken('/settings/remove_logo/invoice');
-        $this->assertEquals(302, $directResponse->status());
+        $this->assertEquals(302, $directResponse->statusCode());
     }
 }

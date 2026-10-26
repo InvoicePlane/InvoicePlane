@@ -229,6 +229,16 @@ abstract class AbstractTestCase extends PhpUnitTestCase
         self::assertSame(200, $response->statusCode());
     }
 
+    /**
+     * Assert that $needle is in the array $haystack (value membership check).
+     *
+     * @param array<mixed> $haystack
+     */
+    protected function assertIn(mixed $needle, array $haystack, string $message = ''): void
+    {
+        self::assertContains($needle, $haystack, $message);
+    }
+
     protected function assertResponseSuccessful(HttpResponse $response): void
     {
         self::assertGreaterThanOrEqual(200, $response->statusCode());

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Core\Security;
 
 use Tests\AbstractTestCase;
+use Tests\Concerns\PerformsCsrfProtectedRequests;
 
 /**
  * CSRF cookie expiration independence tests.
@@ -18,6 +19,7 @@ use Tests\AbstractTestCase;
  */
 final class CsrfExpirationIndependenceTest extends AbstractTestCase
 {
+    use PerformsCsrfProtectedRequests;
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_issues_csrf_cookie_with_correct_max_age_when_sess_expiration_is_zero(): void
     {
@@ -28,7 +30,7 @@ final class CsrfExpirationIndependenceTest extends AbstractTestCase
         $response = $this->request('GET', '/sessions/login');
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
+        $this->assertEquals(200, $response->statusCode());
 
         $csrfCookie = $response->cookie('ip_csrf_cookie');
         $this->assertNotNull($csrfCookie, 'CSRF cookie should be set');
@@ -74,7 +76,7 @@ final class CsrfExpirationIndependenceTest extends AbstractTestCase
 
         /* Assert */
         $this->assertIn(
-            $response->status(),
+            $response->statusCode(),
             [200, 302, 303],
             'Login should succeed (200/302/303 redirect) when SESS_EXPIRATION=0, not 403 CSRF error'
         );
@@ -97,7 +99,7 @@ final class CsrfExpirationIndependenceTest extends AbstractTestCase
         ]);
 
         $this->assertIn(
-            $normalResponse->status(),
+            $normalResponse->statusCode(),
             [200, 302, 303],
             'Login should also succeed with normal SESS_EXPIRATION (positive control)'
         );
@@ -115,7 +117,7 @@ final class CsrfExpirationIndependenceTest extends AbstractTestCase
 
         /* Assert */
         $this->assertIn(
-            $response->status(),
+            $response->statusCode(),
             [200, 302, 303, 307],
             'POST with valid CSRF token should succeed (200/302/303/307) when SESS_EXPIRATION=0, not 403'
         );
@@ -127,7 +129,7 @@ final class CsrfExpirationIndependenceTest extends AbstractTestCase
         $normalResponse = $this->postWithValidCsrfToken('/settings');
 
         $this->assertIn(
-            $normalResponse->status(),
+            $normalResponse->statusCode(),
             [200, 302, 303, 307],
             'POST with valid CSRF token should also succeed with normal SESS_EXPIRATION (positive control)'
         );
@@ -146,7 +148,7 @@ final class CsrfExpirationIndependenceTest extends AbstractTestCase
         /* Assert */
         $this->assertEquals(
             403,
-            $response->status(),
+            $response->statusCode(),
             'POST without CSRF token should be rejected (403) regardless of SESS_EXPIRATION value'
         );
     }
