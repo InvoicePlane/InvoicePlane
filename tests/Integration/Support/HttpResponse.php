@@ -110,4 +110,22 @@ class HttpResponse
 
         return '';
     }
+
+    public function cookie(string $name): ?string
+    {
+        foreach ($this->headers as $header) {
+            if (mb_stripos($header, 'Set-Cookie:') !== 0) {
+                continue;
+            }
+
+            $parts     = explode(';', trim(mb_substr($header, 11)));
+            $nameValue = explode('=', trim($parts[0]), 2);
+
+            if (trim($nameValue[0]) === $name) {
+                return $nameValue[1] ?? '';
+            }
+        }
+
+        return null;
+    }
 }
