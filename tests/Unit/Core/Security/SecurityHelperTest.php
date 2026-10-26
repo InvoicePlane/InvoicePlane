@@ -351,11 +351,11 @@ class SecurityHelperTest extends TestCase
 
     private function setRequest(array $get, array $post, array $cookies, bool $withSecurity = false): void
     {
-        $GLOBALS['unitCiConfig'] = [
+        $GLOBALS['unitCiConfig'] = array_merge($GLOBALS['unitCiConfig'] ?? [], [
             'csrf_protection'  => true,
             'csrf_token_name'  => '_ip_csrf',
             'csrf_cookie_name' => 'ip_csrf_cookie',
-        ];
+        ]);
         $GLOBALS['unitBaseUrl']    = 'https://invoiceplane.example/';
         $GLOBALS['unitCiInstance'] = new class ($get, $post, $cookies, $withSecurity) {
             public object $input;

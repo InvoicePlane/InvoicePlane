@@ -149,12 +149,12 @@ final class VerifyGetCsrfTokenBoundaryTest extends TestCase
         string $cookieName = 'ip_csrf_cookie',
         string $cookiePrefix = ''
     ): void {
-        $GLOBALS['unitCiConfig'] = [
+        $GLOBALS['unitCiConfig'] = array_merge($GLOBALS['unitCiConfig'] ?? [], [
             'csrf_protection'  => $enabled,
             'csrf_token_name'  => $tokenName,
             'csrf_cookie_name' => $cookieName,
             'cookie_prefix'    => $cookiePrefix,
-        ];
+        ]);
         $GLOBALS['unitCiInstance'] = new class ($get, $cookies) {
             public object $input;
 
