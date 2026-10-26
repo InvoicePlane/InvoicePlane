@@ -63,7 +63,7 @@ final class CsrfTokenHandlingTest extends AbstractTestCase
         // Send AJAX request without meta tag (simulating missing meta scenario in scripts.js)
         $response = $this->request('POST', '/dashboard/ajax/chart_data', [], [], [], [
             'HTTP_X_IP_CSRF' => $token,
-            'HTTP_COOKIE' => "ip_csrf_cookie={$token}",
+            'HTTP_COOKIE'    => "ip_csrf_cookie={$token}",
         ]);
 
         /* Assert */

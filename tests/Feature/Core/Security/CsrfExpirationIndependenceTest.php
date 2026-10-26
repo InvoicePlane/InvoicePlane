@@ -16,7 +16,6 @@ use Tests\AbstractTestCase;
  * CSRF cookie to have Max-Age=0 and be dropped by the browser, making all
  * POST requests fail with 403 CSRF validation error.
  */
-
 final class CsrfExpirationIndependenceTest extends AbstractTestCase
 {
     #[\PHPUnit\Framework\Attributes\Test]
@@ -68,8 +67,8 @@ final class CsrfExpirationIndependenceTest extends AbstractTestCase
         $response = $this->request('POST', '/sessions/login', [
             'post' => [
                 config_item('csrf_token_name') => $csrfToken,
-                'email' => 'admin@test.local',
-                'password' => 'password',
+                'email'                        => 'admin@test.local',
+                'password'                     => 'password',
             ],
         ]);
 
@@ -92,8 +91,8 @@ final class CsrfExpirationIndependenceTest extends AbstractTestCase
         $normalResponse = $this->request('POST', '/sessions/login', [
             'post' => [
                 config_item('csrf_token_name') => $normalCsrfToken,
-                'email' => 'admin@test.local',
-                'password' => 'password',
+                'email'                        => 'admin@test.local',
+                'password'                     => 'password',
             ],
         ]);
 

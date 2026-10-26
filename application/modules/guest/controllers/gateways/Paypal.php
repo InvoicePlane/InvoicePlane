@@ -263,7 +263,6 @@ class Paypal extends Base_Controller
                             }
                         }
                     }
-
                 }
 
                 if ( ! $settled) {
@@ -304,7 +303,7 @@ class Paypal extends Base_Controller
                         'merchant_response'            => 'PENDING - awaiting settlement',
                         // The capture id is what PayPal reports when the pending capture settles or
                         // is denied, so without it the row cannot be reconciled later.
-                        'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id . ($capture_id ? ', Capture ID:' . $capture_id : ''),
+                        'merchant_response_reference' => 'Resource ID:' . $paypal_object->id . ($capture_id ? ', Capture ID:' . $capture_id : ''),
                     ]);
                 }
 

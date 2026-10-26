@@ -11,7 +11,6 @@ use Tests\AbstractTestCase;
  * especially on installations without URL rewriting (REMOVE_INDEXPHP=false).
  * See issue: base_url() vs site_url() bug causing 404 on logo removal.
  */
-
 final class LogoRemovalTest extends AbstractTestCase
 {
     #[\PHPUnit\Framework\Attributes\Test]
@@ -20,7 +19,7 @@ final class LogoRemovalTest extends AbstractTestCase
         /* Arrange */
         $this->actingAsAdmin();
         $this->databaseInsert('ip_settings', [
-            'setting_key' => 'invoice_logo',
+            'setting_key'   => 'invoice_logo',
             'setting_value' => 'test_invoice_logo.png',
         ]);
 
@@ -31,7 +30,7 @@ final class LogoRemovalTest extends AbstractTestCase
         $this->assertEquals(302, $response->status());
         $this->assertStringContainsString('/settings', $response->header('Location'));
         $this->assertDatabaseHas('ip_settings', [
-            'setting_key' => 'invoice_logo',
+            'setting_key'   => 'invoice_logo',
             'setting_value' => '',
         ]);
     }
@@ -42,7 +41,7 @@ final class LogoRemovalTest extends AbstractTestCase
         /* Arrange */
         $this->actingAsAdmin();
         $this->databaseInsert('ip_settings', [
-            'setting_key' => 'login_logo',
+            'setting_key'   => 'login_logo',
             'setting_value' => 'test_login_logo.png',
         ]);
 
@@ -53,7 +52,7 @@ final class LogoRemovalTest extends AbstractTestCase
         $this->assertEquals(302, $response->status());
         $this->assertStringContainsString('/settings', $response->header('Location'));
         $this->assertDatabaseHas('ip_settings', [
-            'setting_key' => 'login_logo',
+            'setting_key'   => 'login_logo',
             'setting_value' => '',
         ]);
     }
@@ -63,7 +62,7 @@ final class LogoRemovalTest extends AbstractTestCase
     {
         /* Arrange */
         $this->databaseInsert('ip_settings', [
-            'setting_key' => 'invoice_logo',
+            'setting_key'   => 'invoice_logo',
             'setting_value' => 'test_invoice_logo.png',
         ]);
 
@@ -74,7 +73,7 @@ final class LogoRemovalTest extends AbstractTestCase
         $this->assertEquals(307, $response->status());
         $this->assertStringContainsString('/sessions/login', $response->header('Location'));
         $this->assertDatabaseHas('ip_settings', [
-            'setting_key' => 'invoice_logo',
+            'setting_key'   => 'invoice_logo',
             'setting_value' => 'test_invoice_logo.png',
         ]);
     }
@@ -85,7 +84,7 @@ final class LogoRemovalTest extends AbstractTestCase
         /* Arrange */
         $this->actingAsAdmin();
         $this->databaseInsert('ip_settings', [
-            'setting_key' => 'invoice_logo',
+            'setting_key'   => 'invoice_logo',
             'setting_value' => 'test_invoice_logo.png',
         ]);
 
@@ -95,7 +94,7 @@ final class LogoRemovalTest extends AbstractTestCase
         /* Assert */
         $this->assertEquals(403, $response->status());
         $this->assertDatabaseHas('ip_settings', [
-            'setting_key' => 'invoice_logo',
+            'setting_key'   => 'invoice_logo',
             'setting_value' => 'test_invoice_logo.png',
         ]);
     }
@@ -120,7 +119,7 @@ final class LogoRemovalTest extends AbstractTestCase
         /* Arrange */
         $this->actingAsAdmin();
         $this->databaseInsert('ip_settings', [
-            'setting_key' => 'invoice_logo',
+            'setting_key'   => 'invoice_logo',
             'setting_value' => 'logo.png',
         ]);
 
@@ -142,13 +141,13 @@ final class LogoRemovalTest extends AbstractTestCase
         /* Assert */
         $this->assertEquals(302, $response->status());
         $this->assertDatabaseHas('ip_settings', [
-            'setting_key' => 'invoice_logo',
+            'setting_key'   => 'invoice_logo',
             'setting_value' => '',
         ]);
 
         /* Also test direct route access works */
         $this->databaseInsert('ip_settings', [
-            'setting_key' => 'invoice_logo',
+            'setting_key'   => 'invoice_logo',
             'setting_value' => 'logo2.png',
         ]);
         $directResponse = $this->postWithValidCsrfToken('/settings/remove_logo/invoice');

@@ -57,10 +57,10 @@ class LoginTimingOracleTest extends AbstractTestCase
         self::assertGreaterThan(
             5.0,
             $elapsedMs,
-            'auth() for a non-existent email must still run a bcrypt comparison against a decoy hash ' .
-            'instead of returning immediately: a plain "no row found" return takes microseconds, while a ' .
-            'bcrypt (cost 10) comparison takes tens of milliseconds, so a near-instant result here means ' .
-            'the timing oracle (CWE-208) is back.'
+            'auth() for a non-existent email must still run a bcrypt comparison against a decoy hash '
+            . 'instead of returning immediately: a plain "no row found" return takes microseconds, while a '
+            . 'bcrypt (cost 10) comparison takes tens of milliseconds, so a near-instant result here means '
+            . 'the timing oracle (CWE-208) is back.'
         );
     }
 
@@ -86,9 +86,9 @@ class LoginTimingOracleTest extends AbstractTestCase
         self::assertSame(
             Crypt::BCRYPT_COST,
             (int) $m[1],
-            'The decoy hash must be generated at the same cost Crypt::generate_password() currently uses, ' .
-            'or its comparison time stops matching the genuine-account path. If Crypt::BCRYPT_COST changes, ' .
-            'DUMMY_PASSWORD_HASH must be regenerated at the new cost.'
+            'The decoy hash must be generated at the same cost Crypt::generate_password() currently uses, '
+            . 'or its comparison time stops matching the genuine-account path. If Crypt::BCRYPT_COST changes, '
+            . 'DUMMY_PASSWORD_HASH must be regenerated at the new cost.'
         );
         self::assertFalse(
             password_verify('wrong-password', $hash),
@@ -133,9 +133,9 @@ class LoginTimingOracleTest extends AbstractTestCase
         self::assertGreaterThan(
             5.0,
             $elapsedMs,
-            'A legacy (pre-1.2.0, no user_psalt) account with a wrong password must still run a bcrypt ' .
-            'comparison against the decoy hash: an md5-only rejection takes microseconds, so a near-instant ' .
-            'result here would distinguish legacy accounts from every other failure path by timing alone.'
+            'A legacy (pre-1.2.0, no user_psalt) account with a wrong password must still run a bcrypt '
+            . 'comparison against the decoy hash: an md5-only rejection takes microseconds, so a near-instant '
+            . 'result here would distinguish legacy accounts from every other failure path by timing alone.'
         );
     }
 }

@@ -676,4 +676,3 @@ function validate_db_config_parameter(string $value, string $type): array
         'sanitized' => $value,
     ];
 }
-
