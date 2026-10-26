@@ -47,7 +47,7 @@ class Paypal extends Base_Controller
 
         // Security: Verify the invoice exists and is guest-visible
         if ( ! $invoice) {
-            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted order creation for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_url_key));
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted order creation for non-public or non-existent invoice with key: ' . sanitize_for_logging((string) $invoice_url_key));
             show_404();
         }
 
@@ -81,7 +81,7 @@ class Paypal extends Base_Controller
 
         // Validate required fields from PayPal response
         if (empty($paypal_response['id'])) {
-            log_message('error', 'PayPal createOrder missing order ID for invoice ' . sanitize_for_logging($invoice_url_key));
+            log_message('error', 'PayPal createOrder missing order ID for invoice ' . sanitize_for_logging((string) $invoice_url_key));
             $this->output
                 ->set_status_header(500)
                 ->set_content_type('application/json')
@@ -116,10 +116,10 @@ class Paypal extends Base_Controller
      *
      * @return void
      */
-    public function paypal_capture_payment(string $order_id)
+    public function paypal_capture_payment(?string $order_id = null)
     {
         // Require POST request to prevent CSRF attacks
-        if ($this->input->method() !== 'post') {
+        if ($this->input->method() !== 'post' || $order_id === null) {
             show_404();
         }
 
