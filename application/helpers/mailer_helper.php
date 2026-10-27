@@ -260,15 +260,15 @@ function validate_email_address(string $email): bool
  */
 function mailer_internal_domain(string $sender): string
 {
-    $domain = mb_strtolower(ltrim(trim((string) get_setting('mailer_internal_domain')), '@'));
+    $domain = strtolower(ltrim(trim((string) get_setting('mailer_internal_domain')), '@'));
 
     if ($domain !== '') {
         return $domain;
     }
 
-    $at = mb_strrpos($sender, '@');
+    $at = strrpos($sender, '@');
 
-    return $at === false ? '' : mb_strtolower(trim(mb_substr($sender, $at + 1)));
+    return $at === false ? '' : strtolower(trim(substr($sender, $at + 1)));
 }
 
 /**
@@ -296,12 +296,12 @@ function authorize_copy_addresses($list, string $sender)
             continue;
         }
 
-        $at = mb_strrpos($address, '@');
+        $at = strrpos($address, '@');
 
         if ($domain === ''
             || ! filter_var($address, FILTER_VALIDATE_EMAIL)
             || $at === false
-            || mb_strtolower(mb_substr($address, $at + 1)) !== $domain) {
+            || strtolower(substr($address, $at + 1)) !== $domain) {
             return false;
         }
 
