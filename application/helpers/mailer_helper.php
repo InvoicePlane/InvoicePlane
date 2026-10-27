@@ -83,6 +83,8 @@ function email_invoice(
     $bcc     = parse_template($db_invoice, $bcc);
     $from    = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
 
+    enforce_copy_addresses($cc, $bcc, (string) $from[0], 'mailer/invoice/' . $invoice_id);
+
     $errors = [];
     if ( ! validate_email_address($to)) {
         $errors[] = 'to_email';
@@ -150,6 +152,8 @@ function email_quote(
     $cc      = parse_template($db_quote, $cc);
     $bcc     = parse_template($db_quote, $bcc);
     $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
+
+    enforce_copy_addresses($cc, $bcc, (string) $from[0], 'mailer/quote/' . $quote_id);
 
     $errors = [];
     if ( ! validate_email_address($to)) {
@@ -240,6 +244,83 @@ function validate_email_address(string $email): bool
     }
 
     return true;
+}
+
+/**
+ * The domain CC and BCC addresses must belong to: the mailer_internal_domain setting, else the domain
+ * of the sender address (smtp_mail_from, or the document owner's address when that is empty).
+ */
+function mailer_internal_domain(string $sender): string
+{
+    $domain = mb_strtolower(ltrim(mb_trim((string) get_setting('mailer_internal_domain')), '@'));
+
+    if ($domain !== '') {
+        return $domain;
+    }
+
+    $at = mb_strrpos($sender, '@');
+
+    return $at === false ? '' : mb_strtolower(mb_trim(mb_substr($sender, $at + 1)));
+}
+
+/**
+ * Splits a CC/BCC field and returns its addresses as a comma separated list, or false when any of them
+ * is malformed (display names, header injection) or outside the organisation's domain. An unknown
+ * domain refuses every address instead of switching the check off.
+ *
+ * @return false|string
+ */
+function authorize_copy_addresses($list, string $sender)
+{
+    $list = (string) $list;
+
+    if (mb_trim($list) === '') {
+        return '';
+    }
+
+    $domain    = mailer_internal_domain($sender);
+    $addresses = [];
+
+    foreach (preg_split('/[,;]/', $list) as $address) {
+        $address = mb_trim($address);
+
+        if ($address === '') {
+            continue;
+        }
+
+        $at = mb_strrpos($address, '@');
+
+        if ($domain === ''
+            || ! filter_var($address, FILTER_VALIDATE_EMAIL)
+            || $at === false
+            || mb_strtolower(mb_substr($address, $at + 1)) !== $domain) {
+            return false;
+        }
+
+        $addresses[] = $address;
+    }
+
+    return implode(',', $addresses);
+}
+
+/**
+ * Replaces $cc and $bcc by their normalised lists, or flashes an error and redirects when one of them
+ * is not allowed.
+ */
+function enforce_copy_addresses(&$cc, &$bcc, string $sender, string $redirect): void
+{
+    $allowed_cc  = authorize_copy_addresses($cc, $sender);
+    $allowed_bcc = authorize_copy_addresses($bcc, $sender);
+
+    if ($allowed_cc === false || $allowed_bcc === false) {
+        $CI = & get_instance();
+        $CI->session->set_flashdata('alert_error', trans('cc_bcc_own_domain_only'));
+
+        redirect($redirect);
+    }
+
+    $cc  = $allowed_cc;
+    $bcc = $allowed_bcc;
 }
 
 /**
