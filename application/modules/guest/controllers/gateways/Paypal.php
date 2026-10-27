@@ -33,10 +33,10 @@ class Paypal extends Base_Controller
      *
      * @return json the PayPal object to be loaded in the JS SDK script
      */
-    public function paypal_create_order($invoice_url_key)
+    public function paypal_create_order($invoice_url_key = null)
     {
         // Require POST request to prevent CSRF attacks
-        if ($this->input->method() !== 'post') {
+        if ($this->input->method() !== 'post' || $invoice_url_key === null) {
             show_404();
         }
 
