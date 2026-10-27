@@ -1,6 +1,7 @@
 <?php
 
 $lang = [
+    'access_denied'                                 => 'Access denied',
     'account_information'                           => 'Account Information',
     'active'                                        => 'Active',
     'active_client'                                 => 'Active',
