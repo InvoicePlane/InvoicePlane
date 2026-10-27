@@ -26,7 +26,10 @@ Thanks to [@hariprakash6969-create](https://github.com/hariprakash6969-create),
 [@fr1d4yy](https://github.com/fr1d4yy), [@sharma19d](https://github.com/sharma19d),
 [@mkax0](https://github.com/mkax0), [@crypto-nidh](https://github.com/crypto-nidh),
 [@RekhanshRajput](https://github.com/RekhanshRajput),
-[@0x0Axlw](https://github.com/0x0Axlw), [@cray4367](https://github.com/cray4367), and
+[@0x0Axlw](https://github.com/0x0Axlw), [@cray4367](https://github.com/cray4367),
+[@Char0n1507](https://github.com/Char0n1507), [@yeshwanthmoota](https://github.com/yeshwanthmoota), [@baozongwi](https://github.com/baozongwi),
+[@polybjorn](https://github.com/polybjorn), [@PLpaPLpa](https://github.com/PLpaPLpa), [@0raN9ewww](https://github.com/0raN9ewww),
+[@mattmumford-git](https://github.com/mattmumford-git), [@ali-iltizar](https://github.com/ali-iltizar), and
 [@krishnan-tech](https://github.com/krishnan-tech) for responsibly disclosing the issues resolved or
 in progress in this release.
 
