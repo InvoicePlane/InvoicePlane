@@ -859,7 +859,7 @@ $lang = [
     'user_iban'                                => 'IBAN',
     'user_subscriber_number'                   => 'Subscriber Number',
 
-    // Clients/Enums/ClientTitleEnum
+    // libraries/ClientTitleEnum
     'mr'        => 'mr',
     'mrs'       => 'mrs',
     'doctor'    => 'doctor',
