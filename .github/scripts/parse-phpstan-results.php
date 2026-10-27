@@ -135,7 +135,7 @@ echo "\n---\n";
  */
 function categorizeError(string $message): string
 {
-    $normalizedMessage = mb_strtolower($message);
+    $normalizedMessage = strtolower($message);
 
     $hasShouldReturn = str_contains($normalizedMessage, 'should return');
     $hasMethod = str_contains($normalizedMessage, 'method');
@@ -194,20 +194,20 @@ function getShortPath(string $path): string
     // Derive project root based on this script's location: .github/scripts => project root is two levels up
     $projectRoot = dirname(__DIR__, 2);
     if (is_string($projectRoot) && $projectRoot !== '') {
-        $normalizedRoot = mb_rtrim(str_replace('\\', '/', $projectRoot), '/') . '/';
+        $normalizedRoot = rtrim(str_replace('\\', '/', $projectRoot), '/') . '/';
 
         if (str_starts_with($normalizedPath, $normalizedRoot)) {
-            $normalizedPath = mb_substr($normalizedPath, mb_strlen($normalizedRoot));
+            $normalizedPath = substr($normalizedPath, strlen($normalizedRoot));
         }
     }
 
     // Fallback: also try stripping the current working directory if it is a prefix
     $cwd = getcwd();
     if (is_string($cwd) && $cwd !== '') {
-        $normalizedCwd = mb_rtrim(str_replace('\\', '/', $cwd), '/') . '/';
+        $normalizedCwd = rtrim(str_replace('\\', '/', $cwd), '/') . '/';
 
         if (str_starts_with($normalizedPath, $normalizedCwd)) {
-            $normalizedPath = mb_substr($normalizedPath, mb_strlen($normalizedCwd));
+            $normalizedPath = substr($normalizedPath, strlen($normalizedCwd));
         }
     }
 
@@ -221,11 +221,13 @@ function trimMessage(string $message, int $maxLength = 150): string
 {
     // Remove excessive whitespace
     $message = preg_replace('/\s+/', ' ', $message);
-    $message = mb_trim($message);
+    $message = trim($message);
 
     // Truncate if too long (multibyte-safe)
-    if (mb_strlen($message, 'UTF-8') > $maxLength) {
-        $message = mb_substr($message, 0, $maxLength - 3, 'UTF-8') . '...';
+    // Character (not byte) based truncation without mb_* functions: the baseline is PHP 8.2.
+    if (preg_match_all('/./su', $message) > $maxLength) {
+        preg_match('/^.{0,' . ($maxLength - 3) . '}/su', $message, $head);
+        $message = $head[0] . '...';
     }
 
     return $message;
