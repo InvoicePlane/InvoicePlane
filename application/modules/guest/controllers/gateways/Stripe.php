@@ -39,10 +39,10 @@ class Stripe extends Base_Controller
      *
      * @return json the client secret in a json format
      */
-    public function create_checkout_session($invoice_url_key)
+    public function create_checkout_session($invoice_url_key = null)
     {
         // Require POST request to prevent CSRF attacks
-        if ($this->input->method() !== 'post') {
+        if ($this->input->method() !== 'post' || $invoice_url_key === null) {
             show_404();
         }
 
@@ -91,8 +91,12 @@ class Stripe extends Base_Controller
      *
      * @return void
      */
-    public function callback(string $checkout_session_id)
+    public function callback(?string $checkout_session_id = null)
     {
+        if ($checkout_session_id === null) {
+            show_404();
+        }
+
         // A Checkout Session id is "cs_" + alphanumerics. Reject anything else before it costs a Stripe API call.
         if ( ! preg_match('/^cs_[A-Za-z0-9_]{8,250}$/', $checkout_session_id)) {
             log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected malformed checkout session id: ' . sanitize_for_logging($checkout_session_id));
