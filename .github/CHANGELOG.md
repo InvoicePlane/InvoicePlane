@@ -213,6 +213,8 @@ in progress in this release.
 
 ### Bug fixes
 
+- **Gateway page links with a lower-case name returned 404 when two gateways were enabled:** `Payment_information::form()` listed the drivers in config case (`PayPal`) but compared the requested name case-sensitively, so `form/<key>/paypal`, the address the PayPal page itself links back to, was refused. The name is now matched case-insensitively and dispatched as the listed driver.
+
 - **Removed the dead `users/ajax/load_user_client_table` endpoint:** the only caller, the client modal, reloaded a `#div_user_client_table` element that no view contains, and the endpoint rendered `users/partial_user_client_table`, a view that was deleted when the user-client handling moved to its own module, so a direct request ended in a 500. The endpoint and the reload call are gone, which also removes a read endpoint for client assignments.
 
 - **Empty client birthdates are now cleared on MySQL 8 too:** `043_1.7.2.sql` compared the DATE column `client_birthdate` with the literal `'0000-00-00'`, which MySQL 8's default `sql_mode` (`NO_ZERO_DATE`) rejects (error 1525), so on MySQL 8 that cleanup never ran. The 1.7.3 migration now runs the same cleanup comparing the column as text, which works on MySQL 8, MySQL 5.7 and MariaDB. `043_1.7.2.sql` itself is unchanged. Reported and fixed by [@bharath32](https://github.com/bharath32). [#1827](https://github.com/InvoicePlane/InvoicePlane/issues/1827)
