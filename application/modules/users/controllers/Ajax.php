@@ -164,16 +164,19 @@ class Ajax extends Admin_Controller
 
             $user_id = $this->input->post('user_id');
 
-            if ( ! $this->mdl_user_clients->can_manage_user_clients($user_id)) {
+            // No user id: a user that is still being created and has nothing staged yet; there is nothing to read.
+            if ($user_id === null || $user_id === '') {
+                $data = ['id' => null, 'user_clients' => []];
+            } elseif ( ! $this->mdl_user_clients->can_manage_user_clients($user_id)) {
                 show_error(trans('access_denied'), 403);
 
                 return;
+            } else {
+                $data = [
+                    'id'           => (int) $user_id,
+                    'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', (int) $user_id)->get()->result(),
+                ];
             }
-
-            $data = [
-                'id'           => (int) $user_id,
-                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', (int) $user_id)->get()->result(),
-            ];
         }
 
         $this->layout->load_view('users/partial_user_client_table', $data);
@@ -189,13 +192,16 @@ class Ajax extends Admin_Controller
         } else {
             $this->load->model('user_clients/mdl_user_clients');
 
-            if ( ! $this->mdl_user_clients->can_manage_user_clients($user_id)) {
+            // No user id: a user that is still being created and has nothing staged yet; offer every client.
+            $is_new_user = $user_id === null || $user_id === '';
+
+            if ( ! $is_new_user && ! $this->mdl_user_clients->can_manage_user_clients($user_id)) {
                 show_error(trans('access_denied'), 403);
 
                 return;
             }
 
-            $assigned_clients_query = $this->mdl_user_clients->where('ip_user_clients.user_id', (int) $user_id)->get()->result();
+            $assigned_clients_query = $is_new_user ? [] : $this->mdl_user_clients->where('ip_user_clients.user_id', (int) $user_id)->get()->result();
             $assigned_clients       = [];
 
             foreach ($assigned_clients_query as $assigned_client) {
