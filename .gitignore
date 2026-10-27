@@ -42,3 +42,4 @@ yarn-error.log
 /yarnpack.txt
 _scratch/
 _scratch/
+phpstan.cache

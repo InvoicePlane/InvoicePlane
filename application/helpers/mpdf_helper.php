@@ -170,7 +170,7 @@ function pdf_create(
     // Set the footer if voucher is invoice and if set in settings
     if ($isInvoice && $invoiceFooter !== '') {
         $mpdf->setAutoBottomMargin = 'stretch';
-        $escaped_filename = pdf_footer_filename($filename);
+        $escaped_filename          = pdf_footer_filename($filename);
         $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $invoiceFooter . '</div><div><p align="center">' . $escaped_filename . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p></div>');
         $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $invoiceFooter . '</div>');
         $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $invoiceFooter . '</div>');
@@ -180,7 +180,7 @@ function pdf_create(
     // Set the footer if voucher is quote and if set in settings
     if ( ! $isInvoice && $quoteFooter !== '') {
         $mpdf->setAutoBottomMargin = 'stretch';
-        $escaped_filename = pdf_footer_filename($filename);
+        $escaped_filename          = pdf_footer_filename($filename);
         $mpdf->DefHTMLFooterByName('footerWithPageNumbers', '<div id="footer">' . $quoteFooter . '</div><div><p align="center">' . $escaped_filename . ' - ' . trans('page') . ' {PAGENO} / {nbpg}</p></div>');
         $mpdf->DefHTMLFooterByName('footer', '<div id="footer">' . $quoteFooter . '</div>');
         $mpdf->DefHTMLFooterByName('defaultFooter', '<div id="footer">' . $quoteFooter . '</div>');

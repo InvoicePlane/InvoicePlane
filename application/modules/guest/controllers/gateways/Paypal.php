@@ -33,7 +33,7 @@ class Paypal extends Base_Controller
      *
      * @return json the PayPal object to be loaded in the JS SDK script
      */
-    public function paypal_create_order($invoice_url_key)
+    public function paypal_create_order($invoice_url_key = null)
     {
         // Require POST request to prevent CSRF attacks
         if ($this->input->method() !== 'post') {
@@ -263,7 +263,6 @@ class Paypal extends Base_Controller
                             }
                         }
                     }
-
                 }
 
                 if ( ! $settled) {
@@ -304,7 +303,7 @@ class Paypal extends Base_Controller
                         'merchant_response'            => 'PENDING - awaiting settlement',
                         // The capture id is what PayPal reports when the pending capture settles or
                         // is denied, so without it the row cannot be reconciled later.
-                        'merchant_response_reference'  => 'Resource ID:' . $paypal_object->id . ($capture_id ? ', Capture ID:' . $capture_id : ''),
+                        'merchant_response_reference' => 'Resource ID:' . $paypal_object->id . ($capture_id ? ', Capture ID:' . $capture_id : ''),
                     ]);
                 }
 

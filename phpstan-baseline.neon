@@ -1,0 +1,41 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method Payment_Information\\:\\:paypal\\(\\) should return View but return statement is missing\\.$#"
+			count: 1
+			path: application/modules/guest/controllers/Payment_information.php
+
+		-
+			message: "#^Method Payment_Information\\:\\:stripe\\(\\) should return View but return statement is missing\\.$#"
+			count: 1
+			path: application/modules/guest/controllers/Payment_information.php
+
+		-
+			message: "#^Method Stripe\\:\\:create_checkout_session\\(\\) should return json but return statement is missing\\.$#"
+			count: 1
+			path: application/modules/guest/controllers/gateways/Stripe.php
+
+		-
+			message: "#^Undefined variable\\: \\$response$#"
+			count: 1
+			path: application/modules/guest/controllers/gateways/Stripe.php
+
+		-
+			message: "#^Undefined variable\\: \\$user_msg$#"
+			count: 1
+			path: application/modules/guest/controllers/gateways/Stripe.php
+
+		-
+			message: "#^Result of function _htmlsc \\(void\\) is used\\.$#"
+			count: 1
+			path: application/modules/invoices/views/partial_itemlist_responsive.php
+
+		-
+			message: "#^Result of function _htmlsc \\(void\\) is used\\.$#"
+			count: 1
+			path: application/modules/quotes/views/partial_itemlist_responsive.php
+
+		-
+			message: "#^Result of function _trans \\(void\\) is used\\.$#"
+			count: 1
+			path: application/modules/users/views/form.php
