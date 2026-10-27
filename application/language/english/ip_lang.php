@@ -1,6 +1,7 @@
 <?php
 
 $lang = [
+    'access_denied'                                 => 'Access denied',
     'account_information'                           => 'Account Information',
     'active'                                        => 'Active',
     'active_client'                                 => 'Active',
@@ -289,12 +290,14 @@ $lang = [
     'interface'                                     => 'Interface',
     'invalid_date'                                  => 'Invalid date',
     'invalid_file_path'                             => 'Invalid file path. Operation not permitted.',
+    'invalid_request'                               => 'Invalid request. Please try again.',
     'invalid_tax_rate_decimal_places'               => 'Invalid tax rate decimal places. Must be 2 or 3.',
     'contains_invalid_characters'                   => 'contains invalid characters',
     'invalid_filename'                              => 'Invalid filename. Path traversal characters are not allowed.',
     'invalid_file_path_outside_allowed_directory'   => 'Invalid file path. File is outside the allowed directory.',
     'no_logo_to_remove'                             => 'No logo configured to remove.',
     'failed_to_delete_logo'                         => 'Failed to delete logo file. Please check file permissions.',
+    'invalid_value_for_field'                       => 'The submitted value is not valid.',
     'invoice'                                       => 'Invoice',
     'invoice_aging'                                 => 'Invoice Aging',
     'invoice_aging_16_30'                           => '16 - 30 Days',
