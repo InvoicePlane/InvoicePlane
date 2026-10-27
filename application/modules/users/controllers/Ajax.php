@@ -111,30 +111,18 @@ class Ajax extends Admin_Controller
         $user_id   = $this->input->post('user_id');
         $client_id = $this->input->post('client_id');
 
-        // Object-level authorization: only the primary administrator may assign
-        // clients to other users. A peer administrator is limited to their own
-        // account (CWE-862 / CWE-269).
-        if ( ! empty($user_id)) {
-            // Only a plain integer id may pass: "2.9" is authorised as user 2 by the (int) cast below,
-            // but the INT column it is stored in rounds it to user 3.
-            if ( ! ctype_digit((string) $user_id)) {
-                show_error(trans('access_denied'), 403);
+        $this->load->model('user_clients/mdl_user_clients');
 
-                return;
-            }
+        // Object-level authorization (CWE-639 / CWE-862): the primary administrator may assign clients to anyone,
+        // everybody else only to their own account. Empty means a user that is still being created, whose
+        // assignments are collected in the session until the user is saved.
+        if ( ! empty($user_id) && ! $this->mdl_user_clients->can_manage_user_clients($user_id)) {
+            show_error(trans('access_denied'), 403);
 
-            $current_user_id = (int) $this->session->userdata('user_id');
-            $target_user_id  = (int) $user_id;
-
-            if ($target_user_id !== $current_user_id && ! Mdl_Users::is_primary_administrator($current_user_id)) {
-                show_error(trans('access_denied'), 403);
-
-                return;
-            }
+            return;
         }
 
         $this->load->model('clients/mdl_clients');
-        $this->load->model('user_clients/mdl_user_clients');
 
         $client = $this->mdl_clients->get_by_id($client_id);
         if ($client) {
@@ -174,9 +162,17 @@ class Ajax extends Admin_Controller
         } else {
             $this->load->model('user_clients/mdl_user_clients');
 
+            $user_id = $this->input->post('user_id');
+
+            if ( ! $this->mdl_user_clients->can_manage_user_clients($user_id)) {
+                show_error(trans('access_denied'), 403);
+
+                return;
+            }
+
             $data = [
-                'id'           => $this->input->post('user_id'),
-                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', $this->input->post('user_id'))->get()->result(),
+                'id'           => (int) $user_id,
+                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', (int) $user_id)->get()->result(),
             ];
         }
 
@@ -192,7 +188,14 @@ class Ajax extends Admin_Controller
             $assigned_clients = [];
         } else {
             $this->load->model('user_clients/mdl_user_clients');
-            $assigned_clients_query = $this->mdl_user_clients->where('ip_user_clients.user_id', $user_id)->get()->result();
+
+            if ( ! $this->mdl_user_clients->can_manage_user_clients($user_id)) {
+                show_error(trans('access_denied'), 403);
+
+                return;
+            }
+
+            $assigned_clients_query = $this->mdl_user_clients->where('ip_user_clients.user_id', (int) $user_id)->get()->result();
             $assigned_clients       = [];
 
             foreach ($assigned_clients_query as $assigned_client) {

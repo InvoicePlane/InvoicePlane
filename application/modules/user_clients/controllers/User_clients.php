@@ -45,6 +45,13 @@ class User_Clients extends Admin_Controller
             redirect('users');
         }
 
+        // Reading another user's client assignments is as sensitive as changing them (CWE-639 / CWE-862).
+        if ( ! $this->mdl_user_clients->can_manage_user_clients($id)) {
+            show_error(trans('access_denied'), 403);
+
+            return;
+        }
+
         $user_clients = $this->mdl_user_clients->assigned_to($id)->get()->result();
 
         $this->layout->set(
