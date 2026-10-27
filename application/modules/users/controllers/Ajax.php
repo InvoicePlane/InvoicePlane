@@ -172,38 +172,6 @@ class Ajax extends Admin_Controller
         return true;
     }
 
-    public function load_user_client_table()
-    {
-        $user_id = $this->input->post('user_id');
-
-        if ($this->denies_user_client_access($user_id)) {
-            return;
-        }
-
-        $session_user_clients = $this->session->userdata('user_clients');
-
-        if ($session_user_clients) {
-            $this->load->model('clients/mdl_clients');
-
-            $data = [
-                'id'           => null,
-                'user_clients' => $this->mdl_clients->where_in('ip_clients.client_id', $session_user_clients)->get()->result(),
-            ];
-        } elseif ($user_id === null || $user_id === '') {
-            // A user that is still being created and has nothing staged yet; there is nothing to read.
-            $data = ['id' => null, 'user_clients' => []];
-        } else {
-            $this->load->model('user_clients/mdl_user_clients');
-
-            $data = [
-                'id'           => (int) $user_id,
-                'user_clients' => $this->mdl_user_clients->where('ip_user_clients.user_id', (int) $user_id)->get()->result(),
-            ];
-        }
-
-        $this->layout->load_view('users/partial_user_client_table', $data);
-    }
-
     public function modal_add_user_client($user_id = null)
     {
         if ($this->denies_user_client_access($user_id)) {

@@ -12,10 +12,6 @@
                 client_id: $('#client_id').val()
             }, function (data) {
                 <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
-                $('#div_user_client_table').load('<?php echo site_url('users/ajax/load_user_client_table'); ?>', {
-                    user_id: <?php echo json_encode((string) $user_id, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>
-                });
-
                 user_client_modal.modal('hide');
                 $('#modal-placeholder').text('');
             });
