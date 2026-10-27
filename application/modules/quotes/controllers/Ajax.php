@@ -468,10 +468,9 @@ class Ajax extends Admin_Controller
 
         $quote = $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
 
+        // The modal is loaded into the page as HTML, so a missing quote is a 404 and not a JSON body.
         if ( ! $quote) {
-            $this->json_encode_ajax(['success' => 0]);
-
-            return;
+            show_404();
         }
 
         $data = [
