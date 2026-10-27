@@ -252,7 +252,7 @@ function validate_email_address(string $email): bool
  */
 function mailer_internal_domain(string $sender): string
 {
-    $domain = mb_strtolower(ltrim(mb_trim((string) get_setting('mailer_internal_domain')), '@'));
+    $domain = mb_strtolower(ltrim(trim((string) get_setting('mailer_internal_domain')), '@'));
 
     if ($domain !== '') {
         return $domain;
@@ -260,7 +260,7 @@ function mailer_internal_domain(string $sender): string
 
     $at = mb_strrpos($sender, '@');
 
-    return $at === false ? '' : mb_strtolower(mb_trim(mb_substr($sender, $at + 1)));
+    return $at === false ? '' : mb_strtolower(trim(mb_substr($sender, $at + 1)));
 }
 
 /**
@@ -274,7 +274,7 @@ function authorize_copy_addresses($list, string $sender)
 {
     $list = (string) $list;
 
-    if (mb_trim($list) === '') {
+    if (trim($list) === '') {
         return '';
     }
 
@@ -282,7 +282,7 @@ function authorize_copy_addresses($list, string $sender)
     $addresses = [];
 
     foreach (preg_split('/[,;]/', $list) as $address) {
-        $address = mb_trim($address);
+        $address = trim($address);
 
         if ($address === '') {
             continue;
