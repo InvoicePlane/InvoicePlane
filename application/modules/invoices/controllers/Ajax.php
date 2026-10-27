@@ -316,7 +316,12 @@ class Ajax extends Admin_Controller
         $this->load->model('mdl_invoices');
 
         // Only continue if the invoice exists or no item id was provided
-        if ($this->mdl_invoices->get_by_id($invoice_id) || empty($item_id)) {
+        $owned = $this->db
+            ->where('item_id', (int) $item_id)
+            ->where('invoice_id', (int) $invoice_id)
+            ->count_all_results('ip_invoice_items') > 0;
+
+        if (($this->mdl_invoices->get_by_id($invoice_id) && $owned) || empty($item_id)) {
             // Delete invoice item
             $this->load->model('mdl_items');
             $item = $this->mdl_items->delete($item_id);

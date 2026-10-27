@@ -235,7 +235,12 @@ class Ajax extends Admin_Controller
         $this->load->model('mdl_quotes');
 
         // Only continue if the quote exists or no item id was provided
-        if ($this->mdl_quotes->get_by_id($quote_id) || empty($item_id)) {
+        $owned = $this->db
+            ->where('item_id', (int) $item_id)
+            ->where('quote_id', (int) $quote_id)
+            ->count_all_results('ip_quote_items') > 0;
+
+        if (($this->mdl_quotes->get_by_id($quote_id) && $owned) || empty($item_id)) {
             // Delete quote item
             $this->load->model('mdl_quote_items');
             $item = $this->mdl_quote_items->delete($item_id);
@@ -461,10 +466,18 @@ class Ajax extends Admin_Controller
             'quotes/mdl_quotes',
         ]);
 
+        $quote = $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
+
+        if ( ! $quote) {
+            $this->json_encode_ajax(['success' => 0]);
+
+            return;
+        }
+
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'quote_id'       => $this->security->xss_clean($quote_id),
-            'quote'          => $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row(),
+            'quote'          => $quote,
         ];
 
         $this->load->view('quotes/modal_quote_to_invoice', $data);
