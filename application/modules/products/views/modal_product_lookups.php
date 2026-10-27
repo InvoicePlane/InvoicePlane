@@ -21,7 +21,7 @@
                 var items = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                 for (var key in items) {
                     // Set default tax rate id if empty
-                    if (!items[key].tax_rate_id) items[key].tax_rate_id = '<?php echo $default_item_tax_rate; ?>';
+                    if (!items[key].tax_rate_id) items[key].tax_rate_id = <?php echo json_encode((string) $default_item_tax_rate, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
                     if ($('#item_table .item:last input[name=item_name]').val() !== '') {
                         $('#new_row').clone().appendTo('#item_table').removeAttr('id').addClass('item').show();
