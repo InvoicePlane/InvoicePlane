@@ -104,7 +104,9 @@ function email_invoice(
         $errors[] = 'bcc_email';
     }
 
-    check_mail_errors($errors, 'mailer/invoice/' . $invoice_id);
+    if ( ! check_mail_errors($errors)) {
+        return false;
+    }
 
     $message = (empty($message) ? ' ' : $message);
 
@@ -176,7 +178,9 @@ function email_quote(
         $errors[] = 'bcc_email';
     }
 
-    check_mail_errors($errors, 'mailer/quote/' . $quote_id);
+    if ( ! check_mail_errors($errors)) {
+        return false;
+    }
 
     $message = (empty($message) ? ' ' : $message);
 
@@ -341,24 +345,24 @@ function enforce_copy_addresses(&$cc, &$bcc, string $sender): bool
 }
 
 /**
- * @param []  $errors
- * @param string $redirect
+ * Flashes the validation errors of an e-mail. Returns false when there are any, so the caller can stop; it does not
+ * redirect, because email_invoice()/email_quote() are also called by the recurring-invoice cron, where redirect() exits
+ * and aborts the run for every later invoice. The interactive controllers redirect themselves.
+ *
+ * @param array<int, string> $errors
  */
-function check_mail_errors(array $errors = [], $redirect = ''): void
+function check_mail_errors(array $errors = []): bool
 {
-    if ($errors) {
-        $CI = & get_instance();
-        foreach ($errors as $i => $e) {
-            $errors[$i] = strtr(trans('form_validation_valid_email'), ['{field}' => trans($e)]);
-        }
-
-        $CI->session->set_flashdata('alert_error', implode('<br>', $errors));
-
-        if (empty($redirect)) {
-            $CI->load->helper('security');
-            $redirect = get_safe_referer('', base_url());
-        }
-
-        redirect($redirect);
+    if ($errors === []) {
+        return true;
     }
+
+    $CI = & get_instance();
+    foreach ($errors as $i => $e) {
+        $errors[$i] = strtr(trans('form_validation_valid_email'), ['{field}' => trans($e)]);
+    }
+
+    $CI->session->set_flashdata('alert_error', implode('<br>', $errors));
+
+    return false;
 }
