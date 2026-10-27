@@ -109,7 +109,7 @@ class Payment_Information extends Base_Controller
      *
      * @return View the stripe page view
      */
-    public function stripe($invoice_url_key)
+    protected function stripe($invoice_url_key)
     {
         // Get the api key for which the card token must be generated
         $data = [
@@ -127,7 +127,7 @@ class Payment_Information extends Base_Controller
      *
      * @return View the paypal page view
      */
-    public function paypal($invoice_url_key)
+    protected function paypal($invoice_url_key)
     {
         $data = [
             'paypal_client_id'      => get_setting('gateway_paypal_clientId'),
