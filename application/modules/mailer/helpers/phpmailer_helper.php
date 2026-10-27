@@ -182,7 +182,7 @@ function phpmail_send(
         $attachment_path = strtr($attachment_path, [UPLOADS_ARCHIVE_FOLDER => UPLOADS_TEMP_FOLDER]);
 
         // The XML eInvoicing file exist in temporary?
-        $xml_file = mb_rtrim($attachment_path, '.pdf') . '.xml';
+        $xml_file = (str_ends_with(mb_strtolower($attachment_path), '.pdf') ? mb_substr($attachment_path, 0, -4) : $attachment_path) . '.xml';
         if (file_exists($xml_file)) {
             // Attach eInvoicing temp file
             if ( ! empty($_SERVER['CIIname'])) {

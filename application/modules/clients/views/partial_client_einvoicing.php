@@ -129,10 +129,10 @@ foreach ($req_einvoicing->users as $user_id => $user) {
                             <tr>
                                 <td><?php _trans($lang[$l]); ?></td>
                                 <td class="text-center">
-                                    <?php echo anchor('clients/form/' . $client_id . '#client_' . $key, $c_icon, $title_tip . ' #' . trans($lang[$l]) . ' (' . mb_trim(trans('field')) . ')"'); ?>
+                                    <?php echo anchor('clients/form/' . $client_id . '#client_' . $key, $c_icon, $title_tip . ' #' . trans($lang[$l]) . ' (' . trim(trans('field')) . ')"'); ?>
                                 </td>
                                 <td class="text-center">
-                                    <?php echo anchor('users/form/' . $user_id . '#user_' . $key, $u_icon, $title_tip . ' ' . htmlsc($user->user_name) . ' #' . trans($lang[$l]) . ' (' . mb_trim(trans('field')) . ')"'); ?>
+                                    <?php echo anchor('users/form/' . $user_id . '#user_' . $key, $u_icon, $title_tip . ' ' . htmlsc($user->user_name) . ' #' . trans($lang[$l]) . ' (' . trim(trans('field')) . ')"'); ?>
                                 </td>
                             </tr>
 <?php

@@ -342,7 +342,7 @@ if (($client->client_einvoicing_active ?? 0) && $user_fields_nook) {
                         . anchor(
                             '/clients/form/' . $client->client_id . '#client_' . $key,
                             trans($lang[$l]),
-                            $title_tip . ' #' . trans($lang[$l]) . ' (' . mb_trim(trans('field')) . ')"'
+                            $title_tip . ' #' . trans($lang[$l]) . ' (' . trim(trans('field')) . ')"'
                         ); // ! Need add: "
             }
         }
@@ -390,7 +390,7 @@ if (($client->client_einvoicing_active ?? 0) && $user_fields_nook) {
                                 '/users/form/' . $uid . '#user_' . $key,
                                 trans($lang[$l]),
                                 // ! Need add: "
-                                $title_tip . ' #' . trans($lang[$l]) . ' (' . mb_trim(trans('field')) . ' ' . htmlsc($user->user_name) . ')"'
+                                $title_tip . ' #' . trans($lang[$l]) . ' (' . trim(trans('field')) . ' ' . htmlsc($user->user_name) . ')"'
                             )
                             . '</span>';
                 }
