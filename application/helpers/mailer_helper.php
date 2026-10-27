@@ -83,7 +83,9 @@ function email_invoice(
     $bcc     = parse_template($db_invoice, $bcc);
     $from    = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
 
-    enforce_copy_addresses($cc, $bcc, (string) $from[0], 'mailer/invoice/' . $invoice_id);
+    if ( ! enforce_copy_addresses($cc, $bcc, mailer_copy_authority((string) ($db_invoice->user_email ?? '')))) {
+        return false;
+    }
 
     $errors = [];
     if ( ! validate_email_address($to)) {
@@ -153,7 +155,9 @@ function email_quote(
     $bcc     = parse_template($db_quote, $bcc);
     $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
 
-    enforce_copy_addresses($cc, $bcc, (string) $from[0], 'mailer/quote/' . $quote_id);
+    if ( ! enforce_copy_addresses($cc, $bcc, mailer_copy_authority((string) ($db_quote->user_email ?? '')))) {
+        return false;
+    }
 
     $errors = [];
     if ( ! validate_email_address($to)) {
@@ -304,10 +308,21 @@ function authorize_copy_addresses($list, string $sender)
 }
 
 /**
- * Replaces $cc and $bcc by their normalised lists, or flashes an error and redirects when one of them
- * is not allowed.
+ * The address whose domain authorises CC/BCC addresses: the configured sender (smtp_mail_from), else the document
+ * owner. It is deliberately not the From address of the message, which an e-mail template may set to any domain.
  */
-function enforce_copy_addresses(&$cc, &$bcc, string $sender, string $redirect): void
+function mailer_copy_authority(string $owner_email): string
+{
+    $configured = trim((string) get_setting('smtp_mail_from'));
+
+    return $configured !== '' ? $configured : $owner_email;
+}
+
+/**
+ * Replaces $cc and $bcc by their normalised lists. Returns false, with the refusal flashed, when one of them is
+ * not allowed; the caller decides what to do (the interactive controllers redirect, cron skips the e-mail).
+ */
+function enforce_copy_addresses(&$cc, &$bcc, string $sender): bool
 {
     $allowed_cc  = authorize_copy_addresses($cc, $sender);
     $allowed_bcc = authorize_copy_addresses($bcc, $sender);
@@ -316,11 +331,13 @@ function enforce_copy_addresses(&$cc, &$bcc, string $sender, string $redirect): 
         $CI = & get_instance();
         $CI->session->set_flashdata('alert_error', trans('cc_bcc_own_domain_only'));
 
-        redirect($redirect);
+        return false;
     }
 
     $cc  = $allowed_cc;
     $bcc = $allowed_bcc;
+
+    return true;
 }
 
 /**
