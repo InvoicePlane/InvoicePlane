@@ -148,7 +148,7 @@ class Settings extends Admin_Controller
             ];
 
             // Check for invoice logo upload
-            if ($_FILES['invoice_logo']['name']) {
+            if (isset($_FILES['invoice_logo']) && $_FILES['invoice_logo']['name']) {
                 // Security: Check for SVG files before attempting upload
                 $file_extension = mb_strtolower(pathinfo($_FILES['invoice_logo']['name'], PATHINFO_EXTENSION));
                 if ($file_extension === 'svg') {
@@ -173,7 +173,7 @@ class Settings extends Admin_Controller
             }
 
             // Check for login logo upload
-            if ($_FILES['login_logo']['name']) {
+            if (isset($_FILES['login_logo']) && $_FILES['login_logo']['name']) {
                 // Security: Check for SVG files before attempting upload
                 $file_extension = mb_strtolower(pathinfo($_FILES['login_logo']['name'], PATHINFO_EXTENSION));
                 if ($file_extension === 'svg') {
@@ -271,7 +271,7 @@ class Settings extends Admin_Controller
         // Security: Validate type parameter against allowed values
         $allowed_types = ['invoice', 'login'];
         if ( ! in_array($type, $allowed_types, true)) {
-            log_message('error', sprintf(
+            log_message('info', sprintf(
                 'Invalid logo type specified: %s by user %s',
                 sanitize_for_logging($type),
                 sanitize_for_logging((string) $this->session->userdata('user_id'))
