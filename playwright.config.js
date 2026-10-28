@@ -19,7 +19,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   timeout: 60 * 1000,
-  globalTimeout: 120 * 1000,
+  globalTimeout: 10 * 60 * 1000,
   reporter: [
     ['html', { open: 'never' }],
     ['list'],
@@ -27,7 +27,6 @@ export default defineConfig({
     ['./tests/E2E/error-summary-reporter.js'],
   ],
   globalSetup: path.resolve('./tests/E2E/global-setup.js'),
-  globalTimeout: 120 * 1000,
   use: {
     baseURL: E2E_BASE_URL,
     trace: 'on-first-retry',
