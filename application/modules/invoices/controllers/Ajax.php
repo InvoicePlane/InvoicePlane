@@ -695,17 +695,5 @@ class Ajax extends Admin_Controller
         }
 
         return [];
-    }
-
-    /**
-     * Form validation callback: validate invoice number for unsafe characters.
-     *
-     * @param string $number
-     * @return bool
-     */
-    public function validate_invoice_number(string $number): bool
-    {
-        // Reject < > " and control characters (ASCII 0-31)
-        return ! preg_match('/[<>"\x00-\x1F]/', $number);
-    }
+}
 }

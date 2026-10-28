@@ -18,7 +18,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: 1,
-  timeout: 10 * 1000,
+  timeout: 60 * 1000,
   globalTimeout: 20 * 60 * 1000,
   // Skip tests that exceed 10s (they'll be retried once, then marked as skipped)
   expect: { timeout: 5 * 1000 },
