@@ -1,0 +1,801 @@
+<?php
+
+namespace Tests\Feature\Payments;
+
+use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
+
+/**
+ * guest/gateways/Paypal.php feature tests.
+ *
+ * PaypalLib talks to the real PayPal REST API, so these tests replay a
+ * canned response queue via PAYPAL_MOCK_RESPONSES (see PaypalLib::testHandlerStack()).
+ * The first queued response always satisfies authorize(); later ones are
+ * consumed in the order the controller calls createOrder()/captureOrder().
+ */
+class PaypalFlowTest extends AbstractTestCase
+{
+    // -------------------------------------------------------------------------
+    // paypal_create_order
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_returns_404_for_a_non_post_create_order_request(): void
+    {
+        /* Arrange */
+        $invoiceId                   = $this->seedPayableInvoice();
+        $urlKey                      = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
+
+        /* Act */
+        $response = $this->get('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
+
+        /* Assert: Error Semantics (C) */
+        $this->assertResponseStatusCode($response, 404);
+
+        /* Assert: State Isolation (B) */
+        $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->get('/guest/gateways/paypal/paypal_create_order/invalid-key-123');
+        $this->assertResponseStatusCode($response2, 404);
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
+        $this->assertResponseStatusCode($response3, 404);
+    }
+
+    #[Test]
+    public function it_returns_404_for_create_order_on_an_unknown_invoice_key(): void
+    {
+        /* Arrange */
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_create_order/does-not-exist');
+
+        /* Assert: Error Semantics (C) */
+        $this->assertResponseStatusCode($response, 404);
+
+        /* Assert: State Isolation (B) */
+        $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_create_order/');
+        $this->assertResponseStatusCode($response2, 404);
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->post('/guest/gateways/paypal/paypal_create_order/does-not-exist');
+        $this->assertResponseStatusCode($response3, 404);
+    }
+
+    #[Test]
+    public function it_returns_404_for_create_order_on_a_draft_invoice(): void
+    {
+        /* Arrange: draft (status 1) invoices are never guest_visible() */
+        $invoiceId                   = $this->seedPayableInvoice(['invoice_status_id' => 1]);
+        $urlKey                      = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
+
+        /* Assert: Error Semantics (C) */
+        $this->assertResponseStatusCode($response, 404);
+
+        /* Assert: State Isolation (B) */
+        $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertSame(1, (int) $invoice['invoice_status_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_create_order/0');
+        $this->assertResponseStatusCode($response2, 404);
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
+        $this->assertResponseStatusCode($response3, 404);
+    }
+
+    #[Test]
+    public function it_redirects_create_order_for_an_already_paid_invoice_without_calling_paypal(): void
+    {
+        /* Arrange: only authorize() is queued — a live createOrder() call would error */
+        $invoiceId = $this->seedPayableInvoice([], ['invoice_balance' => '0.00']);
+        $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $this->mockPaypal([$this->authResponse()]);
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
+
+        /* Assert: Error Semantics (C) */
+        self::assertTrue($response->isRedirect(), sprintf('Expected a redirect, got [%d].', $response->statusCode()));
+
+        /* Assert: State Isolation (B) */
+        $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
+
+        /* Assert: Data Integrity (D) — invoice_balance lives on ip_invoice_amounts, not ip_invoices */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('0.00', $amounts['invoice_balance']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
+        self::assertTrue($response2->isRedirect());
+    }
+
+    #[Test]
+    public function it_creates_a_paypal_order_for_a_payable_invoice(): void
+    {
+        /* Arrange */
+        $invoiceId = $this->seedPayableInvoice();
+        $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            ['status' => 201, 'body' => json_encode(['id' => 'PAYPAL-ORDER123', 'status' => 'CREATED'])],
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
+
+        /* Assert: Error Semantics (C) */
+        $json = json_decode($response->body(), true);
+        self::assertSame('PAYPAL-ORDER123', $json['id'] ?? null);
+        self::assertSame('CREATED', $json['status'] ?? null);
+        self::assertArrayHasKey('csrf_token', $json);
+
+        /* Assert: Business Logic (A) */
+        $this->assertResponseStatusCode($response, 200);
+        $this->assertArrayHasKey('id', $json);
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertNotNull($invoice);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
+        $json2     = json_decode($response2->body(), true);
+        $this->assertArrayHasKey('id', $json2);
+    }
+
+    #[Test]
+    public function it_returns_500_when_paypal_returns_malformed_json_for_create_order(): void
+    {
+        /* Arrange */
+        $invoiceId                   = $this->seedPayableInvoice();
+        $urlKey                      = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            ['status' => 200, 'body' => '{not-json'],
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
+
+        /* Assert: Error Semantics (C) */
+        $this->assertResponseStatusCode($response, 500);
+        self::assertStringContainsString('error', $response->body());
+
+        /* Assert: State Isolation (B) */
+        $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
+
+        /* Assert: Business Logic (A) */
+        $this->assertResponseBodyContains($response, 'error');
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
+        $this->assertResponseStatusCode($response2, 500);
+    }
+
+    #[Test]
+    public function it_returns_500_when_paypal_response_is_missing_the_order_id(): void
+    {
+        /* Arrange */
+        $invoiceId                   = $this->seedPayableInvoice();
+        $urlKey                      = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            ['status' => 201, 'body' => json_encode(['status' => 'CREATED'])],
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
+
+        /* Assert: Error Semantics (C) */
+        $this->assertResponseStatusCode($response, 500);
+        self::assertStringContainsString('error', $response->body());
+
+        /* Assert: State Isolation (B) */
+        $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
+
+        /* Assert: Business Logic (A) */
+        $this->assertResponseBodyContains($response, 'error');
+
+        /* Assert: Boundary Cases (F) */
+        $json = json_decode($response->body(), true);
+        $this->assertIsArray($json);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_create_order/' . $urlKey);
+        $this->assertResponseStatusCode($response2, 500);
+    }
+
+    // -------------------------------------------------------------------------
+    // paypal_capture_payment
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_returns_404_for_a_non_post_capture_payment_request(): void
+    {
+        /* Arrange */
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
+        $paymentCountBefore          = $this->databaseCount('ip_payments');
+
+        /* Act */
+        $response = $this->get('/guest/gateways/paypal/paypal_capture_payment/ORDER1');
+
+        /* Assert: Error Semantics (C) */
+        $this->assertResponseStatusCode($response, 404);
+
+        /* Assert: State Isolation (B) */
+        $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
+        $paymentCountAfter          = $this->databaseCount('ip_payments');
+        $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Boundary Cases (F) */
+        $response2 = $this->get('/guest/gateways/paypal/paypal_capture_payment/');
+        $this->assertResponseStatusCode($response2, 404);
+
+        /* Assert: Idempotency (E) */
+        $response3 = $this->get('/guest/gateways/paypal/paypal_capture_payment/ORDER1');
+        $this->assertResponseStatusCode($response3, 404);
+    }
+
+    #[Test]
+    public function it_records_a_completed_capture_and_creates_a_payment(): void
+    {
+        /* Arrange */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_payment_method', 'setting_value' => '1']);
+        $invoiceId          = $this->seedPayableInvoice();
+        $paymentCountBefore = $this->databaseCount('ip_payments');
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse($invoiceId, '50.00'),
+            $this->captureResponse(['invoice_id' => $invoiceId, 'amount' => '50.00', 'capture_id' => 'CAP-1']),
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER1');
+
+        /* Assert: Error Semantics (C) */
+        self::assertTrue($response->isRedirect() || $response->statusCode() === 200);
+
+        /* Assert: Business Logic (A) */
+        $this->assertDatabaseHas('ip_payments', ['invoice_id' => $invoiceId, 'payment_external_id' => 'CAP-1', 'payment_amount' => '50.00']);
+        $this->assertDatabaseHas('ip_merchant_responses', ['invoice_id' => $invoiceId, 'merchant_response_successful' => 1, 'merchant_response_driver' => 'paypal']);
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore + 1, $paymentCountAfter);
+
+        /* Assert: Data Integrity (D) */
+        $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'CAP-1']);
+        $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+        $this->assertSame('50.00', $payment['payment_amount']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER1');
+        self::assertTrue($response2->isRedirect() || $response2->statusCode() === 200);
+    }
+
+    #[Test]
+    public function it_does_not_record_a_pending_capture_as_a_settled_payment(): void
+    {
+        /* Arrange */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $invoiceId          = $this->seedPayableInvoice();
+        $paymentCountBefore = $this->databaseCount('ip_payments');
+        $amountsBefore      = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse($invoiceId, '50.00'),
+            $this->captureResponse(['invoice_id' => $invoiceId, 'amount' => '50.00', 'capture_id' => 'CAP-PENDING'], 'PENDING'),
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER2');
+
+        /* Assert: no money is booked for funds that have not settled */
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-PENDING']);
+        self::assertSame($paymentCountBefore, $this->databaseCount('ip_payments'));
+        $amountsAfter = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        self::assertSame($amountsBefore['invoice_paid'], $amountsAfter['invoice_paid']);
+        self::assertSame($amountsBefore['invoice_balance'], $amountsAfter['invoice_balance']);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'invoice_status_id' => 2]);
+
+        /* Assert: the pending capture is still visible in the gateway log */
+        $this->assertDatabaseHas('ip_merchant_responses', [
+            'invoice_id'                   => $invoiceId,
+            'merchant_response_driver'     => 'paypal',
+            'merchant_response'            => 'PENDING - awaiting settlement',
+            'merchant_response_successful' => 1,
+        ]);
+
+        /* Assert: the buyer is told the payment is pending, not that it succeeded */
+        self::assertSame('Payment Pending! Check PayPal for details.', $response->sessionValue('alert_info'));
+        self::assertNull($response->sessionValue('alert_success'));
+    }
+
+    #[Test]
+    public function it_rejects_capture_before_calling_paypal_when_the_order_cannot_be_matched_to_an_invoice(): void
+    {
+        /* Arrange: the preflight order-details lookup itself carries no invoice_id,
+         * so capture must be refused before any funds move — queuing a capture
+         * response at all would mean the preflight check failed to short-circuit. */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse(null, '50.00'),
+        ]);
+        $logBefore     = $this->databaseCount('ip_merchant_responses');
+        $paymentBefore = $this->databaseCount('ip_payments');
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER4');
+
+        /* Assert: Business Logic (A) */
+        self::assertSame('Payment failed. Please try again.', $response->sessionValue('alert_error'));
+
+        /* Assert: State Isolation (B) — nothing can be logged against an unknown invoice */
+        self::assertSame($logBefore, $this->databaseCount('ip_merchant_responses'));
+        self::assertSame($paymentBefore, $this->databaseCount('ip_payments'));
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER4');
+        self::assertSame('Payment failed. Please try again.', $response2->sessionValue('alert_error'));
+    }
+
+    #[Test]
+    public function it_records_the_payment_once_the_same_capture_later_completes(): void
+    {
+        /* Arrange: first the capture is pending, then PayPal reports it completed */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $invoiceId = $this->seedPayableInvoice();
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse($invoiceId, '50.00'),
+            $this->captureResponse(['invoice_id' => $invoiceId, 'amount' => '50.00', 'capture_id' => 'CAP-LATER'], 'PENDING'),
+        ]);
+        $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER3');
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-LATER']);
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse($invoiceId, '50.00'),
+            $this->captureResponse(['invoice_id' => $invoiceId, 'amount' => '50.00', 'capture_id' => 'CAP-LATER'], 'COMPLETED'),
+        ]);
+
+        /* Act */
+        $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER3');
+
+        /* Assert */
+        $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'CAP-LATER']);
+        self::assertNotNull($payment, 'A completed capture is booked as a payment.');
+        self::assertSame($invoiceId, (int) $payment['invoice_id']);
+        self::assertSame('', (string) $payment['payment_note'], 'No "pending" note: only settled funds are recorded.');
+        $this->assertDatabaseHas('ip_invoice_amounts', ['invoice_id' => $invoiceId, 'invoice_paid' => '50.00']);
+    }
+
+    #[Test]
+    public function it_does_not_duplicate_a_payment_for_an_already_processed_capture_id(): void
+    {
+        /* Arrange */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $invoiceId = $this->seedPayableInvoice();
+        $this->seedPayment($invoiceId, ['payment_external_id' => 'CAP-DUP', 'payment_amount' => '50.00']);
+        $paymentCountBefore = $this->databaseCount('ip_payments', ['payment_external_id' => 'CAP-DUP']);
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse($invoiceId, '50.00'),
+            $this->captureResponse(['invoice_id' => $invoiceId, 'amount' => '50.00', 'capture_id' => 'CAP-DUP']),
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER3');
+
+        /* Assert: Business Logic (A) */
+        $this->assertDatabaseCount('ip_payments', 1, ['payment_external_id' => 'CAP-DUP']);
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments', ['payment_external_id' => 'CAP-DUP']);
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Error Semantics (C) */
+        self::assertTrue($response->isRedirect() || $response->statusCode() === 200);
+
+        /* Assert: Data Integrity (D) */
+        $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'CAP-DUP']);
+        $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+        $this->assertSame('50.00', $payment['payment_amount']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER3');
+        $this->assertDatabaseCount('ip_payments', 1, ['payment_external_id' => 'CAP-DUP']);
+    }
+
+    #[Test]
+    public function it_does_not_record_a_payment_when_the_invoice_is_already_fully_paid(): void
+    {
+        /* Arrange */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $invoiceId          = $this->seedPayableInvoice([], ['invoice_balance' => '0.00']);
+        $paymentCountBefore = $this->databaseCount('ip_payments');
+
+        // No captureResponse queued: preflight itself rejects the already-paid invoice,
+        // so captureOrder() is never reached.
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse($invoiceId, '50.00'),
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER4');
+
+        /* Assert: Business Logic (A) */
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-ALREADY-PAID']);
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Error Semantics (C) */
+        self::assertTrue($response->isRedirect() || $response->statusCode() === 200);
+
+        /* Assert: Data Integrity (D) — invoice_balance lives on ip_invoice_amounts, not ip_invoices */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('0.00', $amounts['invoice_balance']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER4');
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-ALREADY-PAID']);
+    }
+
+    #[Test]
+    public function it_rejects_a_capture_whose_currency_does_not_match_the_gateway_setting(): void
+    {
+        /* Arrange */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $invoiceId          = $this->seedPayableInvoice();
+        $paymentCountBefore = $this->databaseCount('ip_payments');
+
+        // No captureResponse queued: preflight itself rejects the currency mismatch,
+        // so captureOrder() is never reached.
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse($invoiceId, '50.00', 'USD'),
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER5');
+
+        /* Assert: Business Logic (A) */
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-BAD-CCY']);
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Error Semantics (C) */
+        self::assertTrue($response->isRedirect() || $response->statusCode() === 200);
+
+        /* Assert: Data Integrity (D) */
+        $currencySetting = $this->databaseFetchOne('ip_settings', ['setting_key' => 'gateway_paypal_currency']);
+        $this->assertSame('EUR', $currencySetting['setting_value']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER5');
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-BAD-CCY']);
+    }
+
+    #[Test]
+    public function it_rejects_a_capture_whose_amount_is_short_of_the_invoice_balance(): void
+    {
+        /* Arrange */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $invoiceId          = $this->seedPayableInvoice([], ['invoice_balance' => '50.00']);
+        $paymentCountBefore = $this->databaseCount('ip_payments');
+
+        // No captureResponse queued: preflight itself rejects the amount mismatch,
+        // so captureOrder() is never reached.
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse($invoiceId, '10.00'),
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER6');
+
+        /* Assert: Business Logic (A) */
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-SHORT']);
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Error Semantics (C) */
+        self::assertTrue($response->isRedirect() || $response->statusCode() === 200);
+
+        /* Assert: Data Integrity (D) — invoice_balance lives on ip_invoice_amounts, not ip_invoices */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('50.00', $amounts['invoice_balance']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER6');
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-SHORT']);
+    }
+
+    #[Test]
+    public function it_rejects_a_completed_capture_whose_invoice_id_does_not_match_the_preflight_verified_order(): void
+    {
+        /* Arrange: preflight verifies the order against $invoiceId, but the COMPLETED
+         * capture response that follows names a different invoice — defense-in-depth
+         * against trusting the capture response's invoice_id over the one preflight
+         * already verified. */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $invoiceId          = $this->seedPayableInvoice();
+        $otherInvoiceId     = $this->seedPayableInvoice();
+        $paymentCountBefore = $this->databaseCount('ip_payments');
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse($invoiceId, '50.00'),
+            $this->captureResponse(['invoice_id' => $otherInvoiceId, 'amount' => '50.00', 'capture_id' => 'CAP-INVOICE-MISMATCH']),
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER9');
+
+        /* Assert: Business Logic (A) — funds are never recorded against either invoice */
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-INVOICE-MISMATCH']);
+        $this->assertDatabaseHas('ip_merchant_responses', ['invoice_id' => $otherInvoiceId, 'merchant_response_successful' => 0]);
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Error Semantics (C) */
+        self::assertSame('Payment failed. Please try again.', $response->sessionValue('alert_error'));
+
+        /* Assert: Data Integrity (D) — neither invoice's balance moved */
+        $this->assertDatabaseHas('ip_invoice_amounts', ['invoice_id' => $invoiceId, 'invoice_balance' => '50.00']);
+        $this->assertDatabaseHas('ip_invoice_amounts', ['invoice_id' => $otherInvoiceId, 'invoice_balance' => '50.00']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER9');
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-INVOICE-MISMATCH']);
+    }
+
+    #[Test]
+    public function it_rejects_a_completed_capture_whose_currency_diverges_from_the_preflight_verified_order(): void
+    {
+        /* Arrange: preflight verifies the order in EUR, but the COMPLETED capture response
+         * that actually comes back from captureOrder() names a different currency — the
+         * independent post-capture currency check (predating preflight) is still the one
+         * that catches this, since preflight only ever reads the order once, before capture. */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $invoiceId          = $this->seedPayableInvoice();
+        $paymentCountBefore = $this->databaseCount('ip_payments');
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse($invoiceId, '50.00', 'EUR'),
+            $this->captureResponse(['invoice_id' => $invoiceId, 'amount' => '50.00', 'capture_id' => 'CAP-POST-CAPTURE-CCY', 'currency' => 'USD']),
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER10');
+
+        /* Assert: Business Logic (A) */
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-POST-CAPTURE-CCY']);
+        $this->assertDatabaseHas('ip_merchant_responses', ['invoice_id' => $invoiceId, 'merchant_response_successful' => 0]);
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Error Semantics (C) */
+        self::assertSame('Payment failed. Please try again.', $response->sessionValue('alert_error'));
+
+        /* Assert: Data Integrity (D) */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        $this->assertSame('50.00', $amounts['invoice_balance']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER10');
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-POST-CAPTURE-CCY']);
+    }
+
+    #[Test]
+    public function it_records_a_declined_capture_as_an_unsuccessful_merchant_response(): void
+    {
+        /* Arrange */
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $invoiceId                   = $this->seedPayableInvoice();
+        $paymentCountBefore          = $this->databaseCount('ip_payments');
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse($invoiceId, '50.00'),
+            ['status' => 200, 'body' => json_encode([
+                'purchase_units' => [[
+                    'payments' => [
+                        'captures' => [[
+                            'status'             => 'DECLINED',
+                            'invoice_id'         => $invoiceId,
+                            'processor_response' => ['response_code' => '05'],
+                        ]],
+                    ],
+                ]],
+                'id' => 'PAYPAL-ORDERDECLINED',
+            ])],
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER7');
+
+        /* Assert: Business Logic (A) */
+        $this->assertDatabaseMissing('ip_payments', ['invoice_id' => $invoiceId]);
+        $this->assertDatabaseHas('ip_merchant_responses', ['invoice_id' => $invoiceId, 'merchant_response_successful' => 0]);
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter = $this->databaseCount('ip_payments');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+
+        /* Assert: Error Semantics (C) */
+        self::assertTrue($response->isRedirect() || $response->statusCode() === 200);
+
+        /* Assert: Data Integrity (D) */
+        $merchantResponse = $this->databaseFetchOne('ip_merchant_responses', ['invoice_id' => $invoiceId, 'merchant_response_successful' => 0]);
+        $this->assertSame($invoiceId, (int) $merchantResponse['invoice_id']);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER7');
+        $this->assertDatabaseMissing('ip_payments', ['invoice_id' => $invoiceId]);
+    }
+
+    #[Test]
+    public function it_rejects_capture_before_calling_paypal_when_the_invoice_is_not_guest_visible(): void
+    {
+        /* Arrange: draft invoice — never guest_visible(). The preflight check now does this
+         * lookup itself and refuses with a flashdata error instead of ever reaching
+         * captureOrder(), so a queued capture response here would mean the preflight
+         * check failed to short-circuit the request. */
+        $invoiceId                   = $this->seedPayableInvoice(['invoice_status_id' => 1]);
+        $paymentCountBefore          = $this->databaseCount('ip_payments');
+        $merchantResponseCountBefore = $this->databaseCount('ip_merchant_responses');
+
+        $this->mockPaypal([
+            $this->authResponse(),
+            $this->orderDetailsResponse($invoiceId, '50.00'),
+        ]);
+
+        /* Act */
+        $response = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER8');
+
+        /* Assert: Error Semantics (C) */
+        self::assertSame('Invoice Not Found', $response->sessionValue('alert_error'));
+
+        /* Assert: Business Logic (A) */
+        $this->assertDatabaseMissing('ip_payments', ['payment_external_id' => 'CAP-NOT-VISIBLE']);
+        $this->assertDatabaseMissing('ip_merchant_responses', ['invoice_id' => $invoiceId]);
+
+        /* Assert: State Isolation (B) */
+        $paymentCountAfter          = $this->databaseCount('ip_payments');
+        $merchantResponseCountAfter = $this->databaseCount('ip_merchant_responses');
+        $this->assertSame($paymentCountBefore, $paymentCountAfter);
+        $this->assertSame($merchantResponseCountBefore, $merchantResponseCountAfter);
+
+        /* Assert: Data Integrity (D) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertSame(1, (int) $invoice['invoice_status_id']);
+
+        /* Assert: Boundary Cases (F) */
+        $draftInvoice = $this->databaseFetchOne('ip_invoices', ['invoice_status_id' => 1]);
+        $this->assertNotNull($draftInvoice);
+
+        /* Assert: Idempotency (E) */
+        $response2 = $this->post('/guest/gateways/paypal/paypal_capture_payment/ORDER8');
+        self::assertSame('Invoice Not Found', $response2->sessionValue('alert_error'));
+    }
+
+    #[Test]
+    public function it_never_contacts_paypal_for_requests_that_fail_a_local_guard(): void
+    {
+        /* Arrange: an EMPTY response queue — any PayPal call at all (including authorize()) would throw */
+        $this->mockPaypal([]);
+        $payable = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $this->seedPayableInvoice()])['invoice_url_key'];
+        $draft   = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $this->seedPayableInvoice(['invoice_status_id' => 1])])['invoice_url_key'];
+
+        /* Act */
+        $nonPost        = $this->get('/guest/gateways/paypal/paypal_create_order/' . $payable);
+        $unknownKey     = $this->post('/guest/gateways/paypal/paypal_create_order/does-not-exist');
+        $draftInvoice   = $this->post('/guest/gateways/paypal/paypal_create_order/' . $draft);
+        $captureNonPost = $this->get('/guest/gateways/paypal/paypal_capture_payment/ORDER123');
+
+        /* Assert: clean 404s, never a 500 from a gateway we should not have reached */
+        foreach ([$nonPost, $unknownKey, $draftInvoice, $captureNonPost] as $response) {
+            $this->assertResponseStatusCode($response, 404);
+        }
+        $this->assertDatabaseCount('ip_merchant_responses', 0);
+    }
+
+    protected function seedPayableInvoice(array $overrides = [], array $amountOverrides = []): int
+    {
+        $clientId = $this->seedClient();
+
+        return $this->seedInvoice($clientId, array_merge(['invoice_status_id' => 2], $overrides), array_merge(['invoice_balance' => '50.00'], $amountOverrides));
+    }
+
+    private function mockPaypal(array $responses): void
+    {
+        $this->withEnvironment(['PAYPAL_MOCK_RESPONSES' => json_encode($responses)]);
+    }
+
+    private function authResponse(): array
+    {
+        return ['status' => 200, 'body' => json_encode(['access_token' => 'fake-bearer-token'])];
+    }
+
+    private function captureResponse(array $capture, string $status = 'COMPLETED'): array
+    {
+        return ['status' => 200, 'body' => json_encode([
+            'purchase_units' => [[
+                'payments' => [
+                    'captures' => [[
+                        'status'     => $status,
+                        'invoice_id' => $capture['invoice_id'],
+                        'id'         => $capture['capture_id'] ?? 'CAPTURE-' . bin2hex(random_bytes(4)),
+                        'amount'     => ['value' => $capture['amount'], 'currency_code' => $capture['currency'] ?? 'EUR'],
+                    ]],
+                ],
+            ]],
+            'id' => 'PAYPAL-ORDERRESOURCE',
+        ])];
+    }
+
+    /**
+     * The GET .../orders/{id} response paypal_capture_payment() now reads BEFORE
+     * capturing, to verify the order still matches the invoice. Queue this between
+     * authResponse() and captureResponse() for any test that must reach captureOrder().
+     */
+    private function orderDetailsResponse(?int $invoiceId, string $amount, string $currency = 'EUR'): array
+    {
+        return ['status' => 200, 'body' => json_encode([
+            'purchase_units' => [[
+                'invoice_id' => $invoiceId,
+                'amount'     => ['value' => $amount, 'currency_code' => $currency],
+            ]],
+            'id' => 'PAYPAL-ORDERRESOURCE',
+        ])];
+    }
+}

@@ -205,7 +205,7 @@ class Quotes extends Admin_Controller
         $this->mdl_quotes->delete($quote_id);
 
         // Redirect to quote index
-        redirect('quotes/index');
+        redirect('quotes/status/all');
     }
 
     /**

@@ -68,9 +68,6 @@ final class InvalidateUserSessionsTest extends TestCase
 
         $GLOBALS['unitCiInstance'] = $ci;
 
-        // Load CodeIgniter Common.php which defines get_instance()
-        require_once BASEPATH . 'core/Common.php';
-
         require_once BASEPATH . 'core/Model.php';
         require_once APPPATH . 'modules/sessions/models/Mdl_sessions.php';
     }

@@ -9,55 +9,11 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use QrCode;
 
-/**
- * NOTE: This test requires CodeIgniter to be bootstrapped because
- * the QrCode library calls get_instance() in its constructor.
- * The setUp method bootstraps a minimal CodeIgniter instance.
- */
 class InvoicesTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Set up minimal CodeIgniter instance for get_instance()
-        $this->dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'ip_inv_' . bin2hex(random_bytes(4));
-        mkdir($this->dir, 0700, true);
-
-        $config = new class () {
-            public function item(string $key): mixed
-            {
-                return null;
-            }
-        };
-
-        $session = new class () {
-            public function __get(string $key): mixed
-            {
-                return null;
-            }
-        };
-
-        $load = new class () {
-            public function helper(string $name): void
-            {
-                // No-op for these tests
-            }
-            public function model(string $name): void
-            {
-                // No-op for these tests
-            }
-        };
-
-        $ci          = new \stdClass();
-        $ci->config  = $config;
-        $ci->session = $session;
-        $ci->load    = $load;
-
-        // Load CodeIgniter Common.php which defines get_instance()
-        require_once __DIR__ . '/../../../vendor/pocketarc/codeigniter/system/core/Common.php';
-
-        $GLOBALS['unitCiInstance'] = $ci;
     }
 
     #[Test]

@@ -6,6 +6,7 @@ if ( ! defined('BASEPATH')) {
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\HandlerStack;
 
 #[AllowDynamicProperties]
 class PaypalLib
@@ -30,9 +31,10 @@ class PaypalLib
 
         log_message('debug', 'Paypal library initialization started');
 
-        $this->client = new Client([
+        $this->client = new Client(array_filter([
             'base_uri' => $this->endpoint,
-        ]);
+            'handler'  => self::testHandlerStack(),
+        ]));
 
         log_message('debug', 'Paypal library client created');
     }
@@ -200,6 +202,27 @@ class PaypalLib
             // a 500 instead of the clean ['status' => false] failure every caller expects.
             throw $clientException;
         }
+    }
+
+    /**
+     * In the testing environment only, replay a queue of canned HTTP responses instead of calling the real PayPal
+     * API. The queue is a JSON array of ['status' => int, 'body' => string] entries in the PAYPAL_MOCK_RESPONSES
+     * environment variable, consumed in the order this library calls PayPal.
+     */
+    private static function testHandlerStack(): ?HandlerStack
+    {
+        if ((defined('ENVIRONMENT') ? ENVIRONMENT : '') !== 'testing' && ! defined('CI_TESTING')) {
+            return null;
+        }
+
+        $fixture = getenv('PAYPAL_MOCK_RESPONSES');
+        $queue   = $fixture === false || $fixture === '' ? null : json_decode($fixture, true);
+
+        if ( ! is_array($queue) || ! class_exists(\Tests\Fakes\Payments\FakePaypalHttpClient::class)) {
+            return null;
+        }
+
+        return \Tests\Fakes\Payments\FakePaypalHttpClient::handlerStack($queue);
     }
 
     /**

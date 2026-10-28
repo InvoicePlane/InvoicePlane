@@ -116,6 +116,38 @@ Tests live in `tests/`. Use plain `\PHPUnit\Framework\TestCase` — no Laravel `
   commit — that output's two-character line prefixes (`++`, `+ `, ` +`) are easy to mis-parse as
   a plain single-`+` diff, producing false "missing" results.
 
+## Pull request numbering (fork and upstream stay in step)
+
+Every upstream `InvoicePlane/InvoicePlane` PR has exactly one twin in the fork `underdogg-forks/ivpl-xprmt`, and the
+two numbers move in lockstep: `upstream number - fork number` is constant (currently 1731: upstream #1836 / fork #105,
+#1837 / #106, #1838 / #107; the next pair is upstream #1839 / fork #108).
+
+- GitHub numbers PRs and issues from one counter per repository. Before opening a PR, read the latest number on
+  **both** repositories (`gh api repos/<owner>/<repo>/issues?state=all&per_page=1&sort=created&direction=desc`) and
+  open the pair back to back, so the offset does not drift.
+- Never open a second PR on one side while the other side lags. A docs-only or otherwise twin-less upstream PR, an
+  issue, or a PR from someone else also advances a counter: when that happens, the missing number on the other side is
+  burned with a placeholder PR (the maintainer does that), and the new offset is written here.
+- The twins cross-link by number in their descriptions (`underdogg-forks/ivpl-xprmt#107` <-> `InvoicePlane/InvoicePlane#1838`),
+  and the fork PR carries tests first and the implementation second while the upstream PR carries the implementation only.
+
+## Tests: audit every test before presenting it
+
+A first draft of a test is rarely strong enough, and "it goes red without the fix" is not the bar. Before a test counts, check
+that it asserts, as applicable:
+
+- **the status** and, for a refusal, **the reason shown** (so a 403 cannot come from something else, such as a missing CSRF token);
+- **nothing leaked** in the body (names, keys, tokens) and **stored state unchanged** (a read endpoint must not write);
+- **a positive control that proves the right thing was served** (its own key, not the other gateway's; the owner and the primary
+  administrator served, not only the attacker refused);
+- **the other request shapes**: other HTTP methods, casing, a valid key with the feature disabled, boundary and non-integer ids,
+  a user that is still being created;
+- **a structural check** where a request cannot see the property (the public methods of a controller, undefined language keys,
+  functions newer than the PHP baseline).
+
+A status-code-only test is a draft. Sweep the whole class of the problem, not only the reported instance, and prove the test by
+removing the guard (one-line mutants) before the change is called done. This is the `scrutinizer` skill in short.
+
 ## Extended documentation
 
 - `AGENTS.md` — full agent instructions and security rules

@@ -1,0 +1,432 @@
+<?php
+
+namespace Tests\Feature\Payments;
+
+use Cryptor;
+use PHPUnit\Framework\Attributes\Test;
+use RuntimeException;
+use Tests\AbstractTestCase;
+
+/**
+ * TOCTOU race in the guest Stripe/PayPal payment callbacks (CWE-362/367).
+ *
+ * The callbacks read `invoice_balance`, check it, then insert a payment row as
+ * separate non-atomic steps. Two concurrent callbacks carrying *distinct*
+ * gateway references (so the payment_external_id dedup does not apply) can both
+ * pass the balance check before either commits, recording two payments against
+ * one balance and driving the invoice balance negative.
+ *
+ * The fix must make "check balance + record payment" atomic (a single
+ * conditional UPDATE gated on the current balance). These tests fire the two
+ * callbacks as genuinely parallel subprocesses and assert the money invariant
+ * holds every round: at most one payment per invoice, balance never negative,
+ * paid never above total.
+ */
+class GatewayPaymentRaceTest extends AbstractTestCase
+{
+    private const ENCRYPTION_KEY = '0123456789abcdef0123456789abcdef';
+
+    /** Rounds to fire the concurrent pair — the race is timing-dependent, so retry. */
+    private const RACE_ROUNDS = 8;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        require_once ROOT_PATH . '/application/libraries/Cryptor.php';
+
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_stripe_currency', 'setting_value' => 'EUR']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_stripe_payment_method', 'setting_value' => '1']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_stripe_apiKey', 'setting_value' => Cryptor::Encrypt('sk_test_fake_key', self::ENCRYPTION_KEY)]);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_currency', 'setting_value' => 'EUR']);
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'gateway_paypal_payment_method', 'setting_value' => '1']);
+    }
+
+    #[Test]
+    public function it_does_not_double_record_when_two_distinct_stripe_callbacks_race(): void
+    {
+        for ($round = 1; $round <= self::RACE_ROUNDS; $round++) {
+            /* Arrange: a fresh, fully-payable 100.00 invoice each round */
+            $invoiceId          = $this->seedPayableInvoice(100.00);
+            $urlKey             = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+            $intentA            = 'pi_race_' . $round . '_a';
+            $intentB            = 'pi_race_' . $round . '_b';
+            $paymentCountBefore = $this->databaseCount('ip_payments');
+
+            /* Act: two genuinely concurrent paid callbacks, distinct payment_intents */
+            $this->fireConcurrently([
+                $this->stripeCallbackRequest($urlKey, $intentA, 10000),
+                $this->stripeCallbackRequest($urlKey, $intentB, 10000),
+            ]);
+
+            /* Assert: Business Logic (A) + State Isolation (B) */
+            $this->assertMoneyInvariant($invoiceId, $round);
+
+            /* Assert: Data Integrity (D) */
+            $payment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $invoiceId]);
+            $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+            $this->assertGreaterThan(0, (float) $payment['payment_amount']);
+
+            /* Assert: Boundary Cases (F) */
+            $paymentCountAfter = $this->databaseCount('ip_payments');
+            $this->assertLessThanOrEqual($paymentCountBefore + 1, $paymentCountAfter);
+
+            /* Assert: Idempotency (E) */
+            $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+            $this->assertNotNull($invoice);
+        }
+    }
+
+    #[Test]
+    public function it_does_not_double_record_when_two_distinct_paypal_captures_race(): void
+    {
+        for ($round = 1; $round <= self::RACE_ROUNDS; $round++) {
+            /* Arrange */
+            $invoiceId          = $this->seedPayableInvoice(100.00);
+            $paymentCountBefore = $this->databaseCount('ip_payments');
+
+            /* Act: two concurrent completed captures, distinct capture ids */
+            $this->fireConcurrently([
+                $this->paypalCaptureRequest($invoiceId, 'CAP_race_' . $round . '_a', '100.00'),
+                $this->paypalCaptureRequest($invoiceId, 'CAP_race_' . $round . '_b', '100.00'),
+            ]);
+
+            /* Assert: Business Logic (A) + State Isolation (B) */
+            $this->assertMoneyInvariant($invoiceId, $round);
+
+            /* Assert: Data Integrity (D) */
+            $payment = $this->databaseFetchOne('ip_payments', ['invoice_id' => $invoiceId]);
+            $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+            $this->assertNotNull($payment['payment_external_id']);
+
+            /* Assert: Boundary Cases (F) */
+            $paymentCountAfter = $this->databaseCount('ip_payments');
+            $this->assertLessThanOrEqual($paymentCountBefore + 1, $paymentCountAfter);
+
+            /* Assert: Idempotency (E) */
+            $merchantResponses = $this->databaseCount('ip_merchant_responses', ['invoice_id' => $invoiceId]);
+            $this->assertGreaterThanOrEqual(1, $merchantResponses);
+        }
+    }
+
+    /**
+     * GHSA-m2c5-pmxf-qfh5: the losing capture in a race has already moved funds at
+     * PayPal (captureOrder() cannot be undone) by the time record_external_payment()'s
+     * atomic balance guard refuses it. The existing race test above only asserts
+     * ">= 1" merchant_response row, which a bug that logs the loser as successful
+     * too (merchant_response_successful unconditionally true, the pre-fix behavior)
+     * would never fail — both rows would exist, just one would lie. This asserts the
+     * actual per-row correctness the advisory is about: exactly one response per
+     * attempted capture, and the loser's is marked unsuccessful for manual
+     * reconciliation, not silently flagged as a success and not an uncaught 500.
+     */
+    #[Test]
+    public function it_logs_the_losing_paypal_capture_as_unsuccessful_not_silently_successful(): void
+    {
+        for ($round = 1; $round <= self::RACE_ROUNDS; $round++) {
+            /* Arrange */
+            $invoiceId = $this->seedPayableInvoice(100.00);
+
+            /* Act: two concurrent completed captures, distinct capture ids, each
+             * claiming the full 100.00 balance -- only one can actually be recorded. */
+            $this->fireConcurrently([
+                $this->paypalCaptureRequest($invoiceId, 'CAP_loser_' . $round . '_a', '100.00'),
+                $this->paypalCaptureRequest($invoiceId, 'CAP_loser_' . $round . '_b', '100.00'),
+            ]);
+
+            $this->resetDatabaseConnection();
+
+            /* Assert: Business Logic (A) + Data Integrity (D) — exactly one of the two is the
+             * real, recorded payment. When the requests truly overlap, both reach the merchant
+             * log; when one finishes first, the preflight skips the other ("already fully paid")
+             * before anything is captured, so it leaves no row. Both outcomes are correct, so
+             * the test accepts either and pins down only what must never happen. */
+            $this->resetDatabaseConnection();
+            $this->assertDatabaseCount('ip_payments', 1, ['invoice_id' => $invoiceId]);
+
+            /* Assert: Idempotency/Honesty (E) — exactly one response says successful, and a
+             * second logged response, if present, says unsuccessful. Two successes would mean
+             * the loser's captured funds were logged as recorded when they were not (the exact
+             * "merchant log always records successful" bug this advisory reports). */
+            $successCount = $this->databaseCount('ip_merchant_responses', ['invoice_id' => $invoiceId, 'merchant_response_successful' => 1]);
+            $failureCount = $this->databaseCount('ip_merchant_responses', ['invoice_id' => $invoiceId, 'merchant_response_successful' => 0]);
+            self::assertSame(1, $successCount, sprintf('Round %d: expected exactly 1 successful merchant_response row.', $round));
+            self::assertLessThanOrEqual(1, $failureCount, sprintf('Round %d: at most one unsuccessful merchant_response row (the losing capture).', $round));
+        }
+    }
+
+    #[Test]
+    public function it_keeps_one_row_when_the_same_stripe_intent_is_replayed_concurrently(): void
+    {
+        for ($round = 1; $round <= self::RACE_ROUNDS; $round++) {
+            /* Arrange */
+            $invoiceId          = $this->seedPayableInvoice(100.00);
+            $urlKey             = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+            $intent             = 'pi_replay_' . $round;
+            $paymentCountBefore = $this->databaseCount('ip_payments', ['payment_external_id' => $intent]);
+
+            /* Act: the SAME payment_intent delivered twice at once */
+            $this->fireConcurrently([
+                $this->stripeCallbackRequest($urlKey, $intent, 10000),
+                $this->stripeCallbackRequest($urlKey, $intent, 10000),
+            ]);
+
+            /* Assert: Business Logic (A) + State Isolation (B) */
+            $this->assertMoneyInvariant($invoiceId, $round);
+
+            /* Assert: Boundary Cases (F) + Idempotency (E) */
+            $this->assertDatabaseCount('ip_payments', 1, ['payment_external_id' => $intent]);
+            $paymentCountAfter = $this->databaseCount('ip_payments', ['payment_external_id' => $intent]);
+            $this->assertSame(1, $paymentCountAfter);
+
+            /* Assert: Data Integrity (D) */
+            $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => $intent]);
+            $this->assertSame($invoiceId, (int) $payment['invoice_id']);
+            $this->assertSame($intent, $payment['payment_external_id']);
+        }
+    }
+
+    #[Test]
+    public function it_still_records_a_single_full_balance_payment(): void
+    {
+        /* Arrange: a gateway callback always pays the exact outstanding balance */
+        $invoiceId = $this->seedPayableInvoice(100.00);
+        $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+
+        /* Act: one legitimate paid callback for the full 100.00 */
+        $this->fireConcurrently([$this->stripeCallbackRequest($urlKey, 'pi_ok_full', 10000)]);
+
+        /* Assert: Business Logic (A) */
+        $this->resetDatabaseConnection();
+        $this->assertDatabaseHas('ip_payments', ['invoice_id' => $invoiceId, 'payment_external_id' => 'pi_ok_full', 'payment_amount' => '100.00']);
+        $this->assertDatabaseCount('ip_payments', 1, ['invoice_id' => $invoiceId]);
+
+        /* Assert: Data Integrity (D) */
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        self::assertEqualsWithDelta(0.0, (float) $amounts['invoice_balance'], 0.001);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'invoice_status_id' => 4]);
+
+        /* Assert: Error Semantics (C) */
+        $payment = $this->databaseFetchOne('ip_payments', ['payment_external_id' => 'pi_ok_full']);
+        $this->assertSame('pi_ok_full', $payment['payment_external_id']);
+
+        /* Assert: Boundary Cases (F) + Idempotency (E) */
+        $invoice = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId]);
+        $this->assertSame(4, (int) $invoice['invoice_status_id']);
+    }
+
+    #[Test]
+    public function it_rejects_a_capture_that_no_longer_fits_a_reduced_balance(): void
+    {
+        /* Arrange: a 100.00 invoice, then a 40.00 payment recorded through a
+         * different channel (e.g. the admin UI) lands first, leaving 60.00
+         * outstanding -- while a gateway checkout session opened against the
+         * *original* 100.00 balance is still in flight. */
+        $invoiceId = $this->seedPayableInvoice(100.00);
+        $urlKey    = $this->databaseFetchOne('ip_invoices', ['invoice_id' => $invoiceId])['invoice_url_key'];
+
+        $this->databaseInsert('ip_payments', [
+            'invoice_id'          => $invoiceId,
+            'payment_date'        => date('Y-m-d'),
+            'payment_amount'      => '40.00',
+            'payment_method_id'   => 1,
+            'payment_note'        => '',
+            'payment_external_id' => null,
+        ]);
+        $this->databaseUpdate('ip_invoice_amounts', [
+            'invoice_paid'    => '40.00',
+            'invoice_balance' => '60.00',
+        ], ['invoice_id' => $invoiceId]);
+
+        /* Act: the stale capture claims the full original 100.00 against the
+         * now-60.00 balance. */
+        $this->fireConcurrently([$this->stripeCallbackRequest($urlKey, 'pi_stale_full', 10000)]);
+
+        /* Assert: the oversized capture must not be recorded, and the balance
+         * must never go negative -- a gate that only checks "balance > 0"
+         * (rather than "balance covers this amount") would apply it anyway. */
+        $this->resetDatabaseConnection();
+        $this->assertDatabaseMissing('ip_payments', ['invoice_id' => $invoiceId, 'payment_external_id' => 'pi_stale_full']);
+        $this->assertDatabaseCount('ip_payments', 1, ['invoice_id' => $invoiceId]);
+
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        self::assertEqualsWithDelta(60.00, (float) $amounts['invoice_balance'], 0.001, 'The stale oversized capture must not have touched the balance.');
+        self::assertEqualsWithDelta(40.00, (float) $amounts['invoice_paid'], 0.001);
+    }
+
+    /**
+     * A guest-visible invoice with one line item worth $balance, so that
+     * Mdl_invoice_amounts::calculate() (run by the payment save) recomputes
+     * invoice_total / invoice_balance to real figures instead of zero.
+     */
+    protected function seedPayableInvoice(float $balance): int
+    {
+        $money     = number_format($balance, 2, '.', '');
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice(
+            $clientId,
+            ['invoice_status_id' => 2],
+            [
+                'invoice_total'         => $money,
+                'invoice_balance'       => $money,
+                'invoice_item_subtotal' => $money,
+            ],
+        );
+
+        $itemId = $this->databaseInsert('ip_invoice_items', [
+            'invoice_id'       => $invoiceId,
+            'item_tax_rate_id' => 0,
+            'item_date_added'  => date('Y-m-d'),
+            'item_name'        => 'Race test item',
+            'item_quantity'    => '1.00',
+            'item_price'       => $money,
+            'item_order'       => 1,
+        ]);
+
+        $this->databaseInsert('ip_invoice_item_amounts', [
+            'item_id'        => $itemId,
+            'item_subtotal'  => $money,
+            'item_tax_total' => '0.00',
+            'item_discount'  => '0.00',
+            'item_total'     => $money,
+        ]);
+
+        return $invoiceId;
+    }
+
+    // -------------------------------------------------------------------------
+
+    private function assertMoneyInvariant(int $invoiceId, int $round): void
+    {
+        $this->resetDatabaseConnection();
+
+        // At most one payment row per invoice — a raced double-record makes this 2.
+        $this->assertDatabaseCount('ip_payments', 1, ['invoice_id' => $invoiceId]);
+
+        $amounts = $this->databaseFetchOne('ip_invoice_amounts', ['invoice_id' => $invoiceId]);
+        self::assertNotNull($amounts);
+        $paid    = (float) $amounts['invoice_paid'];
+        $balance = (float) $amounts['invoice_balance'];
+        $total   = (float) $amounts['invoice_total'];
+
+        self::assertGreaterThanOrEqual(-0.001, $balance, sprintf('Round %d: invoice_balance went negative (%.2f) — the callbacks over-credited.', $round, $balance));
+        self::assertLessThanOrEqual($total + 0.001, $paid, sprintf('Round %d: invoice_paid (%.2f) exceeds invoice_total (%.2f).', $round, $paid, $total));
+    }
+
+    /**
+     * @param array<int, array{method: string, uri: string, env: array<string, string>}> $requests
+     */
+    private function fireConcurrently(array $requests): void
+    {
+        $this->resetDatabaseConnection();
+
+        $command = sprintf('php %s', escapeshellarg(dirname(__DIR__, 2) . '/Integration/bin/request.php'));
+        $baseEnv = getenv();
+
+        $procs = [];
+        foreach ($requests as $i => $request) {
+            $payload = [
+                'method'  => mb_strtoupper($request['method']),
+                'uri'     => $request['uri'],
+                'query'   => [],
+                'post'    => [],
+                'cookies' => [],
+                'session' => [],
+                'env'     => $request['env'],
+                'ajax'    => false,
+            ];
+
+            $env = array_merge($baseEnv, [
+                'CI_TEST_REQUEST' => base64_encode((string) json_encode($payload, JSON_THROW_ON_ERROR)),
+            ]);
+
+            $proc = proc_open(
+                $command,
+                [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+                $pipes,
+                dirname(__DIR__, 2),
+                $env,
+            );
+
+            if ( ! is_resource($proc)) {
+                throw new RuntimeException('Unable to start concurrent request process ' . $i);
+            }
+
+            fclose($pipes[0]);
+            $procs[] = ['proc' => $proc, 'pipes' => $pipes];
+        }
+
+        foreach ($procs as $entry) {
+            stream_get_contents($entry['pipes'][1]);
+            fclose($entry['pipes'][1]);
+            stream_get_contents($entry['pipes'][2]);
+            fclose($entry['pipes'][2]);
+            proc_close($entry['proc']);
+        }
+
+        $this->resetDatabaseConnection();
+    }
+
+    /**
+     * @return array{method: string, uri: string, env: array<string, string>}
+     */
+    private function stripeCallbackRequest(string $urlKey, string $paymentIntent, int $amountTotalMinor): array
+    {
+        $session = ['status' => 200, 'body' => json_encode([
+            'id'                  => 'cs_' . bin2hex(random_bytes(6)),
+            'object'              => 'checkout.session',
+            'status'              => 'complete',
+            'mode'                => 'payment',
+            'payment_status'      => 'paid',
+            'client_reference_id' => $urlKey,
+            'payment_intent'      => $paymentIntent,
+            'currency'            => 'eur',
+            'amount_total'        => $amountTotalMinor,
+            'amount_received'     => $amountTotalMinor,
+            'livemode'            => false,
+        ])];
+
+        return [
+            'method' => 'GET',
+            'uri'    => '/guest/gateways/stripe/callback/cs_test_' . bin2hex(random_bytes(4)),
+            'env'    => ['STRIPE_MOCK_RESPONSES' => json_encode([$session])],
+        ];
+    }
+
+    /**
+     * @return array{method: string, uri: string, env: array<string, string>}
+     */
+    private function paypalCaptureRequest(int $invoiceId, string $captureId, string $amount): array
+    {
+        $auth = ['status' => 200, 'body' => json_encode(['access_token' => 'fake-bearer-token'])];
+        // paypal_capture_payment() reads the order back via showOrderDetails() to verify
+        // it against the current invoice BEFORE capturing (GHSA-m2c5-pmxf-qfh5) — this
+        // precedes captureOrder() in the request sequence, so the mock queue needs it too.
+        $orderDetails = ['status' => 200, 'body' => json_encode([
+            'purchase_units' => [[
+                'invoice_id' => $invoiceId,
+                'amount'     => ['value' => $amount, 'currency_code' => 'EUR'],
+            ]],
+            'id' => 'PAYPAL-ORDER' . $captureId,
+        ])];
+        $capture = ['status' => 200, 'body' => json_encode([
+            'purchase_units' => [[
+                'payments' => [
+                    'captures' => [[
+                        'status'     => 'COMPLETED',
+                        'invoice_id' => $invoiceId,
+                        'id'         => $captureId,
+                        'amount'     => ['value' => $amount, 'currency_code' => 'EUR'],
+                    ]],
+                ],
+            ]],
+            'id' => 'PAYPAL-ORDER' . $captureId,
+        ])];
+
+        return [
+            'method' => 'POST',
+            'uri'    => '/guest/gateways/paypal/paypal_capture_payment/ORDER' . preg_replace('/[^A-Za-z0-9]/', '', $captureId),
+            'env'    => ['PAYPAL_MOCK_RESPONSES' => json_encode([$auth, $orderDetails, $capture])],
+        ];
+    }
+}

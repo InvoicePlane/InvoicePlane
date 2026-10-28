@@ -62,7 +62,15 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('mdl_products');
 
-        $products = $this->mdl_products->where_in('product_id', $this->input->post('product_ids'))->get()->result();
+        $ids = $this->input->post('product_ids');
+
+        if (empty($ids)) {
+            $this->json_encode_ajax([]);
+
+            return;
+        }
+
+        $products = $this->mdl_products->where_in('product_id', $ids)->get()->result();
 
         foreach ($products as $product) {
             $product->product_price = format_amount($product->product_price);

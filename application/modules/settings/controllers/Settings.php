@@ -32,6 +32,7 @@ class Settings extends Admin_Controller
         $this->load->library('form_validation');
         $this->load->helper('payments_helper');
         $this->load->helper('file_security');
+        $this->load->helper('country');
 
         // Security: Check for SVG logos and display warnings
         $this->check_svg_logos();
@@ -52,6 +53,13 @@ class Settings extends Admin_Controller
             $settings = $this->input->post('settings');
 
             $settings = $this->handleTaxRateDecimalPlaces($settings);
+
+            $invalid_key = $this->find_invalid_setting($settings, $number_formats);
+            if ($invalid_key !== null) {
+                log_message('error', sprintf('Invalid %s value attempted by user %d', sanitize_for_logging($invalid_key), (int) $this->session->userdata('user_id')));
+                $this->session->set_flashdata('alert_error', trans('invalid_value_for_field'));
+                redirect('settings');
+            }
 
             // Build array of all settings to save in a single batch operation
             $batch_settings = [];
@@ -206,10 +214,10 @@ class Settings extends Admin_Controller
         ]);
 
         // Collect the list of templates
-        $pdf_invoice_templates    = $this->mdl_templates->get_invoice_templates('pdf');
-        $public_invoice_templates = $this->mdl_templates->get_invoice_templates('public');
-        $pdf_quote_templates      = $this->mdl_templates->get_quote_templates('pdf');
-        $public_quote_templates   = $this->mdl_templates->get_quote_templates('public');
+        $pdf_invoice_templates                 = $this->mdl_templates->get_invoice_templates('pdf');
+        $public_invoice_templates              = $this->mdl_templates->get_invoice_templates('public');
+        $pdf_quote_templates                   = $this->mdl_templates->get_quote_templates('pdf');
+        $public_quote_templates                = $this->mdl_templates->get_quote_templates('public');
         $missing_allowlisted_template_settings = $this->mdl_templates->get_missing_allowlisted_template_settings();
 
         // Get all themes
@@ -218,27 +226,27 @@ class Settings extends Admin_Controller
         // Set data in the layout
         $this->layout->set(
             [
-                'invoice_groups'           => $this->mdl_invoice_groups->get()->result(),
-                'tax_rates'                => $this->mdl_tax_rates->get()->result(),
-                'payment_methods'          => $this->mdl_payment_methods->get()->result(),
-                'public_invoice_templates' => $public_invoice_templates,
-                'pdf_invoice_templates'    => $pdf_invoice_templates,
-                'public_quote_templates'   => $public_quote_templates,
-                'pdf_quote_templates'      => $pdf_quote_templates,
+                'invoice_groups'                        => $this->mdl_invoice_groups->get()->result(),
+                'tax_rates'                             => $this->mdl_tax_rates->get()->result(),
+                'payment_methods'                       => $this->mdl_payment_methods->get()->result(),
+                'public_invoice_templates'              => $public_invoice_templates,
+                'pdf_invoice_templates'                 => $pdf_invoice_templates,
+                'public_quote_templates'                => $public_quote_templates,
+                'pdf_quote_templates'                   => $pdf_quote_templates,
                 'missing_allowlisted_template_settings' => $missing_allowlisted_template_settings,
-                'languages'                => get_available_languages(),
-                'countries'                => get_country_list(trans('cldr')),
-                'date_formats'             => date_formats(),
-                'current_date'             => new DateTime(),
-                'available_themes'         => $available_themes,
-                'email_templates_quote'    => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
-                'email_templates_invoice'  => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
-                'custom_fields'            => ['ip_invoice_custom' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result()],
-                'gateway_drivers'          => $gateways,
-                'number_formats'           => $number_formats,
-                'gateway_currency_codes'   => get_currencies(),
-                'first_days_of_weeks'      => ['0' => lang('sunday'), '1' => lang('monday')],
-                'legacy_calculation'       => config_item('legacy_calculation'),
+                'languages'                             => get_available_languages(),
+                'countries'                             => get_country_list(trans('cldr')),
+                'date_formats'                          => date_formats(),
+                'current_date'                          => new DateTime(),
+                'available_themes'                      => $available_themes,
+                'email_templates_quote'                 => $this->mdl_email_templates->where('email_template_type', 'quote')->get()->result(),
+                'email_templates_invoice'               => $this->mdl_email_templates->where('email_template_type', 'invoice')->get()->result(),
+                'custom_fields'                         => ['ip_invoice_custom' => $this->mdl_custom_fields->by_table('ip_invoice_custom')->get()->result()],
+                'gateway_drivers'                       => $gateways,
+                'number_formats'                        => $number_formats,
+                'gateway_currency_codes'                => get_currencies(),
+                'first_days_of_weeks'                   => ['0' => lang('sunday'), '1' => lang('monday')],
+                'legacy_calculation'                    => config_item('legacy_calculation'),
             ]
         );
 
@@ -350,6 +358,70 @@ class Settings extends Admin_Controller
      * Check for SVG logos and display security warnings
      * This provides a soft migration path for existing SVG logos.
      */
+    /**
+     * Server-side allowlist for settings that are echoed into HTML/JS contexts or used to build paths.
+     * Returns the first offending key, or null when the whole batch is acceptable.
+     *
+     * @param array $settings
+     * @param array $number_formats
+     */
+    private function find_invalid_setting(array $settings, array $number_formats): ?string
+    {
+        $is_separator = static fn ($v, bool $required): bool => is_string($v)
+            && preg_match('/^.?\z/su', $v) === 1
+            && ( ! $required || $v !== '')
+            && preg_match('/^[^<>"\'&\\\\\w]?$/u', $v) === 1;
+
+        foreach (['decimal_point' => true, 'thousands_separator' => false] as $key => $required) {
+            if (array_key_exists($key, $settings) && ! $is_separator($settings[$key], $required)) {
+                return $key;
+            }
+        }
+
+        $decimal   = $settings['decimal_point'] ?? $this->mdl_settings->setting('decimal_point');
+        $thousands = $settings['thousands_separator'] ?? $this->mdl_settings->setting('thousands_separator');
+        if ((array_key_exists('decimal_point', $settings) || array_key_exists('thousands_separator', $settings))
+            && $decimal !== null && $decimal === $thousands) {
+            return 'decimal_point';
+        }
+
+        if (array_key_exists('currency_symbol', $settings)
+            && ( ! is_string($settings['currency_symbol'])
+                || preg_match('/^.{0,4}\z/su', $settings['currency_symbol']) !== 1
+                || $settings['currency_symbol'] !== strip_tags($settings['currency_symbol'])
+                || preg_match('/[<>"\'&]/', $settings['currency_symbol']) === 1)) {
+            return 'currency_symbol';
+        }
+
+        if (array_key_exists('date_format', $settings)
+            && ( ! is_string($settings['date_format']) || ! array_key_exists($settings['date_format'], date_formats()))) {
+            return 'date_format';
+        }
+
+        if (array_key_exists('number_format', $settings)
+            && ( ! is_string($settings['number_format']) || ! array_key_exists($settings['number_format'], $number_formats))) {
+            return 'number_format';
+        }
+
+        if (array_key_exists('pdf_watermark', $settings)
+            && ! in_array($settings['pdf_watermark'], ['0', '1'], true)) {
+            return 'pdf_watermark';
+        }
+
+        if (array_key_exists('default_language', $settings)
+            && ( ! is_string($settings['default_language']) || ! in_array($settings['default_language'], get_available_languages(), true))) {
+            return 'default_language';
+        }
+
+        if (array_key_exists('default_country', $settings)
+            && $settings['default_country'] !== ''
+            && ( ! is_string($settings['default_country']) || ! array_key_exists($settings['default_country'], get_country_list('en')))) {
+            return 'default_country';
+        }
+
+        return null;
+    }
+
     private function check_svg_logos()
     {
         $logos_to_check = ['login_logo', 'invoice_logo'];

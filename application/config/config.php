@@ -435,15 +435,15 @@ $config['encryption_key']    = env('ENCRYPTION_KEY');
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-$config['sess_driver']             = env('SESS_DRIVER', 'files');
-$config['sess_table_name']         = env('SESS_TABLE_NAME', 'ip_sessions');
-$config['sess_cookie_name']        = env('SESS_COOKIE_NAME', 'ip_session');
+$config['sess_driver']      = env('SESS_DRIVER', 'files');
+$config['sess_table_name']  = env('SESS_TABLE_NAME', 'ip_sessions');
+$config['sess_cookie_name'] = env('SESS_COOKIE_NAME', 'ip_session');
 // CI3 already defaults this to 'Lax' when unset (Session.php), but a deployment that sets
 // cookie_samesite explicitly elsewhere, or an older CI3 patch level, should not be able to
 // silently relax it -- pin it instead of relying on the library default.
-$config['sess_samesite']           = 'Lax';
-$config['sess_expiration']         = env('SESS_EXPIRATION', 864000);
-$config['sess_save_path']          = env('SESS_SAVE_PATH', sys_get_temp_dir());
+$config['sess_samesite']   = 'Lax';
+$config['sess_expiration'] = env('SESS_EXPIRATION', 864000);
+$config['sess_save_path']  = env('SESS_SAVE_PATH', sys_get_temp_dir());
 // env() returns a set-but-empty ipconfig value ('SESS_SAVE_PATH=') as "" instead
 // of applying the default. Treat empty / whitespace-only the same as unset, or
 // CI's Session_files_driver forces session.save_path to '' (clobbering php.ini /
@@ -519,9 +519,9 @@ $config['global_xss_filtering'] = false;
 | 'csrf_regenerate' = Regenerate token on every submission
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
-$config['csrf_protection']   = env_bool('CSRF_PROTECTION', 'true');
-$config['csrf_token_name']   = '_ip_csrf';
-$config['csrf_cookie_name']  = 'ip_csrf_cookie';
+$config['csrf_protection']  = env_bool('CSRF_PROTECTION', 'true');
+$config['csrf_token_name']  = '_ip_csrf';
+$config['csrf_cookie_name'] = 'ip_csrf_cookie';
 // CSRF token expiration: 1 hour by default, INDEPENDENT of SESS_EXPIRATION.
 // NEVER source this from SESS_EXPIRATION — that caused a critical bug where
 // SESS_EXPIRATION=0 made the CSRF cookie Max-Age=0, discarding it immediately.

@@ -257,7 +257,7 @@ class Invoices extends Admin_Controller
         }
 
         // Redirect to invoice index
-        redirect('invoices/index');
+        redirect('invoices/status/all');
     }
 
     /**

@@ -29,6 +29,8 @@ class Stripe extends Base_Controller
         $this->load->model('invoices/mdl_invoices');
         $this->load->helper('file_security');
         $this->load->helper(['currency', 'stripe']);
+
+        $this->useTestHttpClientIfConfigured();
     }
 
     /**
@@ -251,5 +253,24 @@ class Stripe extends Base_Controller
     protected function stripeClient(): StripeClient
     {
         return $this->stripe ??= new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
+    }
+
+    /**
+     * In the testing environment only, replay a queue of canned HTTP responses instead of calling the real Stripe
+     * API. The queue is a JSON array of ['status' => int, 'body' => string] entries in the STRIPE_MOCK_RESPONSES
+     * environment variable, consumed in the order the Stripe SDK calls out.
+     */
+    private function useTestHttpClientIfConfigured(): void
+    {
+        if ((defined('ENVIRONMENT') ? ENVIRONMENT : '') !== 'testing' && ! defined('CI_TESTING')) {
+            return;
+        }
+
+        $fixture = getenv('STRIPE_MOCK_RESPONSES');
+        $queue   = $fixture === false || $fixture === '' ? null : json_decode($fixture, true);
+
+        if (is_array($queue) && class_exists(\Tests\Fakes\Payments\FakeStripeHttpClient::class)) {
+            \Stripe\ApiRequestor::setHttpClient(new \Tests\Fakes\Payments\FakeStripeHttpClient($queue));
+        }
     }
 }
