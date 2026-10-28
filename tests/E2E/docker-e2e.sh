@@ -31,26 +31,6 @@ if ! curl -sf -o /dev/null "${BASE}/sessions/login" 2>/dev/null; then
   #                Secure session cookie would be dropped over plain http
   # variables_order=EGPCS -> this php.ini omits E; without it env() (which reads
   #                $_ENV only) can't see the two vars above
-  # Prepare ipconfig.php for the E2E server (like docker-db-prepare does)
-  docker exec "$CONTAINER" bash -lc "
-    cd ${APP_DIR} &&
-    cp ipconfig.php.example ipconfig.php &&
-    sed -i \
-      -e \"s|^DB_HOSTNAME=.*|DB_HOSTNAME=mariadb|\" \
-      -e \"s|^DB_PORT=.*|DB_PORT=3306|\" \
-      -e \"s|^DB_DATABASE=.*|DB_DATABASE=invoiceplane_test|\" \
-      -e \"s|^DB_USERNAME=.*|DB_USERNAME=root|\" \
-      -e \"s|^DB_PASSWORD=.*|DB_PASSWORD=root|\" \
-      -e \"s|^SETUP_COMPLETED=.*|SETUP_COMPLETED=true|\" \
-      -e \"s|^ENCRYPTION_KEY=.*|ENCRYPTION_KEY=0123456789abcdef0123456789abcdef|\" \
-      -e \"s|^IP_URL=.*|IP_URL=${BASE}|\" \
-      -e \"s|^CI_ENV=.*|CI_ENV=testing|\" \
-      -e \"s|^# CSRF_PROTECTION=.*|CSRF_PROTECTION=false|\" \
-      -e \"s|^CSRF_PROTECTION=.*|CSRF_PROTECTION=false|\" \
-      ipconfig.php &&
-    printf \"\nDB_DRIVER=mysqli\nCSRF_PROTECTION=false\nCOOKIE_SECURE=false\n\" >> ipconfig.php
-  "
-  
   docker exec -d \
     -e IP_URL="$BASE" \
     -e COOKIE_SECURE=false \
