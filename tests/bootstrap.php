@@ -1,37 +1,33 @@
 <?php
 
-/**
- * PHPUnit bootstrap file for InvoicePlane
- * 
- * This file is loaded before running PHPUnit tests.
- * It sets up the CodeIgniter application bootstrap.
- */
+define('CI_TESTING', true);
+define('CI_INTEGRATION_TESTING', true);
 
-// Define ROOT_PATH for use in tests
-define('ROOT_PATH', __DIR__ . '/../');
+$basePath = dirname(__DIR__);
+define('ROOT_PATH', $basePath);
 
-// Define CI paths if not already defined
-if (!defined('BASEPATH')) {
-    define('BASEPATH', __DIR__ . '/../vendor/pocketarc/codeigniter/system' . DIRECTORY_SEPARATOR);
-}
-if (!defined('FCPATH')) {
-    define('FCPATH', __DIR__ . '/../' . DIRECTORY_SEPARATOR);
-}
-if (!defined('APPPATH')) {
-    define('APPPATH', __DIR__ . '/../application' . DIRECTORY_SEPARATOR);
+require_once $basePath . '/bootstrap/kernel.php';
+
+// Isolated unit tests load application libraries without the CodeIgniter
+// request lifecycle. Keep application logging calls harmless in that context.
+if ( ! function_exists('log_message')) {
+    function log_message(string $level, string $message): void {}
 }
 
-// Load composer autoloader
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once $basePath . '/tests/Support/UnitCodeIgniter.php';
 
-// Load ipconfig.php settings if it exists
-$ipconfig = __DIR__ . '/../ipconfig.php';
-if (file_exists($ipconfig)) {
-    require_once $ipconfig;
-} else {
-    // Try parent directory (for public/ index.php setup)
-    $ipconfig = __DIR__ . '/../public/ipconfig.php';
-    if (file_exists($ipconfig)) {
-        require_once $ipconfig;
-    }
-}
+// session_credential_fingerprint() calls config_item('encryption_key'); if that
+// returns null in the parent process the HMAC mismatches the subprocess's value
+// and every actingAsAdmin() feature test gets a 307 redirect instead of 200.
+$GLOBALS['unitCiConfig'] = array_merge($GLOBALS['unitCiConfig'] ?? [], [
+    'encryption_key'   => $_ENV['ENCRYPTION_KEY'] ?? null,
+    'csrf_token_name'  => $_ENV['CSRF_TOKEN_NAME'] ?? '_ip_csrf',
+    'csrf_cookie_name' => $_ENV['CSRF_COOKIE_NAME'] ?? 'ip_csrf_cookie',
+]);
+
+// CI3 gateway libraries have no namespace — PSR-4 autoloading won't find them.
+require_once $basePath . '/application/libraries/gateways/PaypalLib.php';
+
+$_SERVER['REQUEST_URI'] = '/';
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['PHP_SELF']    = '/index.php';
