@@ -32,9 +32,9 @@ module.exports = function(grunt) {
           outputStyle: "expanded",
           sourceMap: true
         },
-        files: grunt.file.expandMapping(["assets/**/sass/*.scss"], "css", {
+        files: grunt.file.expandMapping(["resources/assets/**/scss/*.scss"], "css", {
           rename: function(dest, matched) {
-            return matched.replace(/\/sass\//, "/" + dest + "/").replace(/\.scss$/, ".css");
+            return matched.replace(/\/scss\//, "/" + dest + "/").replace(/\.scss$/, ".css");
           }
         })
       },
@@ -43,9 +43,9 @@ module.exports = function(grunt) {
           implementation: sass,
           outputStyle: "compressed"
         },
-        files: grunt.file.expandMapping(["assets/**/sass/*.scss"], "css", {
+        files: grunt.file.expandMapping(["resources/assets/**/scss/*.scss"], "css", {
           rename: function(dest, matched) {
-            return matched.replace(/\/sass\//, "/" + dest + "/").replace(/\.scss$/, ".css");
+            return matched.replace(/\/scss\//, "/" + dest + "/").replace(/\.scss$/, ".css");
           }
         })
       }
@@ -57,14 +57,14 @@ module.exports = function(grunt) {
           map: true,
           processors: [require("autoprefixer")]
         },
-        src: ["assets/**/css/*.css", "!assets/core/css/custom.css", "!assets/core/css/custom-pdf.css"]
+        src: ["resources/assets/**/css/*.css", "!assets/core/css/custom.css", "!assets/core/css/custom-pdf.css"]
       },
       build: {
         options: {
           map: false,
           processors: [require("autoprefixer")]
         },
-        src: ["assets/**/css/*.css", "!assets/core/css/custom.css", "!assets/core/css/custom-pdf.css"]
+        src: ["resources/assets/**/css/*.css", "!assets/core/css/custom.css", "!assets/core/css/custom-pdf.css"]
       }
     },
 
@@ -77,7 +77,7 @@ module.exports = function(grunt) {
         src: [
           "node_modules/jquery/dist/jquery.js",
           "node_modules/js-cookie/src/js.cookie.js",
-          "assets/core/js/jquery-ui.js",
+          "resources/assets/core/js/jquery-ui.js",
           "node_modules/bootstrap-sass/assets/javascripts/bootstrap.js",
           "node_modules/bootstrap-datepicker/js/bootstrap-datepicker.js",
           "node_modules/select2/dist/js/select2.full.js",
@@ -126,7 +126,7 @@ module.exports = function(grunt) {
       devjs: {
         files: [
           {
-            cwd: "assets/core/js/",
+            cwd: "resources/assets/core/js/",
             src: ["*.js", "!jquery-ui.js"],
             dest: "assets/core/js/",
             expand: true,
@@ -140,11 +140,11 @@ module.exports = function(grunt) {
 
     watch: {
       sass: {
-        files: "assets/**/*.scss",
+        files: "resources/assets/**/*.scss",
         tasks: ["sass:dev", "postcss:dev"]
       },
       js: {
-        files: "assets/core/js/scripts.js",
+        files: "resources/core/js/scripts.js",
         tasks: ["uglify"]
       }
     }
