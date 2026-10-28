@@ -15,7 +15,7 @@ if ( ! file_exists('../ipconfig.php')) {
     exit('The <b>ipconfig.php</b> file is missing! Please make a copy of the <b>ipconfig.php.example</b> file and rename it to <b>ipconfig.php</b>');
 }
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, '../ipconfig.php');
 $dotenv->load();
 
@@ -107,7 +107,7 @@ switch (ENVIRONMENT) {
  * This variable must contain the name of your "system" directory.
  * Set the path if it is not in the same directory as this file.
  */
-$system_path = 'vendor/pocketarc/codeigniter/system';
+$system_path = __DIR__ . '/../vendor/pocketarc/codeigniter/system';
 
 /*
  *---------------------------------------------------------------
@@ -124,7 +124,7 @@ $system_path = 'vendor/pocketarc/codeigniter/system';
  *
  * NO TRAILING SLASH!
  */
-$application_folder = 'application';
+$application_folder = __DIR__ . '/../application';
 
 /*
  *---------------------------------------------------------------
@@ -258,7 +258,7 @@ if (is_dir($application_folder)) {
     );
 } else {
     header('HTTP/1.1 503 Service Unavailable.', true, 503);
-    echo 'Your application folder path does not appear to be set correctly. Please open the following file and correct this: ' . self;
+    echo 'Your application folder path does not appear to be set correctly. Please open the following file and correct this: ' . SELF;
     exit(3); // EXIT_CONFIG
 }
 

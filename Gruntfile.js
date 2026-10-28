@@ -30,22 +30,30 @@ module.exports = function(grunt) {
         options: {
           implementation: sass,
           outputStyle: "expanded",
-          sourceMap: true
+          sourceMap: true,
+          includePaths: [
+            "node_modules/bootstrap-sass/assets/stylesheets",
+            "node_modules/font-awesome/scss"
+          ]
         },
-        files: grunt.file.expandMapping(["resources/assets/**/scss/*.scss"], "css", {
+        files: grunt.file.expandMapping(["resources/assets/**/sass/*.scss"], "css", {
           rename: function(dest, matched) {
-            return matched.replace(/\/scss\//, "/" + dest + "/").replace(/\.scss$/, ".css");
+            return matched.replace("resources/assets/", "assets/").replace(/\/sass\//, "/" + dest + "/").replace(/\.scss$/, ".css");
           }
         })
       },
       build: {
         options: {
           implementation: sass,
-          outputStyle: "compressed"
+          outputStyle: "compressed",
+          includePaths: [
+            "node_modules/bootstrap-sass/assets/stylesheets",
+            "node_modules/font-awesome/scss"
+          ]
         },
-        files: grunt.file.expandMapping(["resources/assets/**/scss/*.scss"], "css", {
+        files: grunt.file.expandMapping(["resources/assets/**/sass/*.scss"], "css", {
           rename: function(dest, matched) {
-            return matched.replace(/\/scss\//, "/" + dest + "/").replace(/\.scss$/, ".css");
+            return matched.replace("resources/assets/", "assets/").replace(/\/sass\//, "/" + dest + "/").replace(/\.scss$/, ".css");
           }
         })
       }
@@ -57,14 +65,14 @@ module.exports = function(grunt) {
           map: true,
           processors: [require("autoprefixer")]
         },
-        src: ["resources/assets/**/css/*.css", "!assets/core/css/custom.css", "!assets/core/css/custom-pdf.css"]
+        src: ["assets/**/css/*.css", "!assets/core/css/custom.css", "!assets/core/css/custom-pdf.css"]
       },
       build: {
         options: {
           map: false,
           processors: [require("autoprefixer")]
         },
-        src: ["resources/assets/**/css/*.css", "!assets/core/css/custom.css", "!assets/core/css/custom-pdf.css"]
+        src: ["assets/**/css/*.css", "!assets/core/css/custom.css", "!assets/core/css/custom-pdf.css"]
       }
     },
 
@@ -135,6 +143,12 @@ module.exports = function(grunt) {
             }
           }
         ]
+      },
+      scripts: {
+        expand: true,
+        cwd: "resources/assets/core/js/",
+        src: ["scripts.js", "paypal.js"],
+        dest: "assets/core/js/"
       }
     },
 
@@ -144,7 +158,7 @@ module.exports = function(grunt) {
         tasks: ["sass:dev", "postcss:dev"]
       },
       js: {
-        files: "resources/core/js/scripts.js",
+        files: "resources/assets/core/js/scripts.js",
         tasks: ["uglify"]
       }
     }
@@ -188,6 +202,8 @@ module.exports = function(grunt) {
     "concat:legacy",
     "concat:dependencies",
     "concat:zxcvbn",
+    "copy:devjs",
+    "copy:scripts",
     "uglify:build",
     "clean:build",
     "copy:datepickerlocale",

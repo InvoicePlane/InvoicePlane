@@ -1,0 +1,15 @@
+{
+  "cookies": [
+    {
+      "name": "ip_session",
+      "value": "56260fa40675e1c3c8b8d86671028459",
+      "domain": "172.19.0.5",
+      "path": "/",
+      "expires": 1794044221.158019,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}
