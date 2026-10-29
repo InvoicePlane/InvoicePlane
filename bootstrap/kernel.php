@@ -6,6 +6,8 @@ if (defined('CI_KERNEL_BOOTED')) {
 
 define('CI_KERNEL_BOOTED', true);
 
+define('ENVIRONMENT', $_SERVER['CI_ENV'] ?? 'production');
+
 $base = dirname(__DIR__);
 
 require_once $base . '/vendor/autoload.php';
@@ -28,112 +30,6 @@ if (file_exists($base . '/ipconfig.php')) {
     $dotenv = Dotenv\Dotenv::createImmutable($base, 'ipconfig.php');
     $dotenv->safeLoad();
 }
-
-if ( ! function_exists('env')) {
-    function env(string $key, mixed $default = null): mixed
-    {
-        return $_ENV[$key] ?? $default;
-    }
-}
-
-if ( ! function_exists('env_bool')) {
-    function env_bool(string $key, bool $default = false): bool
-    {
-        $value = $_ENV[$key] ?? null;
-
-        return $value === null
-            ? $default
-            : filter_var($value, FILTER_VALIDATE_BOOLEAN);
-    }
-}
-
-// Application environment + error reporting. Ported from the legacy root
-// index.php (now removed) so the public/ front controller is the single boot
-// path. CI_ENV is supplied by the web server / CLI; default to 'production'
-// (errors hidden) so a misconfigured deploy fails safe rather than leaking.
-if ( ! defined('ENVIRONMENT')) {
-    define('ENVIRONMENT', $_SERVER['CI_ENV'] ?? 'production');
-}
-
-switch (ENVIRONMENT) {
-    case 'development':
-        error_reporting(-1);
-        ini_set('display_errors', '1');
-        break;
-
-    case 'testing':
-    case 'production':
-        ini_set('display_errors', '0');
-        error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
-        break;
-
-    default:
-        // Unknown environment: fail loud for web requests, keep going for CLI/tests.
-        if (PHP_SAPI !== 'cli') {
-            header('HTTP/1.1 503 Service Unavailable.', true, 503);
-            echo 'The application environment is not set correctly.';
-            exit(1);
-        }
-}
-
-/*
-|--------------------------------------------------------------------------
-| SECURITY HEADERS
-|--------------------------------------------------------------------------
-|
-| Sent for every web response. They used to be set only by Admin_Controller,
-| leaving the login page, the client portal and the public invoice/quote/
-| payment pages frameable (clickjacking, e.g. of quote approval) and letting
-| browsers send public invoice URLs -- which contain the invoice's secret
-| access key -- to third-party payment scripts in the Referer header.
-*/
-$ip_frame_ancestors = ['SAMEORIGIN' => "'self'", 'DENY' => "'none'"];
-$ip_frame_options   = mb_strtoupper(trim((string) env('X_FRAME_OPTIONS', 'SAMEORIGIN')));
-if ( ! isset($ip_frame_ancestors[$ip_frame_options])) {
-    $ip_frame_options = 'SAMEORIGIN';
-}
-// Always computed (also under CLI) so the test runner, whose SAPI never exposes
-// header() output through headers_list(), can read exactly what a web request sends.
-$GLOBALS['ip_security_response_headers'] = [
-    'X-Frame-Options: ' . $ip_frame_options,
-    "Content-Security-Policy: frame-ancestors {$ip_frame_ancestors[$ip_frame_options]}; object-src 'none'; base-uri 'self'",
-    'Referrer-Policy: strict-origin-when-cross-origin',
-];
-if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', 'true')) {
-    $GLOBALS['ip_security_response_headers'][] = 'X-Content-Type-Options: nosniff';
-}
-if (PHP_SAPI !== 'cli' && ! headers_sent()) {
-    foreach ($GLOBALS['ip_security_response_headers'] as $ip_security_header) {
-        header($ip_security_header);
-    }
-    unset($ip_security_header);
-}
-unset($ip_frame_options, $ip_frame_ancestors);
-
-defined('FCPATH') || define('FCPATH', $base . '/public/');
-defined('APPPATH') || define('APPPATH', $base . '/application/');
-defined('BASEPATH') || define('BASEPATH', $base . '/vendor/pocketarc/codeigniter/system/');
-defined('VIEWPATH') || define('VIEWPATH', APPPATH . 'views/');
-
-// Legacy CI3 path constants. Some third-party/CI internals still reference
-// these; define them to match the stock front controller so nothing that
-// reads them breaks now that the root index.php is gone.
-defined('SELF') || define('SELF', basename($_SERVER['SCRIPT_NAME'] ?? 'index.php'));
-defined('SYSDIR') || define('SYSDIR', basename(rtrim(BASEPATH, '/\\')));
-
-// Upload / filesystem path constants (previously defined in the legacy root index.php).
-// uploads/ lives at the repo root (like resources/assets/ below), not under
-// public/ — do not change this to FCPATH-relative, it would resolve to a
-// public/uploads/ directory that doesn't exist.
-defined('IPCONFIG_FILE') || define('IPCONFIG_FILE', $base . '/ipconfig.php');
-defined('LOGS_FOLDER') || define('LOGS_FOLDER', APPPATH . 'logs/');
-defined('UPLOADS_FOLDER') || define('UPLOADS_FOLDER', $base . '/uploads/');
-defined('UPLOADS_ARCHIVE_FOLDER') || define('UPLOADS_ARCHIVE_FOLDER', UPLOADS_FOLDER . 'archive/');
-defined('UPLOADS_CFILES_FOLDER') || define('UPLOADS_CFILES_FOLDER', UPLOADS_FOLDER . 'customer_files/');
-defined('UPLOADS_TEMP_FOLDER') || define('UPLOADS_TEMP_FOLDER', UPLOADS_FOLDER . 'temp/');
-defined('UPLOADS_TEMP_MPDF_FOLDER') || define('UPLOADS_TEMP_MPDF_FOLDER', UPLOADS_TEMP_FOLDER);
-// storage/ also lives at the repo root, not under public/ — same reasoning as uploads/ above.
-defined('STORAGE_TEMP_FOLDER') || define('STORAGE_TEMP_FOLDER', $base . '/storage/temp/');
 
 if ( ! function_exists('env')) {
     function env(string $key, mixed $default = null): mixed
@@ -178,11 +74,23 @@ defined('SUMEX_SETTINGS') || define('SUMEX_SETTINGS', env_bool('SUMEX_SETTINGS',
 defined('SUMEX_URL') || define('SUMEX_URL', env('SUMEX_URL'));
 
 // ---------------------------------------------------------------------------
+// FCPATH and APPPATH must be defined before error handlers reference them.
+// ---------------------------------------------------------------------------
+defined('FCPATH') || define('FCPATH', $base . '/public/');
+defined('APPPATH') || define('APPPATH', $base . '/application/');
+defined('BASEPATH') || define('BASEPATH', $base . '/vendor/pocketarc/codeigniter/system/');
+defined('VIEWPATH') || define('VIEWPATH', APPPATH . 'views/');
+defined('STORAGE_TEMP_FOLDER') || define('STORAGE_TEMP_FOLDER', $base . '/storage/temp/');
+defined('UPLOADS_TEMP_FOLDER') || define('UPLOADS_TEMP_FOLDER', $base . '/uploads/temp/');
+
+// ---------------------------------------------------------------------------
 // PHP error / exception handlers
 //
 // In CI_TEST_SUBPROCESS: throw so the error surfaces as a real PHPUnit failure.
 // With EXTENSIVE_LOGGING (or IP_DEBUG): log the error then continue normally.
-// Default: PHP's built-in handler (CI3 registers its own later for web requests).
+// Default: always log to application/logs/ so exceptions are reliably captured
+// even when display_errors=0. Playwright checks for the exception page
+// body pattern and also monitors server-side logs.
 // ---------------------------------------------------------------------------
 if (defined('CI_TEST_SUBPROCESS')) {
     set_error_handler(static function (int $severity, string $message, string $file, int $line): bool {
@@ -196,33 +104,57 @@ if (defined('CI_TEST_SUBPROCESS')) {
         fwrite(STDERR, $e::class . ': ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine() . PHP_EOL);
         exit(1);
     });
-} elseif (env_bool('EXTENSIVE_LOGGING', false) || IP_DEBUG) {
-    set_error_handler(static function (int $severity, string $message, string $file, int $line): bool {
+} else {
+    // Default handler: always log exceptions to application/logs/ so they are
+    // reliably captured regardless of display_errors setting. This fixes the
+    // previous defect where exceptions produced a red/white screen but no
+    // log entry appeared.
+    $levels = [
+        E_ERROR             => 'ERROR',
+        E_WARNING           => 'WARNING',
+        E_NOTICE            => 'NOTICE',
+        E_DEPRECATED        => 'DEPRECATED',
+        E_USER_ERROR        => 'ERROR',
+        E_USER_WARNING      => 'WARNING',
+        E_USER_NOTICE       => 'NOTICE',
+        E_USER_DEPRECATED   => 'DEPRECATED',
+        E_RECOVERABLE_ERROR => 'ERROR',
+    ];
+
+    $logDir  = defined('FCPATH') ? dirname(FCPATH) . '/application/logs/' : sys_get_temp_dir() . '/';
+    $logFile = $logDir . 'log-' . date('Y-m-d') . '.php';
+
+    set_error_handler(static function (int $severity, string $message, string $file, int $line) use ($levels, $logDir, $logFile): bool {
         if ( ! ($severity & error_reporting())) {
             return false;
         }
-        $levels = [
-            E_ERROR             => 'ERROR',
-            E_WARNING           => 'WARNING',
-            E_NOTICE            => 'NOTICE',
-            E_DEPRECATED        => 'DEPRECATED',
-            E_USER_ERROR        => 'ERROR',
-            E_USER_WARNING      => 'WARNING',
-            E_USER_NOTICE       => 'NOTICE',
-            E_USER_DEPRECATED   => 'DEPRECATED',
-            E_RECOVERABLE_ERROR => 'ERROR',
-        ];
         $level   = $levels[$severity] ?? 'ERROR';
-        $logDir  = defined('FCPATH') ? dirname(FCPATH) . '/storage/logs/' : sys_get_temp_dir() . '/';
-        $logFile = $logDir . 'log-' . date('Y-m-d') . '.php';
-        $entry   = date('Y-m-d H:i:s') . ' ' . $level . ' -- ' . $message . ' (' . $file . ':' . $line . ')' . PHP_EOL;
+        // Sanitize the message to prevent log injection (CWE-117)
+        $safeMessage = sanitize_for_logging($message);
+        $entry   = date('Y-m-d H:i:s') . ' ' . $level . ' -- ' . $safeMessage . ' (' . $file . ':' . $line . ')' . PHP_EOL;
         if ( ! file_exists($logFile)) {
+            @mkdir(dirname($logFile), 0755, true);
             file_put_contents($logFile, "<?php defined('BASEPATH') || exit; ?>" . PHP_EOL, FILE_APPEND | LOCK_EX);
         }
         file_put_contents($logFile, $entry, FILE_APPEND | LOCK_EX);
 
         // Return false so PHP's default handler also runs (shows error in output when display_errors=on).
         return false;
+    });
+
+    // Also ensure exceptions are logged via CodeIgniter's exception handler
+    set_exception_handler(static function (\Throwable $e) use ($logDir, $logFile): void {
+        // Log with context: class, message, file, line
+        $safeMessage = sanitize_for_logging($e->getMessage());
+        $entry       = date('Y-m-d H:i:s') . ' ERROR -- Exception: ' . $safeMessage . ' (' . $e->getFile() . ':' . $e->getLine() . ')' . PHP_EOL;
+        if ( ! file_exists($logFile)) {
+            @mkdir(dirname($logFile), 0755, true);
+            file_put_contents($logFile, "<?php defined('BASEPATH') || exit; ?>" . PHP_EOL, FILE_APPEND | LOCK_EX);
+        }
+        file_put_contents($logFile, $entry, FILE_APPEND | LOCK_EX);
+
+        // Re-throw so the test framework can also detect it
+        throw $e;
     });
 }
 

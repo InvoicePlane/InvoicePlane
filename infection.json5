@@ -1,0 +1,13 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": [
+            "tests",
+            "application"
+        ]
+    },
+    "timeout": 120,
+    "mutators": {
+        "@default": true
+    }
+}
