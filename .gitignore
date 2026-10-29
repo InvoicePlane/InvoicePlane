@@ -45,3 +45,5 @@ _scratch/
 phpstan.cache
 test-results/
 playwright-report/
+playwright-report/
+playwright-report/

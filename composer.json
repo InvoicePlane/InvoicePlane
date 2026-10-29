@@ -7,7 +7,8 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "infection/extension-installer": true
         }
     },
     "require": {
@@ -27,6 +28,7 @@
     },
     "require-dev": {
         "filp/whoops": "^2.18.7",
+        "infection/infection": "^0.35.8",
         "laravel/pint": "^1.32.1",
         "phpunit/phpunit": "^10.5.66",
         "rector/rector": "^2.8.1",
