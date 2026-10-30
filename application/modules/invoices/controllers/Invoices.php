@@ -212,6 +212,7 @@ class Invoices extends Admin_Controller
                 'invoice_statuses'   => $this->mdl_invoices->statuses(),
                 'payment_cf_exist'   => $payment_cf_exist,
                 'legacy_calculation' => config_item('legacy_calculation'),
+                'invoice_level_taxes_present' => invoice_has_invoice_level_taxes($invoice_id),
             ]
         );
 
