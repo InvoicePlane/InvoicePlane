@@ -16,6 +16,25 @@ if ( ! defined('BASEPATH')) {
  */
 
 /**
+ * Check if an invoice has invoice-level taxes applied.
+ * Invoice-level taxes are only applicable in legacy calculation mode and are not
+ * supported in e-invoices (UBL/CII), causing a total divergence between PDF and XML.
+ *
+ * @param int $invoice_id
+ *
+ * @return bool True if invoice-level taxes exist, false otherwise
+ */
+function invoice_has_invoice_level_taxes(int $invoice_id): bool
+{
+    $CI = &get_instance();
+    $CI->load->model('invoices/mdl_invoice_tax_rates');
+
+    $invoice_taxes = $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result();
+
+    return ! empty($invoice_taxes);
+}
+
+/**
  * Returns path of invoice xml generated file.
  *
  * @scope  helpers/pdf_helper.php (2)
@@ -29,6 +48,11 @@ function generate_xml_invoice_file($invoice, $items, string $xml_lib, string $fi
         || str_contains($xml_lib, '\\')) {
         log_message('error', trans('log_invalid_xml_library_name') . ': ' . $xml_lib);
         throw new Exception(trans('log_invalid_xml_library_name'));
+    }
+
+    if (invoice_has_invoice_level_taxes($invoice->invoice_id)) {
+        log_message('warning', 'Invoice ' . sanitize_for_logging((string) $invoice->invoice_id)
+            . ' has invoice-level taxes which are not supported in e-invoices; XML will exclude these amounts.');
     }
 
     $CI = &get_instance();
