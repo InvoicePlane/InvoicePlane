@@ -19,6 +19,8 @@ if ( ! defined('BASEPATH')) {
  * Check if an invoice has invoice-level taxes applied.
  * Invoice-level taxes are only applicable in legacy calculation mode and are not
  * supported in e-invoices (UBL/CII), causing a total divergence between PDF and XML.
+ * Queries the ip_invoice_tax_rates table directly to avoid missing rows if the
+ * model has been soft-deleted or the relationship is not fully loaded.
  *
  * @param int $invoice_id
  *
@@ -27,11 +29,14 @@ if ( ! defined('BASEPATH')) {
 function invoice_has_invoice_level_taxes(int $invoice_id): bool
 {
     $CI = &get_instance();
-    $CI->load->model('invoices/mdl_invoice_tax_rates');
 
-    $invoice_taxes = $CI->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result();
+    $result = $CI->db->select('COUNT(*) as tax_count')
+        ->from('ip_invoice_tax_rates')
+        ->where('invoice_id', $invoice_id)
+        ->get()
+        ->row();
 
-    return ! empty($invoice_taxes);
+    return ($result && $result->tax_count > 0);
 }
 
 /**

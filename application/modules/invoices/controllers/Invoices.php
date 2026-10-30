@@ -310,6 +310,16 @@ class Invoices extends Admin_Controller
             show_404();
         }
 
+        // Check for invoice-level taxes which are not supported in e-invoices
+        if (invoice_has_invoice_level_taxes($invoice_id)) {
+            $this->output->set_status_header(400);
+            $this->output->set_content_type('text/plain');
+            $this->output->set_output(trans('invoice_level_taxes_not_supported_in_einvoice')
+                . "\n\n" . trans('remove_invoice_taxes_before_generating_einvoice'));
+
+            return;
+        }
+
         // eInvoice library to Generate the appropriate UBL/CII or false
         $xml_id          = $einvoice->name; // $invoice->client_einvoicing_version
         $options         = [];
