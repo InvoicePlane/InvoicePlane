@@ -16,7 +16,7 @@ record *why* and *how*.
 
 ### Thank you
 
-Thanks to [@hariprakash6969-create](https://github.com/hariprakash6969-create),
+Thanks to [@Iweisc](https://github.com/Iweisc), [@hariprakash6969-create](https://github.com/hariprakash6969-create),
 [@santhoshdodo2721](https://github.com/santhoshdodo2721), [@nirtem](https://github.com/nirtem),
 [@d3do-23](https://github.com/d3do-23), [@capivara-research](https://github.com/capivara-research),
 [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh), [@Ishbarna](https://github.com/Ishbarna),
@@ -32,7 +32,9 @@ Thanks to [@hariprakash6969-create](https://github.com/hariprakash6969-create),
 [@mattmumford-git](https://github.com/mattmumford-git), [@ali-iltizar](https://github.com/ali-iltizar),
 [@imgolamrabbani](https://github.com/imgolamrabbani), and
 [@krishnan-tech](https://github.com/krishnan-tech) for responsibly disclosing the issues resolved or
-in progress in this release.
+in progress in this release. A special thanks to [@Iweisc](https://github.com/Iweisc) for the detailed,
+reproducible bug reports (payment status, recurring start date and item deletion discount) listed
+under "Bug fixes".
 
 ### Security Vulnerability Summary
 
@@ -212,6 +214,8 @@ in progress in this release.
 - **Stored XSS via unescaped `system_theme` setting (CWE-79, leading to CWE-116 / CWE-20 / CWE-693):** `system_theme` was persisted by `Settings::index()` with no server-side allowlist — unlike `first_day_of_week`, which already has a guard in the same loop — and echoed unescaped by `_theme_asset()` into a double-quoted `href="..."` attribute on 18 views, including the unauthenticated login page, so a value planted by any administrator (not just the primary one) executed in the browser of every visitor, logged in or not. An attribute-breakout payload (`x" onerror="..." x="`) contains no `<` and matches none of `xss_clean()`'s tag- or keyword-gated filters, so the global input filter did not stop it either. **Fix:** `Settings::index()` now validates `system_theme` against the same theme list its own `<select>` is built from, and `_theme_asset()` escapes the value on output as defense-in-depth. Thanks to [@cray4367](https://github.com/cray4367) for responsible disclosure. [#1805](https://github.com/InvoicePlane/InvoicePlane/pull/1805)
 
 ### Bug fixes
+
+- **Deleting an item no longer drops part of a fixed global discount:** `Mdl_items::delete()` summed the discount shares still stored on the remaining items, so the share of the deleted item was lost (two items of 100,00 with a 50,00 discount totalled 75,00 instead of 50,00 after one was deleted). The discount amount is now distributed over the remaining items again before the totals are recalculated. Reported by [@Iweisc](https://github.com/Iweisc).
 
 - **Gateway page links with a lower-case name returned 404 when two gateways were enabled:** `Payment_information::form()` listed the drivers in config case (`PayPal`) but compared the requested name case-sensitively, so `form/<key>/paypal`, the address the PayPal page itself links back to, was refused. The name is now matched case-insensitively and dispatched as the listed driver.
 
