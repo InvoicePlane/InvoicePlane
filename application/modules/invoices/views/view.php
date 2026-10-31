@@ -486,6 +486,14 @@ if ($einvoice->name) {
 
                                     </label>
 <?php
+    if ($invoice_level_taxes_present && $einvoice->user) {
+        ?>
+                                    <div class="alert alert-warning" role="alert">
+                                        <i class="fa fa-exclamation-triangle"></i>
+                                        <?php _trans('invoice_level_taxes_not_supported_in_einvoice'); ?>
+                                    </div>
+<?php
+    }
 }
 ?>
                                     <label for="invoice_number"><?php _trans('invoice'); ?> #</label>
