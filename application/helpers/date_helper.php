@@ -203,7 +203,8 @@ function increment_date($date, string $increment): string
 
 /**
  * Adds an interval to a date. A month or year step that would land on a day the target month does
- * not have (Oct 31 + 1 month) stops at the last day of that month instead of rolling into the next.
+ * not have (Oct 31 + 1 month) stops at the last day of that month instead of rolling into the next;
+ * a day component of the interval is added after that.
  */
 function add_interval_clamped(DateTime $date, DateInterval $interval): DateTime
 {
@@ -213,8 +214,8 @@ function add_interval_clamped(DateTime $date, DateInterval $interval): DateTime
 
     $day = (int) $date->format('j');
     $date->setDate((int) $date->format('Y'), (int) $date->format('n'), 1);
-    $date->add($interval);
+    $date->add(new DateInterval(sprintf('P%dY%dM', $interval->y, $interval->m)));
     $date->setDate((int) $date->format('Y'), (int) $date->format('n'), min($day, (int) $date->format('t')));
 
-    return $date;
+    return $interval->d > 0 ? $date->add(new DateInterval('P' . $interval->d . 'D')) : $date;
 }
