@@ -202,10 +202,9 @@ class Stripe extends Base_Controller
             // Admin (& error log) message
             $response = $paid ? '. livemode: ' . trans($session->livemode ? 'yes' : 'no')
                                 . ', currency: ' . $session->currency
-                                . ', amount: ' . amount_from_minor_units($session->amount_received, stripe_minor_unit_multiplier($session->currency))              // 0 in test. Set in live mode?
-                                . ', fee: ' . amount_from_minor_units($session->application_fee_amount, stripe_minor_unit_multiplier($session->currency))       // 0 in test. Set in live mode?
+                                . ', amount: ' . amount_from_minor_units($session->amount_total ?? 0, stripe_minor_unit_multiplier($session->currency))
                                 . ', session ID: ' . $session->id                                   // Unique identifier for the object.
-                                : ($session->cancel ? $session->cancellation_reason : $session->last_payment_error); // Cancelled
+                                : 'status: ' . $session->status . ', payment_status: ' . $session->payment_status;
             // User (& error) message. Keep the status-specific message already set
             // above (already processed, duplicate, invoice already paid,
             // currency/amount mismatch) — only fill in a generic one here.
