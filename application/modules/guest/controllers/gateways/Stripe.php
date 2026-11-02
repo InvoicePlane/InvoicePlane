@@ -111,6 +111,10 @@ class Stripe extends Base_Controller
         $response = '';
         $user_msg = '';
         $paid     = 'error';
+        // Set once the payment is recorded: from then on nothing that goes wrong may tell the customer it failed.
+        $booked         = false;
+        $unbooked       = false;
+        $payment_intent = null;
 
         try {
             // Retrieve the Checkout Session from Stripe
@@ -134,6 +138,7 @@ class Stripe extends Base_Controller
             // Check the session payment_status is 'paid'
             // See: https://github.com/stripe/stripe-php/blob/044f9dd190967b8fb7e55fd0ea25f11c625c00a4/lib/Checkout/Session.php#L101
             $paid = $session->payment_status === $session::PAYMENT_STATUS_PAID; // +2 status: *_NO_PAYMENT_REQUIRED *_UNPAID
+            $captured = $paid; // the money moved at Stripe, whatever happens to it below
 
             // Is paid? (intent flow 'succeeded')
             if ($paid) {
@@ -190,12 +195,23 @@ class Stripe extends Base_Controller
                             'payment_external_id' => $payment_intent,
                         ]);
 
-                        if ( ! $recorded) {
+                        if ($recorded) {
+                            $booked = true;
+                        } else {
                             $paid     = false;
                             $user_msg = trans('online_payment_already_processed');
                         }
                     }
                 }
+            }
+
+            // Funds taken at Stripe but nothing booked here (invoice already paid, amount or currency refused,
+            // a lost race): flag it for manual reconciliation, as the PayPal callback does, otherwise the money
+            // is missing from every record the application keeps. A replay of an already booked intent is not one.
+            if ($captured && ! $booked && $payment_intent !== null
+                && $this->db->where('payment_external_id', $payment_intent)->count_all_results('ip_payments') === 0) {
+                $unbooked = true;
+                log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Stripe payment intent ' . sanitize_for_logging($payment_intent) . ' succeeded but was not recorded against invoice ' . sanitize_for_logging($invoice->invoice_number) . '; manual reconciliation required');
             }
 
             // paid / cancel (+other flow)
@@ -204,7 +220,8 @@ class Stripe extends Base_Controller
                                 . ', currency: ' . $session->currency
                                 . ', amount: ' . amount_from_minor_units($session->amount_total ?? 0, stripe_minor_unit_multiplier($session->currency))
                                 . ', session ID: ' . $session->id                                   // Unique identifier for the object.
-                                : 'status: ' . $session->status . ', payment_status: ' . $session->payment_status;
+                                : 'status: ' . $session->status . ', payment_status: ' . $session->payment_status
+                                    . ($unbooked ? ' (paid at Stripe, NOT recorded locally)' : '');
             // User (& error) message. Keep the status-specific message already set
             // above (already processed, duplicate, invoice already paid,
             // currency/amount mismatch) — only fill in a generic one here.
@@ -214,11 +231,20 @@ class Stripe extends Base_Controller
                 $user_msg = trans('online_payment_failed') . '<br>' . sprintf(trans('online_payment_incomplete'), __CLASS__, $session->payment_status);
             }
         } catch (Error|Exception|ErrorException $e) {
-            $user_msg = trans('online_payment_error') . (empty($user_msg) ? '' : '<br>' . $user_msg);
-            $paid     = 'error'; // tweak to reuse
-            // Log the error so you can debug
             $response = __CLASS__ . '::' . __FUNCTION__ . ' exception: ' . $e->getMessage() . (empty($response) ? '' : ' - response: ' . $response);
-            log_message('error', sanitize_for_logging(strtr($response . ' user_msg: ' . $user_msg, ['<br>' => ' ']))); // No br's
+            if ($booked) {
+                // The payment is recorded: a failure while describing it is logged, but the customer is told it worked.
+                $paid = 'success';
+                // strtr, not sprintf: a translation with the wrong number of placeholders is what may have thrown above.
+                $user_msg = strtr(trans('online_payment_successful'), ['%s' => '#' . htmlsc($invoice->invoice_number)]);
+                $response .= ' (payment already recorded)';
+                log_message('error', sanitize_for_logging($response));
+            } else {
+                $user_msg = trans('online_payment_error') . (empty($user_msg) ? '' : '<br>' . $user_msg);
+                $paid     = 'error'; // tweak to reuse
+                // Log the error so you can debug
+                log_message('error', sanitize_for_logging(strtr($response . ' user_msg: ' . $user_msg, ['<br>' => ' ']))); // No br's
+            }
         } finally {
             $paid = is_bool($paid) ? ($paid ? 'success' : 'info') : $paid; // Tweak to reuse (flashdata alert_*)
             // Check stripe server ok
