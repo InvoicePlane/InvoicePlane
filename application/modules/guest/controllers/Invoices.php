@@ -24,6 +24,7 @@ class Invoices extends Guest_Controller
         parent::__construct();
 
         $this->load->model('invoices/mdl_invoices');
+        $this->load->helper(['payments', 'tabby']);
     }
 
     public function index(): void
@@ -66,7 +67,7 @@ class Invoices extends Guest_Controller
             [
                 'invoices'               => $invoices,
                 'status'                 => $status,
-                'enable_online_payments' => get_setting('enable_online_payments'),
+                'enable_online_payments' => pay_now_enabled(),
             ]
         );
 
@@ -108,7 +109,7 @@ class Invoices extends Guest_Controller
                 'invoice'                => $invoice,
                 'items'                  => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
                 'invoice_tax_rates'      => $this->mdl_invoice_tax_rates->where('invoice_id', $invoice_id)->get()->result(),
-                'enable_online_payments' => get_setting('enable_online_payments'),
+                'enable_online_payments' => pay_now_enabled(),
                 'legacy_calculation'     => config_item('legacy_calculation'),
             ]
         );

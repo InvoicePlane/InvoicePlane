@@ -26,3 +26,26 @@ function get_currencies(): array
 
     return $ISOCurrencies;
 }
+
+/**
+ * The enabled gateways offered on the "Pay Now" page. Tabby has its own button.
+ */
+function pay_now_gateways(): array
+{
+    $CI = & get_instance();
+    $CI->config->load('payment_gateways');
+
+    $gateways = [];
+    foreach (array_keys($CI->config->item('payment_gateways')) as $driver) {
+        if ($driver !== 'Tabby' && get_setting('gateway_' . mb_strtolower($driver) . '_enabled') == 1) {
+            $gateways[] = $driver;
+        }
+    }
+
+    return $gateways;
+}
+
+function pay_now_enabled(): bool
+{
+    return get_setting('enable_online_payments') == 1 && pay_now_gateways() !== [];
+}
