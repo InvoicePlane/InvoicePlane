@@ -39,7 +39,7 @@ if (isset($_SESSION['user_id'], $_SESSION['user_type'])) {
                         <i class="fa fa-print"></i> <?php _trans('download_pdf'); ?>
                     </a>
 <?php
-if (get_setting('enable_online_payments') == 1 && $invoice->invoice_balance > 0) {
+if (pay_now_enabled() && $invoice->invoice_balance > 0) {
     ?>
                     <a href="<?php echo site_url('guest/payment_information/form/' . $invoice_url_key); ?>"
                        class="btn btn-success">
