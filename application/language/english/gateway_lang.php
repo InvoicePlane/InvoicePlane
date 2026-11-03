@@ -64,8 +64,13 @@ $lang = [
     'online_payment_secretWord'          => 'Secret Word', // Field for TwoCheckout
     'online_payment_installationId'      => 'Installation Id', // Field for WorldPay
     'online_payment_callbackPassword'    => 'Callback Password', // Field for WorldPay
+    'online_payment_merchantCode'        => 'Merchant Code', // Field for Tabby
+    'online_payment_webhookSecret'       => 'Webhook Secret', // Field for Tabby
 
     // Tabby
+    'tabby_settings_hint'         => 'Tabby is offered with its own button on invoices when the currency code in the general settings is AED and the client has an email address and a mobile number.',
+    'tabby_webhook_url'           => 'Webhook URL',
+    'tabby_webhook_hint'          => 'Register this URL as a Tabby webhook so payments are recorded even when the customer does not return to the invoice. If you set a webhook secret, register it as the value of the X-Auth-Key header.',
     'tabby_payment_id'            => 'Tabby payment ID',
     'tabby_rejected'              => 'Sorry, Tabby is unable to approve this purchase. Please use an alternative payment method for your order.',
     'tabby_order_amount_too_high' => 'This purchase is above your current spending limit with Tabby, try a smaller cart or use another payment method',
