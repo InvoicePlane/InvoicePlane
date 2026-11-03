@@ -33,8 +33,8 @@ class TabbyLib
     {
         $this->client = new Client([
             'base_uri'        => self::BASE_URI,
-            'timeout'         => 30,
-            'connect_timeout' => 10,
+            'timeout'         => 15,
+            'connect_timeout' => 5,
             'headers'         => [
                 'Authorization' => 'Bearer ' . $params['secret_key'],
                 'Accept'        => 'application/json',

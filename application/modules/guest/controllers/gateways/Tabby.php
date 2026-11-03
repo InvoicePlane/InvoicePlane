@@ -177,11 +177,13 @@ class Tabby extends Base_Controller
     /**
      * Brings the invoice in line with the Tabby payment: captures and records an authorized one,
      * records one captured in the Tabby dashboard, cancels one the invoice can no longer take.
-     * The redirect and the webhook can both get here for one payment: the capture is idempotent
-     * through its reference_id, and record() runs under the invoice's payment lock.
+     * From the balance check to the recorded payment this holds the invoice's payment lock, so two
+     * Tabby payments for one invoice (or the redirect and the webhook of one) settle one at a time.
      */
     private function settle(string $payment_id, int $invoice_id): string
     {
+        $lock = new PaymentCallbackLock($this->db);
+
         try {
             if ($this->payment_recorded($payment_id)) {
                 return 'paid';
@@ -191,6 +193,23 @@ class Tabby extends Base_Controller
             $status   = mb_strtoupper((string) ($payment['status'] ?? ''));
             $amount   = amount_to_minor_units((string) ($payment['amount'] ?? '0'), 100);
             $captured = $this->sum_amounts($payment['captures'] ?? []);
+
+            if ($status !== 'AUTHORIZED' && $status !== 'CLOSED') {
+                return match ($status) {
+                    'CREATED'  => 'pending',
+                    'REJECTED' => 'rejected',
+                    'EXPIRED'  => 'expired',
+                    default    => 'unconfirmed',
+                };
+            }
+
+            if ( ! $lock->acquire($invoice_id)) {
+                return 'busy';
+            }
+
+            if ($this->payment_recorded($payment_id)) {
+                return 'paid';
+            }
 
             if ($status === 'AUTHORIZED' && $captured === 0) {
                 $refusal = $this->refusal($payment, $invoice_id, $amount);
@@ -215,60 +234,46 @@ class Tabby extends Base_Controller
                 return $settled > 0 ? $this->record($payment, $payment_id, $invoice_id, $settled) : 'voided';
             }
 
-            return match ($status) {
-                'CREATED'  => 'pending',
-                'REJECTED' => 'rejected',
-                'EXPIRED'  => 'expired',
-                default    => 'unconfirmed',
-            };
+            return 'unconfirmed';
         } catch (Throwable $e) {
             log_message('error', sanitize_for_logging(__CLASS__ . '::' . __FUNCTION__ . ' - Tabby payment ' . $payment_id . ': ' . $e->getMessage()));
 
             return 'error';
-        }
-    }
-
-    private function record(array $payment, string $payment_id, int $invoice_id, int $amount): string
-    {
-        $lock = new PaymentCallbackLock($this->db);
-
-        try {
-            if ( ! $lock->acquire($invoice_id)) {
-                return 'busy';
-            }
-
-            if ($this->payment_recorded($payment_id)) {
-                return 'paid';
-            }
-
-            $refusal = $this->refusal($payment, $invoice_id, $amount);
-
-            if ($refusal === null) {
-                $recorded = $this->mdl_payments->record_external_payment([
-                    'invoice_id'          => $invoice_id,
-                    'payment_date'        => date_from_mysql(date('Y-m-d'), true),
-                    'payment_amount'      => amount_from_minor_units($amount, 100),
-                    'payment_method_id'   => get_setting('gateway_tabby_payment_method'),
-                    'payment_note'        => trans('tabby_payment_id') . ': ' . $payment_id,
-                    'payment_external_id' => $payment_id,
-                ]);
-
-                if ($recorded) {
-                    $this->log_response($invoice_id, true, 'Captured ' . tabby_amount(amount_from_minor_units($amount, 100)) . ' AED' . (empty($payment['is_test']) ? '' : ' (test)'), $payment_id);
-
-                    return 'paid';
-                }
-
-                $refusal = 'the balance no longer covers it';
-            }
-
-            log_message('error', sanitize_for_logging(__CLASS__ . '::' . __FUNCTION__ . ' - Tabby payment ' . $payment_id . ' is captured but not recorded against invoice ' . $invoice_id . ' (' . $refusal . '); manual reconciliation required'));
-            $this->log_response($invoice_id, false, 'Captured at Tabby, NOT recorded locally: ' . $refusal, $payment_id);
-
-            return 'unrecorded';
         } finally {
             $lock->release();
         }
+    }
+
+    /**
+     * Called by settle() under the invoice's payment lock.
+     */
+    private function record(array $payment, string $payment_id, int $invoice_id, int $amount): string
+    {
+        $refusal = $this->refusal($payment, $invoice_id, $amount);
+
+        if ($refusal === null) {
+            $recorded = $this->mdl_payments->record_external_payment([
+                'invoice_id'          => $invoice_id,
+                'payment_date'        => date_from_mysql(date('Y-m-d'), true),
+                'payment_amount'      => amount_from_minor_units($amount, 100),
+                'payment_method_id'   => get_setting('gateway_tabby_payment_method'),
+                'payment_note'        => trans('tabby_payment_id') . ': ' . $payment_id,
+                'payment_external_id' => $payment_id,
+            ]);
+
+            if ($recorded) {
+                $this->log_response($invoice_id, true, 'Captured ' . tabby_amount(amount_from_minor_units($amount, 100)) . ' AED' . (empty($payment['is_test']) ? '' : ' (test)'), $payment_id);
+
+                return 'paid';
+            }
+
+            $refusal = 'the balance no longer covers it';
+        }
+
+        log_message('error', sanitize_for_logging(__CLASS__ . '::' . __FUNCTION__ . ' - Tabby payment ' . $payment_id . ' is captured but not recorded against invoice ' . $invoice_id . ' (' . $refusal . '); manual reconciliation required'));
+        $this->log_response($invoice_id, false, 'Captured at Tabby, NOT recorded locally: ' . $refusal, $payment_id);
+
+        return 'unrecorded';
     }
 
     /**
