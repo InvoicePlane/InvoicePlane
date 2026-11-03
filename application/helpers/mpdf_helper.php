@@ -192,7 +192,11 @@ function pdf_create(
         $mpdf->showWatermarkText = true;
     }
 
-    $mpdf->SetHTMLFooterByName('defaultFooter');
+    if (get_setting('pdf_page_numbers')) {
+        $mpdf->SetHTMLFooterByName('footerWithPageNumbers');
+    } else {
+        $mpdf->SetHTMLFooterByName('defaultFooter');
+    }
 
     try {
         $mpdf->WriteHTML((string) $html);
