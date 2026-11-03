@@ -62,11 +62,21 @@ function tabby_buyer_email(object $invoice): string
     return '';
 }
 
+/**
+ * The client's mobile number, or the phone number when the mobile is not a number, written the
+ * way Tabby accepts it: digits with an optional leading +.
+ */
 function tabby_buyer_phone(object $invoice): string
 {
-    $mobile = trim((string) ($invoice->client_mobile ?? ''));
+    foreach ([$invoice->client_mobile ?? '', $invoice->client_phone ?? ''] as $number) {
+        $number = preg_replace(['/[\s().-]+/', '/^00/'], ['', '+'], (string) $number);
 
-    return $mobile !== '' ? $mobile : trim((string) ($invoice->client_phone ?? ''));
+        if (preg_match('/^\+?\d{7,15}$/', $number) === 1) {
+            return $number;
+        }
+    }
+
+    return '';
 }
 
 function tabby_amount(int|float|string $amount): string
