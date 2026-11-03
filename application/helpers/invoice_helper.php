@@ -136,18 +136,50 @@ function invoice_qrcode($invoice_id, $width = 64): string
     ) {
         $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
 
-        if ((float) $invoice->invoice_balance) {
+        if($invoice->client_country === 'HR') {
+            $CI->load->library('PDF417Barcode', [ 'invoice' => $invoice ]);
+            $pdf417barcode_data_uri = $CI->pdf417barcode->generate();
+            return '<img src="' . $pdf417barcode_data_uri . '" alt="PDF 417 Barcode" id="invoice-pdf417-barcode">';
+        }
+
+        $CI->load->library('QrCode', ['invoice' => $invoice]);
+        $qrcode_data_uri = $CI->qrcode->generate();
+        if ((float)$invoice->invoice_balance) {
             $CI->load->library('QrCode', ['invoice' => $invoice]);
             $qrcode_data_uri = $CI->qrcode->generate();
 
-            $numeric_width = (int) $width;
-            $width         = '';
+            $numeric_width = (int)$width;
+            $width = '';
             if ($numeric_width > 0) {
-                $width = ' width="' . (string) $numeric_width . '"';
+                $width = ' width="' . (string)$numeric_width . '"';
             }
-
             return '<img src="' . $qrcode_data_uri . '"' . $width . ' alt="QR Code" id="invoice-qr-code">';
         }
+    }
+
+    return '';
+}
+
+/**
+ * Returns a pdf 417 barcode code for invoice payments
+ *
+ * @param number invoice-id
+ * @return string
+ */
+function invoice_pdf417barcode($invoice_id)
+{
+    $CI = &get_instance();
+    $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
+
+    if ($CI->mdl_settings->setting('qr_code')
+        && $CI->mdl_settings->setting('qr_code_iban')
+        && $CI->mdl_settings->setting('qr_code_bic')
+        && ($invoice->client_country == 'HR')
+    ) {
+        $CI->load->library('PDF417Barcode', [ 'invoice' => $invoice ]);
+        $pdf417barcode_data_uri = $CI->pdf417barcode->generate();
+
+        return '<img src="' . $pdf417barcode_data_uri . '" alt="PDF 417 Barcode" id="invoice-pdf417-barcode">';
     }
 
     return '';
