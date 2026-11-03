@@ -215,7 +215,7 @@ under "Bug fixes".
 
 ### Added
 
-- **Tabby (Pay in 4) for invoices in AED:** a separate "Pay later with Tabby" button next to "Pay Now" on the public invoice page and in the guest portal. It shows when Tabby is enabled under Settings > Online Payments, the currency code is AED and the client has an email address and a phone number. The customer pays on Tabby's hosted page; on return the payment is verified with Tabby, captured and recorded. The webhook at `guest/gateways/tabby/webhook` (optional `X-Auth-Key` secret) records the payment when the customer does not come back. An authorized payment the invoice can no longer take, because it was paid in the meantime, is cancelled at Tabby so the customer is refunded. "Pay Now" now only shows when a gateway other than Tabby is enabled.
+- **Tabby (Pay in 4) for invoices in AED:** a separate "Pay later with Tabby" button next to "Pay Now" on the public invoice page and in the guest portal. It shows when Tabby is enabled under Settings > Online Payments, the currency code is AED and the client has an email address and a phone number. The customer pays on Tabby's hosted page; on return the payment is verified with Tabby, captured and recorded. The webhook at `guest/gateways/tabby/webhook` (optional `X-Auth-Key` secret) records the payment when the customer does not come back. An authorized payment the invoice can no longer take, because it was paid in the meantime, is cancelled at Tabby so the customer is refunded. Refunds made at Tabby are not reflected in InvoicePlane. "Pay Now" now only shows when a gateway other than Tabby is enabled.
 
 ### Bug fixes
 

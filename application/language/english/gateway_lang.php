@@ -69,7 +69,7 @@ $lang = [
 
     // Tabby
     'pay_later_with_tabby'        => 'Pay later with Tabby',
-    'tabby_settings_hint'         => 'Tabby is offered with its own button on invoices when the currency code in the general settings is AED and the client has an email address and a mobile number.',
+    'tabby_settings_hint'         => 'Tabby is offered with its own button on invoices when the currency code in the general settings is AED and the client has an email address and a phone number (the mobile number is used first). Refunds made at Tabby are not reflected in InvoicePlane; adjust the payment by hand.',
     'tabby_webhook_url'           => 'Webhook URL',
     'tabby_webhook_hint'          => 'Register this URL as a Tabby webhook so payments are recorded even when the customer does not return to the invoice. If you set a webhook secret, register it as the value of the X-Auth-Key header.',
     'tabby_payment_id'            => 'Tabby payment ID',
