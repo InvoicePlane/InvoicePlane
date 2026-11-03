@@ -66,9 +66,15 @@ $lang = [
     'online_payment_callbackPassword'    => 'Callback Password', // Field for WorldPay
 
     // Tabby
+    'tabby_payment_id'            => 'Tabby payment ID',
     'tabby_rejected'              => 'Sorry, Tabby is unable to approve this purchase. Please use an alternative payment method for your order.',
     'tabby_order_amount_too_high' => 'This purchase is above your current spending limit with Tabby, try a smaller cart or use another payment method',
     'tabby_order_amount_too_low'  => 'The purchase amount is below the minimum amount required to use Tabby, try adding more items or use another payment method',
+    'tabby_payment_aborted'       => 'You aborted the payment. Please retry or choose another payment method.',
+    'tabby_unavailable'           => 'Tabby is not available for this invoice right now. Please try again later or choose another payment method.',
+    'tabby_payment_unconfirmed'   => 'Your Tabby payment could not be confirmed yet. If it went through, this invoice will be updated shortly.',
+    'tabby_payment_voided'        => 'Your Tabby payment was cancelled and refunded. Please contact us if you still need to pay this invoice.',
+    'tabby_payment_unrecorded'    => 'Your Tabby payment was received but could not be applied to this invoice. Please contact us.',
 
     // Status / Error Messages
     'online_payment_payment_cancelled'  => 'Payment cancelled.',
