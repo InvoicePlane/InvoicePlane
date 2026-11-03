@@ -24,7 +24,7 @@ class Guest extends Guest_Controller
                 'invoices/mdl_invoices',
             ]
         );
-        $this->load->helper('payments');
+        $this->load->helper(['payments', 'tabby']);
 
         $this->layout->set(
             [

@@ -31,6 +31,7 @@ if ($invoice->invoice_balance == 0 || $invoice->invoice_status_id >= 4) {
 <?php
 }
 ?>
+            <?php $this->layout->load_view('guest/partial_tabby_button', ['invoice' => $invoice, 'button_class' => 'btn-sm btn-primary']); ?>
             <a href="<?php echo site_url('guest/invoices/generate_pdf/' . $invoice->invoice_id); ?>"
                class="btn btn-default" id="btn_generate_pdf" target="_blank">
                 <i class="fa fa-print"></i> <?php _trans('download_pdf'); ?>

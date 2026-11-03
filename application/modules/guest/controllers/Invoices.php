@@ -24,7 +24,7 @@ class Invoices extends Guest_Controller
         parent::__construct();
 
         $this->load->model('invoices/mdl_invoices');
-        $this->load->helper('payments');
+        $this->load->helper(['payments', 'tabby']);
     }
 
     public function index(): void

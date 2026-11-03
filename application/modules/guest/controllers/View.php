@@ -53,7 +53,7 @@ class View extends Base_Controller
         );
         $this->load->helper('template');
         $this->load->helper('file_security');
-        $this->load->helper('payments');
+        $this->load->helper(['payments', 'tabby']);
 
         $invoice = $invoice->row();
 

@@ -48,6 +48,7 @@ if (pay_now_enabled() && $invoice->invoice_balance > 0) {
 <?php
 }
 ?>
+                    <?php $this->layout->load_view('guest/partial_tabby_button', ['invoice' => $invoice, 'button_class' => 'btn-success']); ?>
                 </div>
 
             </div>
