@@ -91,7 +91,11 @@ class Tabby extends Base_Controller
         }
 
         // Settling finds the invoice of a payment through this row, which also proves the payment was created here.
-        $this->log_response((int) $invoice->invoice_id, true, 'Checkout created', $payment_id);
+        if ( ! $this->log_response((int) $invoice->invoice_id, true, 'Checkout created', $payment_id)) {
+            log_message('error', sanitize_for_logging(__CLASS__ . '::' . __FUNCTION__ . ' - Could not save Tabby payment ' . $payment_id . ' for invoice ' . $invoice->invoice_number . '; checkout stopped'));
+            $this->session->set_flashdata('alert_error', trans('tabby_unavailable'));
+            redirect($invoice_url);
+        }
 
         redirect($web_url);
     }
@@ -364,9 +368,9 @@ class Tabby extends Base_Controller
         return $this->db->where('client_id', $client_id)->where('invoice_status_id', 4)->count_all_results('ip_invoices');
     }
 
-    private function log_response(int $invoice_id, bool $successful, string $response, string $payment_id): void
+    private function log_response(int $invoice_id, bool $successful, string $response, string $payment_id): bool
     {
-        $this->db->insert('ip_merchant_responses', [
+        return (bool) $this->db->insert('ip_merchant_responses', [
             'invoice_id'                   => $invoice_id,
             'merchant_response_successful' => (int) $successful,
             'merchant_response_date'       => date('Y-m-d'),
