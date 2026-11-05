@@ -274,7 +274,7 @@ class Mdl_Quote_Amounts extends CI_Model
                     FROM ip_quote_amounts
                     JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
                         AND MONTH(ip_quotes.quote_date_created) = MONTH(NOW() - INTERVAL 1 MONTH)
-                        AND YEAR(ip_quotes.quote_date_created) = YEAR(NOW())
+                        AND YEAR(ip_quotes.quote_date_created) = YEAR(NOW() - INTERVAL 1 MONTH)
                     GROUP BY ip_quotes.quote_status_id')->result_array();
                 break;
             case 'this-quarter':
@@ -296,7 +296,7 @@ class Mdl_Quote_Amounts extends CI_Model
                     FROM ip_quote_amounts
                     JOIN ip_quotes ON ip_quotes.quote_id = ip_quote_amounts.quote_id
                         AND QUARTER(ip_quotes.quote_date_created) = QUARTER(NOW() - INTERVAL 1 QUARTER)
-                        AND YEAR(ip_quotes.quote_date_created) = YEAR(NOW())
+                        AND YEAR(ip_quotes.quote_date_created) = YEAR(NOW() - INTERVAL 1 QUARTER)
                     GROUP BY ip_quotes.quote_status_id')->result_array();
                 break;
             case 'this-year':
