@@ -335,6 +335,10 @@ class Mdl_Quote_Amounts extends CI_Model
         }
 
         foreach ($results as $result) {
+            if ( ! isset($return[$result['quote_status_id']])) {
+                continue;
+            }
+
             $return[$result['quote_status_id']] = array_merge($return[$result['quote_status_id']], $result);
         }
 

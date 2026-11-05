@@ -457,6 +457,10 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
 
         foreach ($results as $result) {
+            if ( ! isset($return[$result['invoice_status_id']])) {
+                continue;
+            }
+
             $return[$result['invoice_status_id']] = array_merge($return[$result['invoice_status_id']], $result);
         }
 
