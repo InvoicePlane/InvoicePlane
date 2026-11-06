@@ -113,17 +113,27 @@ function pdf_inline_local_stylesheets(string $html, ?string $base_url = null, ?s
         return $html;
     }
 
-    return (string) preg_replace_callback('/<link\b[^>]*>/i', static function (array $match) use ($assets_root, $prefix): string {
+    return (string) preg_replace_callback('/<link\b(?:[^>"\']|"[^"]*"|\'[^\']*\')*>/i', static function (array $match) use ($assets_root, $prefix): string {
         $link = $match[0];
         $attr = [];
 
-        if (preg_match_all('/\b(rel|href|media)\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/i', $link, $found, PREG_SET_ORDER)) {
+        if (preg_match_all('/(?<![\w:-])(rel|href|media)\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s"\'>][^\s>]*))/i', $link, $found, PREG_SET_ORDER)) {
             foreach ($found as $pair) {
-                $attr[mb_strtolower($pair[1])] = $pair[2] !== '' ? $pair[2] : ($pair[3] ?? '');
+                $value = '';
+                foreach ([2, 3, 4] as $group) {
+                    if (($pair[$group] ?? '') !== '') {
+                        $value = $pair[$group];
+                        break;
+                    }
+                }
+
+                // A browser uses the first of two identical attributes
+                $attr[mb_strtolower($pair[1])] ??= html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
             }
         }
 
-        if ( ! in_array('stylesheet', preg_split('/\s+/', mb_strtolower($attr['rel'] ?? '')) ?: [], true) || ! isset($attr['href'])) {
+        $rel = preg_split('/\s+/', mb_strtolower($attr['rel'] ?? '')) ?: [];
+        if ( ! in_array('stylesheet', $rel, true) || in_array('alternate', $rel, true) || ! isset($attr['href'])) {
             return $link;
         }
 
@@ -147,11 +157,12 @@ function pdf_inline_local_stylesheets(string $html, ?string $base_url = null, ?s
             return $link;
         }
 
+        // Inlined, a relative reference would resolve against the document: resolve it against the stylesheet instead
         $stylesheet_dir = mb_substr($href, 0, (int) mb_strrpos($href, '/') + 1);
-        $css            = preg_replace_callback('/url\(\s*(["\']?)([^"\')]*?)\1\s*\)/i', static function (array $url) use ($stylesheet_dir): string {
-            $value = trim($url[2]);
+        $resolve        = static function (string $value) use ($stylesheet_dir): string {
+            $value = trim($value);
             if ($value === '' || preg_match('/^(?:[a-z][a-z0-9+.\-]*:|\/|#)/i', $value)) {
-                return $url[0];
+                return $value;
             }
 
             [$path, $suffix] = array_pad(preg_split('/(?=[?#])/', $value, 2) ?: [], 2, '');
@@ -165,8 +176,11 @@ function pdf_inline_local_stylesheets(string $html, ?string $base_url = null, ?s
                 }
             }
 
-            return 'url(' . $url[1] . $origin . '/' . implode('/', $segments) . $suffix . $url[1] . ')';
-        }, $css) ?? $css;
+            return $origin . '/' . implode('/', $segments) . $suffix;
+        };
+
+        $css = preg_replace_callback('/url\(\s*(["\']?)([^"\')]*?)\1\s*\)/i', static fn (array $url): string => 'url(' . $url[1] . $resolve($url[2]) . $url[1] . ')', $css) ?? $css;
+        $css = preg_replace_callback('/@import\s+(["\'])([^"\']*)\1/i', static fn (array $import): string => '@import ' . $import[1] . $resolve($import[2]) . $import[1], $css) ?? $css;
 
         $media = isset($attr['media']) && $attr['media'] !== '' ? ' media="' . htmlspecialchars($attr['media'], ENT_QUOTES, 'UTF-8') . '"' : '';
 
