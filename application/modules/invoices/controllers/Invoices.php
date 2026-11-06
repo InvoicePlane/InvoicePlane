@@ -212,6 +212,7 @@ class Invoices extends Admin_Controller
                 'invoice_statuses'   => $this->mdl_invoices->statuses(),
                 'payment_cf_exist'   => $payment_cf_exist,
                 'legacy_calculation' => config_item('legacy_calculation'),
+                'invoice_level_taxes_present' => invoice_has_invoice_level_taxes($invoice_id),
             ]
         );
 
@@ -307,6 +308,16 @@ class Invoices extends Admin_Controller
         $einvoice = get_einvoice_usage($invoice, $items, false);
         if ( ! $einvoice->user) {
             show_404();
+        }
+
+        // Check for invoice-level taxes which are not supported in e-invoices
+        if (invoice_has_invoice_level_taxes($invoice_id)) {
+            $this->output->set_status_header(400);
+            $this->output->set_content_type('text/plain');
+            $this->output->set_output(trans('invoice_level_taxes_not_supported_in_einvoice')
+                . "\n\n" . trans('remove_invoice_taxes_before_generating_einvoice'));
+
+            return;
         }
 
         // eInvoice library to Generate the appropriate UBL/CII or false
