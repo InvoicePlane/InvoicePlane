@@ -16,7 +16,7 @@ record *why* and *how*.
 
 ### Thank you
 
-Thanks to [@Iweisc](https://github.com/Iweisc), [@hariprakash6969-create](https://github.com/hariprakash6969-create),
+Thanks to [@1icarus2](https://github.com/1icarus2), [@Iweisc](https://github.com/Iweisc), [@hariprakash6969-create](https://github.com/hariprakash6969-create),
 [@santhoshdodo2721](https://github.com/santhoshdodo2721), [@nirtem](https://github.com/nirtem),
 [@d3do-23](https://github.com/d3do-23), [@capivara-research](https://github.com/capivara-research),
 [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh), [@Ishbarna](https://github.com/Ishbarna),
@@ -34,12 +34,14 @@ Thanks to [@Iweisc](https://github.com/Iweisc), [@hariprakash6969-create](https:
 [@krishnan-tech](https://github.com/krishnan-tech) for responsibly disclosing the issues resolved or
 in progress in this release. A special thanks to [@Iweisc](https://github.com/Iweisc) for the detailed,
 reproducible bug reports (payment status, recurring start date and item deletion discount) listed
-under "Bug fixes".
+under "Bug fixes". A special thanks to [@1icarus2](https://github.com/1icarus2) for the report of the IIS
+exposure and for the URL Rewrite rules that the shipped `web.config` is built on.
 
 ### Security Vulnerability Summary
 
 | Vulnerability | Severity | Security Advisory (GHSA) | Reported By | Fixed In |
 |---|---|---|---|---|
+| IIS ignores `.htaccess` and the release shipped no `web.config`: archived invoice PDFs, customer files, import files, `application/`, `vendor/` and the project files were downloadable without logging in (the IIS twin of [GHSA-qq8q-gf24-576m](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-qq8q-gf24-576m)) | — | — | [@1icarus2](https://github.com/1icarus2) | — |
 | Unauthenticated access to the internal Layout controller discloses server paths via PHP error backtraces (CWE-200 / CWE-862) | — | [GHSA-8cpm-3w3g-97hr](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-8cpm-3w3g-97hr) | [@krishnan-tech](https://github.com/krishnan-tech) | [#1809](https://github.com/InvoicePlane/InvoicePlane/pull/1809) |
 | Login response-time oracle reveals account existence despite uniform error message (CWE-208 / CWE-204) | — | [GHSA-9452-64v7-9g2p](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-9452-64v7-9g2p) | [@krishnan-tech](https://github.com/krishnan-tech) | [#1808](https://github.com/InvoicePlane/InvoicePlane/pull/1808) |
 | CSRF on logout — plain GET with no token destroys the session (CWE-352) | Low | [GHSA-wj32-69hp-233w](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-wj32-69hp-233w) | [@krishnan-tech](https://github.com/krishnan-tech) | [#1807](https://github.com/InvoicePlane/InvoicePlane/pull/1807) |
@@ -86,6 +88,8 @@ under "Bug fixes".
 | Stored XSS via unescaped `system_theme` setting, reaching the unauthenticated login page (CWE-79 / CWE-116 / CWE-20 / CWE-693) | High | [GHSA-hmqm-59ff-gmcw](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-hmqm-59ff-gmcw) | [@cray4367](https://github.com/cray4367) | [#1805](https://github.com/InvoicePlane/InvoicePlane/pull/1805) |
 
 ### Security fixes
+
+- **IIS served private folders and project files without a login:** IIS ignores `.htaccess` and the release package contained no `web.config`, so on a default IIS install `GET /uploads/archive/<date>_Invoice_<n>.pdf` returned the invoice PDF (the names are predictable, so every archived invoice could be enumerated), and `uploads/customer_files/`, `uploads/import/`, `uploads/temp/`, `vendor/`, `application/`, `composer.json`, `*.md` and the other project files were served too. This is the same exposure as GHSA-qq8q-gf24-576m, which the nginx configuration and the random archive names did not cover for IIS, and PDFs archived before that fix keep their old names, so the web server rule is the only protection they have. The release now ships a `web.config` that answers 404 for the private folders (`application`, `vendor`, `storage`, `resources`, `node_modules`, `tests`, `uploads/archive|customer_files|import|temp`), dotfiles (except `.well-known`, which Let's Encrypt on IIS needs), the project files and every PHP file other than the front controller. The rules are anchored at the start of the URL, so routes such as `/index.php/import` keep working, they ignore case, and they also catch the Windows spellings of a path (repeated slashes, trailing dots and spaces). They need the IIS URL Rewrite module; without it IIS answers 500.19 and does not serve the site, so it fails closed. Reported, with the working URL Rewrite rules, by [@1icarus2](https://github.com/1icarus2).
 
 - **Unauthenticated access to the internal `Layout` controller discloses server paths via PHP error backtraces (CWE-200 / CWE-862):** `Layout` extends `MX_Controller` rather than `Admin_Controller`/`Guest_Controller`, so it inherited no authentication gate, and its public methods (`render`, `load_view`, `buffer`, `set`) — meant to be called only internally as `$this->layout->render()` by already-authenticated controllers — were directly HTTP-routable to anonymous clients. Reached unauthenticated, the internal view loader ran with helpers/libraries never autoloaded in that context, raising PHP errors that (with `display_errors` on) disclosed the server's absolute install path and internal file layout to an anonymous attacker, e.g. `GET /layout/load_view/dashboard`. Path-traversal/LFI toward other files was tested and ruled out (Apache's `AllowEncodedSlashes Off` blocks it), so the demonstrated impact is scoped to information disclosure. **Fix:** a `_remap()` on `Layout` now `show_404()`s any direct HTTP route to the controller; the normal internal `$this->layout->render()`/`buffer()`/`set()`/`load_view()` usage is unaffected, since that never goes through HTTP routing. Thanks to [@krishnan-tech](https://github.com/krishnan-tech) for responsible disclosure. [#1809](https://github.com/InvoicePlane/InvoicePlane/pull/1809)
 

@@ -24,7 +24,7 @@ Follow the instructions below to install InvoicePlane on your preferred platform
 
 ## Prerequisites
 
-- **Web Server:** Apache or Nginx
+- **Web Server:** Apache, Nginx or IIS 10+ (with the URL Rewrite module, see [IIS](#iis))
 - **PHP:** Version **8.2 or higher** (PHP 8.3 and 8.4 supported)
 - **Database:** MariaDB
 - **For Development:** Docker (recommended), Composer, Yarn/npm
@@ -203,6 +203,32 @@ The **Workflow** phase covers your day-to-day development activities.
 - **Recommended approach**: Use Docker Desktop for Windows (see [Docker Installation](#docker-installation))
 - **Alternative**: Use WSL2 (Windows Subsystem for Linux) with Docker
 - Follow the standard [Development Workflow](#development-workflow) steps
+
+### IIS
+
+IIS ignores `.htaccess`, so the release ships a `web.config` next to `index.php`. It needs the **URL Rewrite**
+module; without it IIS answers `500.19` and does not serve the site, so a missing module fails closed.
+
+The rules answer `404` for the private folders (`application/`, `vendor/`, `storage/`, `resources/`,
+`node_modules/`, `tests/`, `uploads/archive/`, `uploads/customer_files/`, `uploads/import/`, `uploads/temp/`),
+dotfiles (except `.well-known/`, which Let's Encrypt needs), the project files (`composer.json`, `composer.lock`,
+`package.json`, `*.md`, `ipconfig.php`, ...) and every PHP file other than `index.php`. They are anchored at the
+start of the URL, so routes such as `/index.php/import` are not affected, and they ignore case and the Windows
+spellings of a path (repeated slashes, trailing dots and spaces). Do not replace them with
+`<requestFiltering><hiddenSegments>`: that matches a segment anywhere in the URL and would also block
+`/index.php/import`.
+
+Check it after every deployment. All of these must answer `404`:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://your-domain.com/uploads/archive/anything.pdf
+curl -s -o /dev/null -w "%{http_code}\n" https://your-domain.com/composer.json
+curl -s -o /dev/null -w "%{http_code}\n" https://your-domain.com/vendor/autoload.php
+curl -s -o /dev/null -w "%{http_code}\n" https://your-domain.com/ipconfig.php
+```
+
+PDFs archived by an older version keep their predictable `<date>_Invoice_<number>.pdf` names after an upgrade; the
+rule for `uploads/archive/` is the only thing protecting them.
 
 ### macOS
 - **Recommended**: Use Docker Desktop for Mac (see [Docker Installation](#docker-installation))
