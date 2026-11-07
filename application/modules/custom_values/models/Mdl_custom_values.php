@@ -20,6 +20,9 @@ class Mdl_Custom_Values extends MY_Model
 
     public $primary_key = 'ip_custom_values.custom_values_id';
 
+    /** @var bool set by grouped(): select and order only what the grouped query may legally read */
+    protected $grouped = false;
+
     /**
      * @return array
      */
@@ -226,19 +229,34 @@ class Mdl_Custom_Values extends MY_Model
     }
 
     /**
+     * One row per custom field with the number of values it has.
+     *
+     * Valid under ONLY_FULL_GROUP_BY (MySQL 8's default sql_mode): no ip_custom_values column is
+     * selected, and the query groups by every selected ip_custom_fields column because MariaDB,
+     * unlike MySQL 8, does not detect that they depend on the primary key.
+     *
      * @return $this
      */
     public function grouped()
     {
-        $this->db->select('SQL_CALC_FOUND_ROWS ip_custom_fields.*,ip_custom_values.*', false);
-        $this->db->select('count(custom_field_label) as count');
-        $this->db->group_by('ip_custom_fields.custom_field_id');
+        $this->grouped = true;
+
+        $this->db->select('SQL_CALC_FOUND_ROWS ip_custom_fields.*', false);
+        $this->db->select('COUNT(ip_custom_values.custom_values_id) AS count', false);
+
+        foreach ($this->db->list_fields('ip_custom_fields') as $field) {
+            $this->db->group_by('ip_custom_fields.' . $field);
+        }
 
         return $this;
     }
 
     public function default_select()
     {
+        if ($this->grouped) {
+            return;
+        }
+
         $this->db->select('ip_custom_fields.*,ip_custom_values.*', false);
     }
 
@@ -249,6 +267,13 @@ class Mdl_Custom_Values extends MY_Model
 
     public function default_order_by()
     {
+        if ($this->grouped) {
+            $this->db->order_by('ip_custom_fields.custom_field_table');
+            $this->db->order_by('ip_custom_fields.custom_field_label');
+
+            return;
+        }
+
         $this->db->order_by('ip_custom_values.custom_values_value');
     }
 
