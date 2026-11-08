@@ -50,7 +50,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
+          node-version: '22'
           cache: 'yarn'
 
       - name: Set up PHP 8.2 and install the Composer dependencies
