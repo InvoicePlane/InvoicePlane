@@ -57,6 +57,7 @@ jobs:
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.2'
+          php-extensions: gd, bcmath, intl, xml, zip, mbstring, pdo_mysql, curl
 
       - name: Install JS dependencies and build assets
         run: |
