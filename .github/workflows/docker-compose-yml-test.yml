@@ -41,17 +41,11 @@ permissions:
 jobs:
   docker-compose-yml:
     name: docker-compose.yml (separated dev services)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up PHP 8.2
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          tools: composer
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -59,8 +53,10 @@ jobs:
           node-version-file: '.node-version'
           cache: 'yarn'
 
-      - name: Install PHP dependencies
-        run: composer install --no-interaction --prefer-dist
+      - name: Set up PHP 8.2 and install the Composer dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.2'
 
       - name: Install JS dependencies and build assets
         run: |
