@@ -39,12 +39,18 @@ function env($env_key, $default = null)
 /**
  * Small helper function to get bool values for the env setting.
  *
- * @param string $env_key
- * @param string $default
+ * A value written in ipconfig.php is the string 'true' (in any case) or anything else for false. The default may be
+ * a real boolean or the string 'true' / 'false': comparing a boolean default with the string 'true' made every
+ * env_bool('KEY', true) come out false when the key was missing from ipconfig.php.
+ *
+ * @param string      $env_key
+ * @param bool|string $default
  */
-function env_bool($env_key, $default = 'false'): bool
+function env_bool($env_key, $default = false): bool
 {
-    return env($env_key, $default) === 'true';
+    $value = env($env_key, $default);
+
+    return is_bool($value) ? $value : mb_strtolower(trim((string) $value)) === 'true';
 }
 
 // Enable debug mode if set
