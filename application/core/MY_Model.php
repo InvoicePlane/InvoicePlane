@@ -300,9 +300,7 @@ class MY_Model extends CI_Model
      */
     public function result()
     {
-        if ($this->query_failed()) {
-            return [];
-        }
+        $this->ensure_query_ran();
 
         return $this->query->result();
     }
@@ -315,9 +313,7 @@ class MY_Model extends CI_Model
      */
     public function row()
     {
-        if ($this->query_failed()) {
-            return;
-        }
+        $this->ensure_query_ran();
 
         return $this->query->row();
     }
@@ -330,9 +326,7 @@ class MY_Model extends CI_Model
      */
     public function result_array()
     {
-        if ($this->query_failed()) {
-            return [];
-        }
+        $this->ensure_query_ran();
 
         return $this->query->result_array();
     }
@@ -345,9 +339,7 @@ class MY_Model extends CI_Model
      */
     public function row_array()
     {
-        if ($this->query_failed()) {
-            return;
-        }
+        $this->ensure_query_ran();
 
         return $this->query->row_array();
     }
@@ -360,9 +352,7 @@ class MY_Model extends CI_Model
      */
     public function num_rows()
     {
-        if ($this->query_failed()) {
-            return 0;
-        }
+        $this->ensure_query_ran();
 
         return $this->query->num_rows();
     }
@@ -474,26 +464,30 @@ class MY_Model extends CI_Model
     }
 
     /**
+     * Stops with an error page when the last get()/paginate() query was rejected by the database.
+     *
+     * With db_debug off CodeIgniter returns false for a rejected query. The accessors used to call a
+     * method on it (a fatal and a blank HTTP 500). Answering with an empty result instead would be
+     * worse: callers read an empty result as "no such record" (for example "this value is not in use",
+     * so it may be deleted). show_error() ends the request with a proper 500 page; CodeIgniter has
+     * already logged the database error itself.
+     */
+    private function ensure_query_ran(): void
+    {
+        if ($this->query !== false) {
+            return;
+        }
+
+        log_message('error', get_class($this) . ': the database rejected the query (see the query error logged above)');
+
+        show_error('A database error occurred. The request was stopped; the details are in the application log.', 500);
+    }
+
+    /**
      * Query builder which listens to methods in child model.
      *
      * @param array $exclude
      */
-    /**
-     * True when the last get()/paginate() query did not run (the database returns false for it when
-     * db_debug is off). Callers then get an empty result instead of a fatal "member function on
-     * false" and a blank HTTP 500; CodeIgniter has already logged the database error itself.
-     */
-    private function query_failed(): bool
-    {
-        if ($this->query !== false) {
-            return false;
-        }
-
-        log_message('error', get_class($this) . ': the query failed, returning an empty result (see the query error logged above)');
-
-        return true;
-    }
-
     private function set_defaults($exclude = [])
     {
         $native_methods = $this->native_methods;

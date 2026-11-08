@@ -251,6 +251,44 @@ class Mdl_Custom_Values extends MY_Model
         return $this;
     }
 
+    /**
+     * Runs the query and returns the model, then forgets that grouped() was requested.
+     *
+     * The model is one instance per request: without the reset a later plain get() on it would skip
+     * default_select() and default_order_by().
+     *
+     * @param bool $include_defaults
+     *
+     * @return $this
+     */
+    public function get($include_defaults = true)
+    {
+        try {
+            return parent::get($include_defaults);
+        } finally {
+            $this->grouped = false;
+        }
+    }
+
+    /**
+     * Paginates the query, then forgets that grouped() was requested (see get()).
+     *
+     * @param     $base_url
+     * @param int $offset
+     * @param int $uri_segment
+     */
+    public function paginate($base_url, $offset = 0, $uri_segment = 3)
+    {
+        try {
+            parent::paginate($base_url, $offset, $uri_segment);
+        } finally {
+            $this->grouped = false;
+        }
+    }
+
+    /**
+     * Selects the field and value columns, except while grouped() is active (it selects its own).
+     */
     public function default_select()
     {
         if ($this->grouped) {
@@ -260,11 +298,17 @@ class Mdl_Custom_Values extends MY_Model
         $this->db->select('ip_custom_fields.*,ip_custom_values.*', false);
     }
 
+    /**
+     * Joins every value to the custom field that owns it.
+     */
     public function default_join()
     {
         $this->db->join('ip_custom_fields', 'ip_custom_values.custom_values_field = ip_custom_fields.custom_field_id', 'inner');
     }
 
+    /**
+     * Orders by value, or by table and label while grouped() is active (only grouped columns may be ordered by).
+     */
     public function default_order_by()
     {
         if ($this->grouped) {
@@ -277,6 +321,9 @@ class Mdl_Custom_Values extends MY_Model
         $this->db->order_by('ip_custom_values.custom_values_value');
     }
 
+    /**
+     * Intentionally empty: grouping is requested through grouped().
+     */
     public function default_group_by()
     {
         //$this->db->group_by('ip_custom_values.custom_values_field');
