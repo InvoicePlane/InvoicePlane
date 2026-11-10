@@ -136,6 +136,12 @@ class Mdl_Items extends Response_Model
         $row        = $query->row();
         $invoice_id = $row->invoice_id;
 
+        $this->load->model(['invoices/mdl_invoice_amounts', 'invoices/mdl_item_amounts']);
+
+        // The item, its amounts, the redistributed discount shares and the invoice totals are
+        // stored together or not at all, so a refused total cannot leave the invoice half updated.
+        $this->db->trans_begin();
+
         // Delete the item itself
         parent::delete($item_id);
 
@@ -143,12 +149,67 @@ class Mdl_Items extends Response_Model
         $this->db->where('item_id', $item_id);
         $this->db->delete('ip_invoice_item_amounts');
 
-        $this->load->model('invoices/mdl_invoice_amounts');
-        $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($invoice_id);
+        // A fixed discount amount is split over the items, so the share of the deleted item
+        // has to be handed to the remaining ones before the totals are calculated again.
+        $global_discount = $this->remaining_items_global_discount($invoice_id);
         // Recalculate invoice amounts
-        $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
+        $calculated = $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
+
+        if ( ! $calculated || $this->db->trans_status() === false) {
+            $this->db->trans_rollback();
+
+            return false;
+        }
+
+        $this->db->trans_commit();
 
         return true;
+    }
+
+    /**
+     * Distributes the stored global discount over the items that are left and returns the
+     * discount structure for Mdl_invoice_amounts::calculate().
+     *
+     * @param $invoice_id
+     */
+    private function remaining_items_global_discount($invoice_id): array
+    {
+        $global_discount = ['amount' => 0.0, 'percent' => 0.0, 'item' => 0.0, 'items_subtotal' => 0.0];
+
+        if (config_item('legacy_calculation')) {
+            return $global_discount;
+        }
+
+        $invoice = $this->db->select('invoice_discount_amount, invoice_discount_percent')
+            ->where('invoice_id', $invoice_id)
+            ->get('ip_invoices')
+            ->row();
+
+        // Percent wins when both are set, as in Invoices/Ajax::save
+        $percent = $invoice ? (float) $invoice->invoice_discount_percent : 0.0;
+        $amount  = ($invoice && ! $percent) ? (float) $invoice->invoice_discount_amount : 0.0;
+
+        if ( ! $percent && ! $amount) {
+            $global_discount['item'] = (float) $this->mdl_invoice_amounts->get_global_discount($invoice_id);
+
+            return $global_discount;
+        }
+
+        $global_discount['percent']        = $percent;
+        $global_discount['amount']         = $amount;
+        // Same basis as Mdl_item_amounts::calculate(), over the items the loop below distributes to
+        $subtotal = $this->db->select('SUM(item_quantity * item_price) AS items_subtotal', false)
+            ->where('invoice_id', $invoice_id)
+            ->get($this->table)
+            ->row();
+        $global_discount['items_subtotal'] = (float) $subtotal->items_subtotal;
+
+        $item_ids = $this->db->select('item_id')->where('invoice_id', $invoice_id)->get($this->table)->result();
+        foreach ($item_ids as $row) {
+            $this->mdl_item_amounts->calculate($row->item_id, $global_discount);
+        }
+
+        return $global_discount;
     }
 
     /**
