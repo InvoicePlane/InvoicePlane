@@ -17,6 +17,8 @@ record *why* and *how*.
 ### Thank you
 
 Thanks to [@1icarus2](https://github.com/1icarus2), [@Iweisc](https://github.com/Iweisc), [@hariprakash6969-create](https://github.com/hariprakash6969-create),
+
+Thanks to [@sgrimmett](https://github.com/sgrimmett), [@Iweisc](https://github.com/Iweisc), [@hariprakash6969-create](https://github.com/hariprakash6969-create),
 [@santhoshdodo2721](https://github.com/santhoshdodo2721), [@nirtem](https://github.com/nirtem),
 [@d3do-23](https://github.com/d3do-23), [@capivara-research](https://github.com/capivara-research),
 [@Suraj-Siddharudh](https://github.com/Suraj-Siddharudh), [@Ishbarna](https://github.com/Ishbarna),
@@ -36,6 +38,9 @@ in progress in this release. A special thanks to [@Iweisc](https://github.com/Iw
 reproducible bug reports (payment status, recurring start date and item deletion discount) listed
 under "Bug fixes". A special thanks to [@1icarus2](https://github.com/1icarus2) for the report of the IIS
 exposure and for the URL Rewrite rules that the shipped `web.config` is built on. They also reported the unstyled PDFs after upgrading to 1.7.2, including the root cause in mPDF and the suggestion to read the stylesheets from disk. They also reported the client dropdown search failing on MariaDB with `ONLY_FULL_GROUP_BY` (#1866), with the failing queries, the test failures it causes and the `WHERE` form that fixes it.
+
+under "Bug fixes". A special thanks to [@sgrimmett](https://github.com/sgrimmett) for the report and the tested fix
+of the Stripe return error listed under "Bug fixes".
 
 ### Security Vulnerability Summary
 
@@ -226,6 +231,8 @@ exposure and for the URL Rewrite rules that the shipped `web.config` is built on
 - **The client dropdown search (and `users/ajax/name_query`) failed on MariaDB with `ONLY_FULL_GROUP_BY` ([#1866](https://github.com/InvoicePlane/InvoicePlane/issues/1866)):** `clients/ajax/name_query` and `users/ajax/name_query` filtered with `HAVING` on plain columns although the query has no `GROUP BY`, which MariaDB rejects with error 1463 when `ONLY_FULL_GROUP_BY` is on, so the select2 client dropdown (create/copy invoice or quote, projects) returned no results. MySQL tolerates it, and MariaDB's default `sql_mode` does not enable the mode, so only installs that do were affected. Both now filter in `WHERE`, inside a group so the name conditions are still ANDed with the active and type conditions; the client full name is the select list's `CONCAT()` written out, because `WHERE` cannot see an alias, and its pattern is escaped with `$this->db->escape()`. Reported by [@1icarus2](https://github.com/1icarus2), with the failing queries, the matching test failures and the proposed `WHERE` form ([#1868](https://github.com/InvoicePlane/InvoicePlane/pull/1868)).
 
 - **PDFs lost all template styling when PHP could not fetch the site's own HTTPS address:** the default templates link their stylesheets with absolute `base_url()` URLs (`_theme_asset()`, `_core_asset()`). mPDF fetches those over HTTP(S), and the fallback to the local file in mPDF 8.3 is inverted (`CssLoader`, introduced with the CssManager refactor), so on 1.7.2 (mPDF 8.3.1) a server that cannot reach its own public address (Windows PHP without `curl.cainfo` / `openssl.cafile`, a self-signed certificate, split DNS or hairpin NAT, a container) produced PDFs in the default serif font, without table layout or aligned totals, and without any error, because mPDF swallows stylesheet errors unless `debug` is on. 1.7.1 (mPDF 8.2.7) rendered the same invoices correctly. `pdf_create()` now replaces the `<link rel="stylesheet">` elements that point at this installation's own `assets/` folder with the files' content read from disk, so no request to the site itself is made, which also saves a round trip per PDF and works on every mPDF version. Only `.css` files below `assets/` are read, relative `url()` references in them are resolved against the stylesheet's address as a linked stylesheet did, and links to other hosts are left to mPDF. Custom templates that link the shipped stylesheets are fixed as well, without being edited. Reported, with the root cause and the suggestion to read the stylesheets from disk, by [@1icarus2](https://github.com/1icarus2).
+
+- **A paid Stripe checkout ended in "Payment system error detected!" although the payment went through:** `Stripe::callback()` built its admin and log message from `$session->amount_received` and `$session->application_fee_amount`, which a Checkout Session does not have. Both were `null`, so `amount_from_minor_units()` threw a `TypeError` under PHP 8 after the payment was already recorded, and the customer was sent back with an error. The message now reports `amount_total`, the amount the callback already books, and drops the fee; a session that was not paid logs its `status` and `payment_status` instead of two properties that do not exist either. The Stripe test fixtures no longer invent the two missing fields, which is why this was never caught. Reported, with the fix, by [@sgrimmett](https://github.com/sgrimmett).
 
 - **Editing a payment down to a partial amount put the invoice back to Sent:** `Mdl_payments::save()` only moved an invoice forward to Paid, so lowering a $100,00 payment to $40,00 left the invoice Paid with a $60,00 balance, and the payment form (which lists only open invoices) could not take the rest. `save()` now reopens a Paid invoice whose payments no longer cover the total, the same way `delete()` already did. Reported by [@Iweisc](https://github.com/Iweisc).
 
