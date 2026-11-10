@@ -178,9 +178,8 @@ function increment_user_date($date, string $increment): string
         return '';
     }
 
-    $new_date = new DateTime($d);
-    $new_date->add(new DateInterval('P' . $increment));
-    $CI = &get_instance();
+    $new_date = add_interval_clamped(new DateTime($d), new DateInterval('P' . $increment));
+    $CI       = &get_instance();
 
     return $new_date->format($CI->mdl_settings->setting('date_format'));
 }
@@ -197,8 +196,26 @@ function increment_date($date, string $increment): string
         return '';
     }
 
-    $new_date = new DateTime($date);
-    $new_date->add(new DateInterval('P' . $increment));
+    $new_date = add_interval_clamped(new DateTime($date), new DateInterval('P' . $increment));
 
     return $new_date->format('Y-m-d');
+}
+
+/**
+ * Adds an interval to a date. A month or year step that would land on a day the target month does
+ * not have (Oct 31 + 1 month) stops at the last day of that month instead of rolling into the next;
+ * a day component of the interval is added after that.
+ */
+function add_interval_clamped(DateTime $date, DateInterval $interval): DateTime
+{
+    if ($interval->y === 0 && $interval->m === 0) {
+        return $date->add($interval);
+    }
+
+    $day = (int) $date->format('j');
+    $date->setDate((int) $date->format('Y'), (int) $date->format('n'), 1);
+    $date->add(new DateInterval(sprintf('P%dY%dM', $interval->y, $interval->m)));
+    $date->setDate((int) $date->format('Y'), (int) $date->format('n'), min($day, (int) $date->format('t')));
+
+    return $interval->d > 0 ? $date->add(new DateInterval('P' . $interval->d . 'D')) : $date;
 }
