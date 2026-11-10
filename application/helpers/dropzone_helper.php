@@ -118,7 +118,7 @@ function _dropzone_html($read_only = true): void
  * */
 function _dropzone_script($url_key = null, $client_id = 1, $site_url = '', $acceptedExts = null): void
 {
-    $site_url = site_url(empty($site_url) ? 'upload/' : (mb_rtrim($site_url, '/') . '/'));
+    $site_url = site_url(empty($site_url) ? 'upload/' : (rtrim($site_url, '/') . '/'));
 
     // Allow extentions system
     $content_types = [];

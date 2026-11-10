@@ -37,7 +37,7 @@
         // error handler, so the fallback chain (and the failed state) is never shown.
         var ajaxTimeout = 8000;
         // Get the current version
-        var ip_version = "<?php echo get_setting('current_version'); ?>";
+        var ip_version = <?php echo json_encode((string) get_setting('current_version'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
         // Legacy IDS update check, used when GitHub is unreachable or returns no tag
         function legacyUpdateCheck() {
             $.ajax({

@@ -15,7 +15,7 @@
             const formData = new URLSearchParams();
             formData.append('<?php echo $this->security->get_csrf_token_name(); ?>', '<?php echo $this->security->get_csrf_hash(); ?>');
             
-            const response = await fetch('<?php echo site_url('guest/gateways/stripe/create_checkout_session/' . $invoice_url_key); ?>', {
+            const response = await fetch(<?php echo json_encode(site_url('guest/gateways/stripe/create_checkout_session/' . $invoice_url_key), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

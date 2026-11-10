@@ -89,6 +89,106 @@ function sanitize_pdf_footer_content(?string $footer): string
 }
 
 /**
+ * Replaces the <link rel="stylesheet"> elements that point at this installation's own assets/ folder with
+ * <style> elements that hold the file's content.
+ *
+ * The default templates link their stylesheets with absolute base_url() URLs. mPDF fetches those over HTTP(S),
+ * which fails whenever PHP cannot reach its own public address (no CA bundle on Windows, a self-signed
+ * certificate, split DNS, a container), and mPDF 8.3's fallback to the local file is inverted, so the PDF lost
+ * every style without an error. Reading the file from disk needs no request at all.
+ *
+ * Relative url() references are resolved against the stylesheet's original address, as a linked stylesheet did.
+ * Only .css files below $assets_dir are read; anything else stays as it was.
+ */
+function pdf_inline_local_stylesheets(string $html, ?string $base_url = null, ?string $assets_dir = null): string
+{
+    if (stripos($html, '<link') === false) {
+        return $html;
+    }
+
+    $assets_root = realpath($assets_dir ?? FCPATH . 'assets');
+    $prefix      = rtrim($base_url ?? base_url(), '/') . '/assets/';
+
+    if ($assets_root === false) {
+        return $html;
+    }
+
+    return (string) preg_replace_callback('/<link\b(?:[^>"\']|"[^"]*"|\'[^\']*\')*>/i', static function (array $match) use ($assets_root, $prefix): string {
+        $link = $match[0];
+        $attr = [];
+
+        if (preg_match_all('/(?<![\w:-])(rel|href|media)\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s"\'>][^\s>]*))/i', $link, $found, PREG_SET_ORDER)) {
+            foreach ($found as $pair) {
+                $value = '';
+                foreach ([2, 3, 4] as $group) {
+                    if (($pair[$group] ?? '') !== '') {
+                        $value = $pair[$group];
+                        break;
+                    }
+                }
+
+                // A browser uses the first of two identical attributes
+                $attr[mb_strtolower($pair[1])] ??= html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            }
+        }
+
+        $rel = preg_split('/\s+/', mb_strtolower($attr['rel'] ?? '')) ?: [];
+        if ( ! in_array('stylesheet', $rel, true) || in_array('alternate', $rel, true) || ! isset($attr['href'])) {
+            return $link;
+        }
+
+        $href = preg_replace('/[?#].*$/s', '', $attr['href']);
+        if (strncasecmp($href, $prefix, mb_strlen($prefix)) !== 0) {
+            return $link;
+        }
+
+        $relative = rawurldecode(mb_substr($href, mb_strlen($prefix)));
+        if ($relative === '' || str_contains($relative, "\0") || str_contains($relative, '\\') || ! str_ends_with(mb_strtolower($relative), '.css') || in_array('..', explode('/', $relative), true)) {
+            return $link;
+        }
+
+        $file = realpath($assets_root . '/' . $relative);
+        if ($file === false || ! is_file($file) || ! str_starts_with($file, $assets_root . DIRECTORY_SEPARATOR)) {
+            return $link;
+        }
+
+        $css = file_get_contents($file);
+        if ($css === false) {
+            return $link;
+        }
+
+        // Inlined, a relative reference would resolve against the document: resolve it against the stylesheet instead
+        $stylesheet_dir = mb_substr($href, 0, (int) mb_strrpos($href, '/') + 1);
+        $resolve        = static function (string $value) use ($stylesheet_dir): string {
+            $value = trim($value);
+            if ($value === '' || preg_match('/^(?:[a-z][a-z0-9+.\-]*:|\/|#)/i', $value)) {
+                return $value;
+            }
+
+            [$path, $suffix] = array_pad(preg_split('/(?=[?#])/', $value, 2) ?: [], 2, '');
+            $origin          = (string) preg_replace('~^([a-z][a-z0-9+.\-]*://[^/]+).*$~i', '$1', $stylesheet_dir);
+            $segments        = [];
+            foreach (explode('/', mb_substr($stylesheet_dir, mb_strlen($origin)) . $path) as $segment) {
+                if ($segment === '..') {
+                    array_pop($segments);
+                } elseif ($segment !== '.' && $segment !== '') {
+                    $segments[] = $segment;
+                }
+            }
+
+            return $origin . '/' . implode('/', $segments) . $suffix;
+        };
+
+        $css = preg_replace_callback('/url\(\s*(["\']?)([^"\')]*?)\1\s*\)/i', static fn (array $url): string => 'url(' . $url[1] . $resolve($url[2]) . $url[1] . ')', $css) ?? $css;
+        $css = preg_replace_callback('/@import\s+(["\'])([^"\']*)\1/i', static fn (array $import): string => '@import ' . $import[1] . $resolve($import[2]) . $import[1], $css) ?? $css;
+
+        $media = isset($attr['media']) && $attr['media'] !== '' ? ' media="' . htmlspecialchars($attr['media'], ENT_QUOTES, 'UTF-8') . '"' : '';
+
+        return '<style type="text/css"' . $media . '>' . str_ireplace('</style', '<\\/style', $css) . '</style>';
+    }, $html);
+}
+
+/**
  * Create a PDF.
  *
  * @param      $html
@@ -195,7 +295,7 @@ function pdf_create(
     $mpdf->SetHTMLFooterByName('defaultFooter');
 
     try {
-        $mpdf->WriteHTML((string) $html);
+        $mpdf->WriteHTML(pdf_inline_local_stylesheets((string) $html));
     } catch (Exception $e) {
         log_message('error', $e->getMessage());
         show_error($e->getMessage());

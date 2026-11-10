@@ -93,7 +93,7 @@ class Mdl_Clients extends Response_Model
             'client_email' => [
                 'field' => 'client_email',
                 'label' => trans('email_address'),
-                'rules' => 'trim|valid_email',
+                'rules' => 'trim|valid_emails',
             ],
             'client_web' => [
                 'field' => 'client_web',
