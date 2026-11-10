@@ -133,8 +133,8 @@ class Mdl_Reports extends CI_Model
                 (
                     SELECT invoice_id FROM ip_invoices
                         WHERE ip_invoices.client_id = ip_clients.client_id
-                            AND invoice_date_due <= DATE_SUB(NOW(),INTERVAL 1 DAY)
-                            AND invoice_date_due >= DATE_SUB(NOW(), INTERVAL 15 DAY)
+                            AND invoice_date_due <= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
+                            AND invoice_date_due >= DATE_SUB(CURDATE(), INTERVAL 15 DAY)
                 )
         ) AS range_1', false);
 
@@ -145,8 +145,8 @@ class Mdl_Reports extends CI_Model
                 (
                     SELECT invoice_id FROM ip_invoices
                         WHERE ip_invoices.client_id = ip_clients.client_id
-                            AND invoice_date_due <= DATE_SUB(NOW(),INTERVAL 16 DAY)
-                            AND invoice_date_due >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                            AND invoice_date_due <= DATE_SUB(CURDATE(),INTERVAL 16 DAY)
+                            AND invoice_date_due >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
                 )
         ) AS range_2', false);
 
@@ -157,7 +157,7 @@ class Mdl_Reports extends CI_Model
                 (
                     SELECT invoice_id FROM ip_invoices
                         WHERE ip_invoices.client_id = ip_clients.client_id
-                            AND invoice_date_due <= DATE_SUB(NOW(),INTERVAL 31 DAY)
+                            AND invoice_date_due <= DATE_SUB(CURDATE(),INTERVAL 31 DAY)
                 )
         ) AS range_3', false);
 
@@ -168,7 +168,7 @@ class Mdl_Reports extends CI_Model
                 (
                     SELECT invoice_id FROM ip_invoices
                         WHERE ip_invoices.client_id = ip_clients.client_id
-                            AND invoice_date_due <= DATE_SUB(NOW(), INTERVAL 1 DAY)
+                            AND invoice_date_due <= DATE_SUB(CURDATE(), INTERVAL 1 DAY)
                 )
         ) AS total_balance', false);
 

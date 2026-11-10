@@ -465,10 +465,17 @@ class Ajax extends Admin_Controller
             'quotes/mdl_quotes',
         ]);
 
+        $quote = $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row();
+
+        // The modal is loaded into the page as HTML, so a missing quote is a 404 and not a JSON body.
+        if ( ! $quote) {
+            show_404();
+        }
+
         $data = [
             'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'quote_id'       => $this->security->xss_clean($quote_id),
-            'quote'          => $this->mdl_quotes->where('ip_quotes.quote_id', $quote_id)->get()->row(),
+            'quote'          => $quote,
         ];
 
         $this->load->view('quotes/modal_quote_to_invoice', $data);
