@@ -325,6 +325,8 @@ $lang = [
     'invoice_sumex_help'                            => 'This options adds a menu entry in invoices to generate a TARMED / SUMEX1 semi compatible invoice. TARMED / SUMEX1 is a swiss standard for healthcares. <a href="http://sumex1.net/">More Info</a>',
     'invoice_tax'                                   => 'Invoice Tax',
     'invoice_tax_rate'                              => 'Invoice Tax Rate',
+    'invoice_level_taxes_not_supported_in_einvoice' => 'Invoice-level taxes are not supported in e-invoices and will be excluded from the generated XML file.',
+    'remove_invoice_taxes_before_generating_einvoice' => 'Please remove all invoice-level taxes from this invoice before generating the e-invoice file to ensure PDF and XML totals match.',
     'invoice_template'                              => 'Invoice Template',
     'invoice_templates'                             => 'Invoice Templates',
     'invoice_templates_info'                        => 'You can extend the available templates by downloading other templates provided by the community (see <a href="https://www.invoiceplane.com/themes" target="_blank">www.invoiceplane.com/themes</a>).',

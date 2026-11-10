@@ -73,6 +73,7 @@ runs:
         php -v
 
     - name: Install Composer
+      if: ${{ inputs.skip-composer-install != 'true' }}
       shell: bash
       run: |
         set -euo pipefail
