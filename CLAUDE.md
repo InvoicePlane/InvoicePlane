@@ -80,6 +80,32 @@ vendor/bin/phpstan analyse    # static analysis
 
 Tests live in `tests/`. Use plain `\PHPUnit\Framework\TestCase` — no Laravel `TestCase`.
 
+## Vulnerability Fix Workflow
+
+**All vulnerability fixes follow test-driven development:**
+
+1. **Development on prep/v180** (ivpl-exprmt repo)
+   - Write implementation + phpunit tests together
+   - Add edge case tests
+   - Run all checks locally before pushing:
+     ```bash
+     php -l application/**/*.php          # Syntax check
+     vendor/bin/phpunit                   # Tests + edge cases must pass
+     vendor/bin/pint                      # Code formatting
+     vendor/bin/phpstan analyse           # Static analysis
+     ```
+   - Commit and push to prep/v180
+
+2. **PR to upstream/develop** (this repository)
+   - **Only after prep/v180 is fully green** (all checks pass)
+   - PR contains implementation ONLY (no tests)
+   - Tests remain on prep/v180 (they are not upstreamed)
+   - Follow repository PR template and guidelines
+
+3. **No exceptions** — a PR is never created until prep/v180 has passed all checks.
+
+This ensures vulnerabilities are thoroughly tested locally before upstream acceptance.
+
 ## Common pitfalls
 
 - **Do NOT call `php artisan`** — InvoicePlane is not Laravel.
