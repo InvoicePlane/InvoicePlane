@@ -44,13 +44,16 @@ class Ajax extends Admin_Controller
         // value so CodeIgniter escapes it — never concatenate input into the SQL.
         $searchTerm    = str_replace(['%', '_'], '', (string) $query);
         $searchPattern = $moreUsersQuery . $searchTerm . '%';
+        // WHERE, not HAVING: there is no GROUP BY, and MariaDB with ONLY_FULL_GROUP_BY rejects HAVING on plain columns.
         // Not searched: user_address_1 user_address_2 user_city user_state user_zip user_country user_invoicing_contact
         $users = $this->mdl_users
             ->where('user_active', 1)
             ->where('user_type', $type)
-            ->having('user_name LIKE', $searchPattern)
-            ->or_having('user_company LIKE', $searchPattern)
-            ->or_having('user_invoicing_contact LIKE', $searchPattern)
+            ->group_start()
+            ->where('ip_users.user_name LIKE', $searchPattern)
+            ->or_where('ip_users.user_company LIKE', $searchPattern)
+            ->or_where('ip_users.user_invoicing_contact LIKE', $searchPattern)
+            ->group_end()
             ->order_by('user_name')
             ->get()
             ->result();
