@@ -44,11 +44,17 @@ class Ajax extends Admin_Controller
         $searchTerm    = str_replace(['%', '_'], '', (string) $query);
         $searchPattern = $moreClientsQuery . $searchTerm . '%';
 
+        // Filter in WHERE, not HAVING: there is no GROUP BY, and MariaDB with ONLY_FULL_GROUP_BY rejects
+        // HAVING on plain columns (error 1463). The full name is the select list's client_fullname alias
+        // written out, because WHERE cannot see an alias. $this->db->escape() is explicit because the
+        // raw expression is passed with escaping off.
         $clients = $this->mdl_clients
             ->where('client_active', 1)
-            ->having('client_name LIKE', $searchPattern)
-            ->or_having('client_surname LIKE', $searchPattern)
-            ->or_having('client_fullname LIKE', $searchPattern)
+            ->group_start()
+            ->where('ip_clients.client_name LIKE', $searchPattern)
+            ->or_where('ip_clients.client_surname LIKE', $searchPattern)
+            ->or_where("CONCAT(ip_clients.client_name, ' ', ip_clients.client_surname) LIKE " . $this->db->escape($searchPattern), null, false)
+            ->group_end()
             ->order_by('client_name')
             ->get()
             ->result();
