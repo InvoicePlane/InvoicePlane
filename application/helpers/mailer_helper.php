@@ -83,6 +83,10 @@ function email_invoice(
     $bcc     = parse_template($db_invoice, $bcc);
     $from    = [parse_template($db_invoice, $from[0]), parse_template($db_invoice, $from[1])];
 
+    if ( ! enforce_copy_addresses($cc, $bcc, mailer_copy_authority((string) ($db_invoice->user_email ?? '')))) {
+        return false;
+    }
+
     $errors = [];
     if ( ! validate_email_address($to)) {
         $errors[] = 'to_email';
@@ -100,7 +104,9 @@ function email_invoice(
         $errors[] = 'bcc_email';
     }
 
-    check_mail_errors($errors, 'mailer/invoice/' . $invoice_id);
+    if ( ! check_mail_errors($errors)) {
+        return false;
+    }
 
     $message = (empty($message) ? ' ' : $message);
 
@@ -151,6 +157,10 @@ function email_quote(
     $bcc     = parse_template($db_quote, $bcc);
     $from    = [parse_template($db_quote, $from[0]), parse_template($db_quote, $from[1])];
 
+    if ( ! enforce_copy_addresses($cc, $bcc, mailer_copy_authority((string) ($db_quote->user_email ?? '')))) {
+        return false;
+    }
+
     $errors = [];
     if ( ! validate_email_address($to)) {
         $errors[] = 'to_email';
@@ -168,7 +178,9 @@ function email_quote(
         $errors[] = 'bcc_email';
     }
 
-    check_mail_errors($errors, 'mailer/quote/' . $quote_id);
+    if ( ! check_mail_errors($errors)) {
+        return false;
+    }
 
     $message = (empty($message) ? ' ' : $message);
 
@@ -243,24 +255,114 @@ function validate_email_address(string $email): bool
 }
 
 /**
- * @param []  $errors
- * @param string $redirect
+ * The domain CC and BCC addresses must belong to: the mailer_internal_domain setting, else the domain
+ * of the sender address (smtp_mail_from, or the document owner's address when that is empty).
  */
-function check_mail_errors(array $errors = [], $redirect = ''): void
+function mailer_internal_domain(string $sender): string
 {
-    if ($errors) {
-        $CI = & get_instance();
-        foreach ($errors as $i => $e) {
-            $errors[$i] = strtr(trans('form_validation_valid_email'), ['{field}' => trans($e)]);
-        }
+    $domain = strtolower(ltrim(trim((string) get_setting('mailer_internal_domain')), '@'));
 
-        $CI->session->set_flashdata('alert_error', implode('<br>', $errors));
-
-        if (empty($redirect)) {
-            $CI->load->helper('security');
-            $redirect = get_safe_referer('', base_url());
-        }
-
-        redirect($redirect);
+    if ($domain !== '') {
+        return $domain;
     }
+
+    $at = strrpos($sender, '@');
+
+    return $at === false ? '' : strtolower(trim(substr($sender, $at + 1)));
+}
+
+/**
+ * Splits a CC/BCC field and returns its addresses as a comma separated list, or false when any of them
+ * is malformed (display names, header injection) or outside the organisation's domain. An unknown
+ * domain refuses every address instead of switching the check off.
+ *
+ * @return false|string
+ */
+function authorize_copy_addresses($list, string $sender)
+{
+    $list = (string) $list;
+
+    if (trim($list) === '') {
+        return '';
+    }
+
+    $domain    = mailer_internal_domain($sender);
+    $addresses = [];
+
+    foreach (preg_split('/[,;]/', $list) as $address) {
+        $address = trim($address);
+
+        if ($address === '') {
+            continue;
+        }
+
+        $at = strrpos($address, '@');
+
+        if ($domain === ''
+            || ! filter_var($address, FILTER_VALIDATE_EMAIL)
+            || $at === false
+            || strtolower(substr($address, $at + 1)) !== $domain) {
+            return false;
+        }
+
+        $addresses[] = $address;
+    }
+
+    return implode(',', $addresses);
+}
+
+/**
+ * The address whose domain authorises CC/BCC addresses: the configured sender (smtp_mail_from), else the document
+ * owner. It is deliberately not the From address of the message, which an e-mail template may set to any domain.
+ */
+function mailer_copy_authority(string $owner_email): string
+{
+    $configured = trim((string) get_setting('smtp_mail_from'));
+
+    return $configured !== '' ? $configured : $owner_email;
+}
+
+/**
+ * Replaces $cc and $bcc by their normalised lists. Returns false, with the refusal flashed, when one of them is
+ * not allowed; the caller decides what to do (the interactive controllers redirect, cron skips the e-mail).
+ */
+function enforce_copy_addresses(&$cc, &$bcc, string $sender): bool
+{
+    $allowed_cc  = authorize_copy_addresses($cc, $sender);
+    $allowed_bcc = authorize_copy_addresses($bcc, $sender);
+
+    if ($allowed_cc === false || $allowed_bcc === false) {
+        $CI = & get_instance();
+        $CI->session->set_flashdata('alert_error', trans('cc_bcc_own_domain_only'));
+
+        return false;
+    }
+
+    $cc  = $allowed_cc;
+    $bcc = $allowed_bcc;
+
+    return true;
+}
+
+/**
+ * Flashes the validation errors of an e-mail. Returns false when there are any, so the caller can stop; it does not
+ * redirect, because email_invoice()/email_quote() are also called by the recurring-invoice cron, where redirect() exits
+ * and aborts the run for every later invoice. The interactive controllers redirect themselves.
+ *
+ * @param array<int, string> $errors
+ */
+function check_mail_errors(array $errors = []): bool
+{
+    if ($errors === []) {
+        return true;
+    }
+
+    $CI = & get_instance();
+    foreach ($errors as $i => $e) {
+        $errors[$i] = strtr(trans('form_validation_valid_email'), ['{field}' => trans($e)]);
+    }
+
+    $CI->session->set_flashdata('alert_error', implode('<br>', $errors));
+
+    return false;
 }

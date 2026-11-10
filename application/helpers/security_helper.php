@@ -326,8 +326,11 @@ function verify_get_csrf_token(): bool
     $token_name      = config_item('csrf_token_name');
     $submitted_token = $CI->input->get($token_name);
 
-    // Token the browser holds in the CSRF cookie
-    $cookie_name    = config_item('csrf_cookie_name');
+    // Token the browser holds in the CSRF cookie. CodeIgniter's own Security
+    // library prepends cookie_prefix to csrf_cookie_name when it actually sets
+    // and reads the cookie (see CI_Security::__construct()); mirror that here
+    // or a non-default cookie_prefix makes every logout link fail validation.
+    $cookie_name    = config_item('cookie_prefix') . config_item('csrf_cookie_name');
     $expected_token = $CI->input->cookie($cookie_name);
 
     // Enforce non-empty string tokens to prevent bypass when both are null
@@ -342,3 +345,44 @@ function verify_get_csrf_token(): bool
     // Timing-safe comparison
     return hash_equals($expected_token, $submitted_token);
 }
+
+/**
+ * Encode a string for safe inclusion in a JavaScript string literal.
+ *
+ * Security: Prevents XSS by escaping characters that can break out of JavaScript
+ * string contexts. This encoding is specifically for values being embedded in
+ * JavaScript string literals (single or double quoted).
+ *
+ * This handles:
+ * - Backslash escaping (to prevent escape sequences)
+ * - Quote escaping (to prevent string breakout)
+ * - Line terminators (U+2028, U+2029, \r, \n)
+ * - All < and > are converted to \u003C and \u003E.  (for HTML </script> termination)
+ * - All & are converted to \u0026.
+ * - All ' are converted to \u0027.
+ * - All " are converted to \u0022.
+ * - Unicode characters are encoded (`æøå` becomes `\u00e6\u00f8\u00e5`)
+ *
+ * Example:
+ *   weekStart: '<?php echo encode_for_javascript_string($day); ?>'
+ *
+ * @param mixed $string Value to encode (casts to string)
+ *
+ * @return string JavaScript-safe string
+ */
+function encode_for_javascript_string($string)
+{
+    return substr(
+        json_encode(
+            (string) $string,
+            JSON_THROW_ON_ERROR
+                | JSON_HEX_TAG
+                | JSON_HEX_AMP
+                | JSON_HEX_APOS
+                | JSON_HEX_QUOT
+        ),
+        1,
+        -1
+    );
+}
+

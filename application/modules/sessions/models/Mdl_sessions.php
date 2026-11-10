@@ -17,6 +17,16 @@ if ( ! defined('BASEPATH')) {
 class Mdl_Sessions extends CI_Model
 {
     /**
+     * Fixed bcrypt hash of an unguessable decoy password, used only to keep
+     * every login-failure path in auth() as slow as a real check_password()
+     * call (see the num_rows() === 0 branch and the legacy-md5-mismatch
+     * branch below). Never intended to validate against any real password.
+     * Generated at Crypt::BCRYPT_COST (currently 10) -- if that cost ever
+     * changes, regenerate this at the same cost.
+     */
+    private const DUMMY_PASSWORD_HASH = '$2y$10$woAI/YEapjthjnbqbsEgy.RldV3enm6I417RVNYwcybNGrt9MVpX.';
+
+    /**
      * @param $email
      * @param $password
      *
@@ -61,7 +71,13 @@ class Mdl_Sessions extends CI_Model
                     $this->db->where('user_email', $email);
                     $user = $this->db->get('ip_users')->row();
                 } else {
-                    // The password didn't verify against original md5
+                    // Security: the password didn't verify against the legacy md5 hash. Still run a
+                    // bcrypt comparison against the fixed decoy hash so this legacy-account failure
+                    // takes as long as the modern-path checks elsewhere in this method, and a legacy
+                    // (pre-1.2.0, no user_psalt) account can't be distinguished from any other by
+                    // response time alone (CWE-208 / CWE-204).
+                    $this->crypt->check_password(self::DUMMY_PASSWORD_HASH, (string) $password);
+
                     return false;
                 }
             }
@@ -73,13 +89,16 @@ class Mdl_Sessions extends CI_Model
                     return false;
                 }
 
+                $this->load->helper('ip_security');
+
                 $session_data = [
-                    'user_type'     => $user->user_type,
-                    'user_id'       => $user->user_id,
-                    'user_name'     => $user->user_name,
-                    'user_email'    => $user->user_email,
-                    'user_company'  => $user->user_company,
-                    'user_language' => $user->user_language ?? 'system',
+                    'user_credential' => session_credential_fingerprint((string) $user->user_password),
+                    'user_type'       => $user->user_type,
+                    'user_id'         => $user->user_id,
+                    'user_name'       => $user->user_name,
+                    'user_email'      => $user->user_email,
+                    'user_company'    => $user->user_company,
+                    'user_language'   => $user->user_language ?? 'system',
                 ];
 
                 // Regenerate session ID on login to prevent session fixation attacks.
@@ -88,6 +107,13 @@ class Mdl_Sessions extends CI_Model
 
                 return true;
             }
+        } else {
+            // Security: no account exists for this email. Still run a bcrypt
+            // comparison against a fixed decoy hash so the response time matches
+            // the real-account path above and does not reveal account existence
+            // via timing (CWE-208 / CWE-204).
+            $this->load->library('crypt');
+            $this->crypt->check_password(self::DUMMY_PASSWORD_HASH, (string) $password);
         }
 
         return false;
@@ -112,11 +138,18 @@ class Mdl_Sessions extends CI_Model
             $this->load->helper('file_security');
         }
 
-        $session_path = $this->session->sess_save_path;
+        $session_path = (string) $this->config->item('sess_save_path');
+        $cookie_name  = (string) $this->config->item('sess_cookie_name');
 
-        if ( ! is_dir($session_path)) {
+        // Without the cookie name there is no way to tell a session file from any other file, and the
+        // save path may be a shared folder (it defaults to the system temp directory).
+        if ($cookie_name === '' || ! is_dir($session_path)) {
             return;
         }
+
+        // File name written by the files driver: cookie name, optionally the md5 of the client IP
+        // (sess_match_ip), then the session id.
+        $name_pattern = '/^' . preg_quote($cookie_name, '/') . '(?:[0-9a-f]{32})?[0-9a-zA-Z,-]+$/';
 
         try {
             $files = scandir($session_path);
@@ -125,7 +158,7 @@ class Mdl_Sessions extends CI_Model
             }
 
             foreach ($files as $file) {
-                if ($file === '.' || $file === '..') {
+                if ($file === '.' || $file === '..' || ! preg_match($name_pattern, $file)) {
                     continue;
                 }
 
@@ -135,17 +168,87 @@ class Mdl_Sessions extends CI_Model
                     continue;
                 }
 
-                $session_data = @unserialize(file_get_contents($file_path), ['allowed_classes' => false]);
-                if ($session_data === false || ! is_array($session_data)) {
-                    continue;
-                }
-
-                if (isset($session_data['user_id']) && (string) $session_data['user_id'] === (string) $user_id) {
+                // Session files are written with session.serialize_handler=php ("key|serialized"
+                // repeated), which unserialize() cannot parse, so walk the top-level entries.
+                $owner = $this->session_file_user_id((string) @file_get_contents($file_path));
+                if ($owner !== null && $owner === (string) (int) $user_id) {
                     @unlink($file_path);
                 }
             }
         } catch (Exception $e) {
             log_message('error', 'Session invalidation failed for user ' . sanitize_for_logging((int) $user_id));
         }
+    }
+
+    /**
+     * The user_id of a session file in the "php" serialize-handler format ("key|serialized" repeated),
+     * read from the top-level entries only, so that text inside another value (a name, a flash message)
+     * or a nested array cannot pass for the owner. Null when there is no user_id or the file holds
+     * something this reader does not understand (objects, a truncated file).
+     */
+    private function session_file_user_id(string $raw): ?string
+    {
+        $pos    = 0;
+        $length = strlen($raw);
+
+        while ($pos < $length) {
+            $bar = strpos($raw, '|', $pos);
+            if ($bar === false) {
+                return null;
+            }
+
+            $key   = substr($raw, $pos, $bar - $pos);
+            $start = $bar + 1;
+            $end   = $this->serialized_value_end($raw, $start, 0);
+            if ($end === null) {
+                return null;
+            }
+
+            if ($key === 'user_id') {
+                return preg_match('/^(?:s:\d+:"(\d+)"|i:(\d+));$/', substr($raw, $start, $end - $start), $m) === 1
+                    ? ($m[1] !== '' ? $m[1] : $m[2])
+                    : null;
+            }
+
+            $pos = $end;
+        }
+
+        return null;
+    }
+
+    /**
+     * Offset just past the serialized value that starts at $pos, or null when it is not one of the
+     * scalar or array forms a CodeIgniter session holds.
+     */
+    private function serialized_value_end(string $raw, int $pos, int $depth): ?int
+    {
+        if ($depth > 16 || $pos >= strlen($raw)) {
+            return null;
+        }
+
+        if (preg_match('/\G(?:N;|[bi]:-?\d+;|d:[^;]*;)/', $raw, $m, 0, $pos) === 1) {
+            return $pos + strlen($m[0]);
+        }
+
+        if (preg_match('/\Gs:(\d+):"/', $raw, $m, 0, $pos) === 1) {
+            $end = $pos + strlen($m[0]) + (int) $m[1];
+
+            return substr($raw, $end, 2) === '";' ? $end + 2 : null;
+        }
+
+        if (preg_match('/\Ga:(\d+):\{/', $raw, $m, 0, $pos) === 1) {
+            $cursor = $pos + strlen($m[0]);
+
+            for ($i = 0; $i < (int) $m[1] * 2; $i++) {
+                $cursor = $this->serialized_value_end($raw, $cursor, $depth + 1);
+                if ($cursor === null) {
+                    return null;
+                }
+            }
+
+            return ($raw[$cursor] ?? '') === '}' ? $cursor + 1 : null;
+        }
+
+        return null;
     }
 }

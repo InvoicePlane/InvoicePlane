@@ -25,3 +25,10 @@ INNER JOIN `ip_payments` AS `keep`
 
 ALTER TABLE `ip_payments`
     ADD UNIQUE INDEX `idx_payment_external_id` (`payment_external_id`);
+
+-- Treat empty client birthdates as NULL.
+-- 043_1.7.2.sql compared the DATE column with '0000-00-00', which MySQL 8 strict mode
+-- (NO_ZERO_DATE) rejects, so on MySQL 8 that cleanup never ran. Compare as text instead.
+UPDATE `ip_clients`
+SET `client_birthdate` = NULL
+WHERE CAST(`client_birthdate` AS CHAR(10)) = '0000-00-00';

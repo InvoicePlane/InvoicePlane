@@ -60,7 +60,8 @@ if ( ! $legacy_calculation) {
                     <select name="item_tax_rate_id" class="form-control">
                         <option value="0"><?php _trans('none'); ?></option>
                         <?php foreach ($tax_rates as $tax_rate) { ?>
-                            <option value="<?php echo $tax_rate->tax_rate_id; ?>">
+                            <option value="<?php echo $tax_rate->tax_rate_id; ?>"
+                                <?php check_select(get_setting('default_item_tax_rate'), $tax_rate->tax_rate_id); ?>>
                                 <?php echo format_amount($tax_rate->tax_rate_percent) . '% - ' . htmlsc($tax_rate->tax_rate_name); ?>
                             </option>
                         <?php } ?>

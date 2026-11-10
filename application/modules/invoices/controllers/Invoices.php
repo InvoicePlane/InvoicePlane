@@ -322,7 +322,7 @@ class Invoices extends Admin_Controller
             $generator = (empty($xml_setting['generator']) ? $generator : $xml_setting['generator']); // Optional
         }
 
-        $filename = trans('invoice') . '_' . str_replace(['\\', '/'], '_', $invoice->invoice_number);
+        $filename = trans('invoice') . '_' . sanitize_document_number_for_filename((string) $invoice->invoice_number);
         $path     = generate_xml_invoice_file($invoice, $items, $generator, $filename, $options);
         $this->output->set_content_type('text/xml');
         $this->output->set_output(file_get_contents($path));

@@ -45,6 +45,13 @@ class User_Clients extends Admin_Controller
             redirect('users');
         }
 
+        // Reading another user's client assignments is as sensitive as changing them (CWE-639 / CWE-862).
+        if ( ! $this->mdl_user_clients->can_manage_user_clients($id)) {
+            show_error(trans('access_denied'), 403);
+
+            return;
+        }
+
         $user_clients = $this->mdl_user_clients->assigned_to($id)->get()->result();
 
         $this->layout->set(
@@ -64,6 +71,25 @@ class User_Clients extends Admin_Controller
             redirect('custom_values');
         } elseif ($this->input->post('btn_cancel')) {
             redirect('user_clients/field/' . $user_id);
+        }
+
+        // Object-level authorization: the URL user and the POSTed user (which the model saves) must both
+        // be accounts the acting user may manage.
+        $posted_user_id = $this->input->post('user_id');
+        if ( ! $this->mdl_user_clients->can_manage_user_clients($user_id)
+            || ($posted_user_id !== null && $posted_user_id !== '' && ! $this->mdl_user_clients->can_manage_user_clients($posted_user_id))
+        ) {
+            show_error(trans('access_denied'), 403);
+
+            return;
+        }
+
+        // user_all_clients grants read access to every client in the system, so a peer administrator
+        // must not be able to set it, not even on their own account.
+        if ($this->input->post('user_all_clients') && ! Mdl_Users::is_primary_administrator($this->session->userdata('user_id'))) {
+            show_error(trans('access_denied'), 403);
+
+            return;
         }
 
         if ($this->mdl_user_clients->run_validation()) {
@@ -116,6 +142,12 @@ class User_Clients extends Admin_Controller
 
         if ( ! $ref) {
             show_404();
+        }
+
+        if ( ! $this->mdl_user_clients->can_manage_user_clients($ref->user_id)) {
+            show_error(trans('access_denied'), 403);
+
+            return;
         }
 
         $this->mdl_user_clients->delete($user_client_id);

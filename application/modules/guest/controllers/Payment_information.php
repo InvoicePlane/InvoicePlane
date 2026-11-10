@@ -95,6 +95,15 @@ class Payment_Information extends Base_Controller
         $this->load->view('guest/payment_information', $data);
 
         if ($payment_provider) {
+            // The gateway pages link back with a lower-case name ("paypal"), the drivers are listed in config case ("PayPal").
+            foreach ($available_drivers as $driver) {
+                if (strcasecmp($driver, (string) $payment_provider) === 0) {
+                    $payment_provider = $driver;
+
+                    break;
+                }
+            }
+
             // Only dispatch to drivers that are in the computed allowlist.
             if ( ! in_array($payment_provider, $available_drivers, true)) {
                 show_404();
@@ -109,7 +118,7 @@ class Payment_Information extends Base_Controller
      *
      * @return View the stripe page view
      */
-    public function stripe($invoice_url_key)
+    protected function stripe($invoice_url_key)
     {
         // Get the api key for which the card token must be generated
         $data = [
@@ -127,7 +136,7 @@ class Payment_Information extends Base_Controller
      *
      * @return View the paypal page view
      */
-    public function paypal($invoice_url_key)
+    protected function paypal($invoice_url_key)
     {
         $data = [
             'paypal_client_id'      => get_setting('gateway_paypal_clientId'),

@@ -163,25 +163,33 @@ class Mailer extends Admin_Controller
             return;
         }
 
-        $to   = $this->input->post('to_email', true);
-        $from = $this->input->post('from_email', true);
-
-        $from = [$from, $this->input->post('from_name')];
+        $this->load->model('invoices/mdl_invoices');
+        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+        if (! $invoice) {
+            show_404();
+        }
 
         $pdf_template = $this->input->post('pdf_template', true);
         $subject      = $this->input->post('subject');
         $body         = $this->input->post('body');
 
-        // Load helper for email body processing
+        $to = $invoice->client_email;
+
+        $from_email = get_setting('smtp_mail_from');
+        if (empty($from_email)) {
+            $from_email = $invoice->user_email;
+        }
+        $from_name = get_setting('smtp_mail_from_name');
+        if (empty($from_name)) {
+            $from_name = $invoice->user_name;
+        }
+        $from = [$from_email, $from_name];
+
         $this->load->helper('html_sanitizer');
 
-        // The body is already sanitized by HTML Purifier in filter_input().
-        // We only need to add line breaks if the content is plain text (no HTML tags).
         if (is_plain_text($body)) {
-            // Plain text - convert line breaks to <br> tags
             $body = nl2br($body);
         }
-        // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
 
         $cc  = $this->input->post('cc');
         $bcc = $this->input->post('bcc');
@@ -213,25 +221,33 @@ class Mailer extends Admin_Controller
             return;
         }
 
-        $to   = $this->input->post('to_email');
-        $from = $this->input->post('from_email');
-
-        $from = [$from, $this->input->post('from_name')];
+        $this->load->model('quotes/mdl_quotes');
+        $quote = $this->mdl_quotes->get_by_id($quote_id);
+        if (! $quote) {
+            show_404();
+        }
 
         $pdf_template = $this->input->post('pdf_template');
         $subject      = $this->input->post('subject');
         $body         = $this->input->post('body');
 
-        // Load helper for email body processing
+        $to = $quote->client_email;
+
+        $from_email = get_setting('smtp_mail_from');
+        if (empty($from_email)) {
+            $from_email = $quote->user_email;
+        }
+        $from_name = get_setting('smtp_mail_from_name');
+        if (empty($from_name)) {
+            $from_name = $quote->user_name;
+        }
+        $from = [$from_email, $from_name];
+
         $this->load->helper('html_sanitizer');
 
-        // The body is already sanitized by HTML Purifier in filter_input().
-        // We only need to add line breaks if the content is plain text (no HTML tags).
         if (is_plain_text($body)) {
-            // Plain text - convert line breaks to <br> tags
             $body = nl2br($body);
         }
-        // Note: We removed htmlspecialchars_decode() as it was undoing the XSS protection.
 
         $cc  = $this->input->post('cc');
         $bcc = $this->input->post('bcc');

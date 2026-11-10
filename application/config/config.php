@@ -438,6 +438,10 @@ $config['encryption_key']    = env('ENCRYPTION_KEY');
 $config['sess_driver']             = env('SESS_DRIVER', 'files');
 $config['sess_table_name']         = env('SESS_TABLE_NAME', 'ip_sessions');
 $config['sess_cookie_name']        = env('SESS_COOKIE_NAME', 'ip_session');
+// CI3 already defaults this to 'Lax' when unset (Session.php), but a deployment that sets
+// cookie_samesite explicitly elsewhere, or an older CI3 patch level, should not be able to
+// silently relax it -- pin it instead of relying on the library default.
+$config['sess_samesite']           = 'Lax';
 $config['sess_expiration']         = env('SESS_EXPIRATION', 864000);
 $config['sess_save_path']          = env('SESS_SAVE_PATH', sys_get_temp_dir());
 // env() returns a set-but-empty ipconfig value ('SESS_SAVE_PATH=') as "" instead
@@ -518,7 +522,11 @@ $config['global_xss_filtering'] = false;
 $config['csrf_protection']   = env_bool('CSRF_PROTECTION', 'true');
 $config['csrf_token_name']   = '_ip_csrf';
 $config['csrf_cookie_name']  = 'ip_csrf_cookie';
-$config['csrf_expire']       = env('SESS_EXPIRATION', 3600);
+// CSRF token expiration: 1 hour by default, INDEPENDENT of SESS_EXPIRATION.
+// NEVER source this from SESS_EXPIRATION — that caused a critical bug where
+// SESS_EXPIRATION=0 made the CSRF cookie Max-Age=0, discarding it immediately.
+// Users can override via CSRF_EXPIRE env var if needed.
+$config['csrf_expire']       = env('CSRF_EXPIRE', 3600);
 $config['csrf_regenerate']   = env_bool('CSRF_REGENERATE', 'false');
 $config['csrf_exclude_uris'] = [];
 

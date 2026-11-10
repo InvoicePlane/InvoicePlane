@@ -60,7 +60,27 @@ class Sessions extends Base_Controller
 
     public function logout()
     {
-        $this->session->sess_destroy();
+        // Security (CWE-352): logout is a state change, so it follows the same POST +
+        // CSRF-field pattern as every other state-changing action in this app, rather than
+        // staying a plain GET link. Sessions is a Base_Controller, not an Admin_Controller, so
+        // it cannot call ensure_valid_post_request() -- this mirrors that check inline, the
+        // same way the password-change POST above does.
+        if ($this->input->method() !== 'post') {
+            $this->session->set_flashdata('alert_error', trans('invalid_request'));
+            redirect('sessions/login');
+
+            return;
+        }
+
+        if ( ! function_exists('verify_csrf_token')) {
+            $this->load->helper('security');
+        }
+
+        if (verify_csrf_token()) {
+            $this->session->sess_destroy();
+        } else {
+            $this->session->set_flashdata('alert_error', trans('invalid_request'));
+        }
 
         redirect('sessions/login');
     }
@@ -74,6 +94,8 @@ class Sessions extends Base_Controller
         if ( ! function_exists('get_safe_referer')) {
             $this->load->helper('security');
         }
+        // hash_password_reset_token(): tokens are stored as digests
+        $this->load->helper('ip_security');
 
         // Check if a token was provided
         if ($token) {
@@ -83,15 +105,17 @@ class Sessions extends Base_Controller
             }
 
             //prevent brute force attacks by counting times a token is used
-            $login_log_check = $this->_login_log_check($token);
+            $token_log_key = $this->_password_reset_token_log_key($token);
+            $this->_migrate_legacy_login_log_key($token, $token_log_key);
+            $login_log_check = $this->_login_log_check($token_log_key);
             if ( ! empty($login_log_check) && $login_log_check->log_count > 10) {
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             } else {
                 //the use of a token counts as a failure
-                $this->_login_log_addfailure($token);
+                $this->_login_log_addfailure($token_log_key);
             }
 
-            $this->db->where('user_passwordreset_token', $token);
+            $this->db->where('user_passwordreset_token', hash_password_reset_token($token));
             $user = $this->db->get('ip_users');
             $user = $user->row();
 
@@ -108,7 +132,7 @@ class Sessions extends Base_Controller
 
             //if token is valid, delete the failure attempt from
             //the login_log table
-            $this->_login_log_reset($token);
+            $this->_login_log_reset($token_log_key);
 
             $formdata = [
                 'token'   => $token,
@@ -128,12 +152,18 @@ class Sessions extends Base_Controller
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             }
 
-            $new_password = $this->input->post('new_password', true);
+            $new_password = (string) $this->input->post('new_password');
             $user_id      = $this->input->post('user_id', true);
 
-            if (empty($user_id) || empty($new_password)) {
+            if (empty($user_id) || $new_password === '') {
                 $this->session->set_flashdata('alert_error', trans('loginalert_no_password'));
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
+            }
+
+            // Same minimum as Mdl_users::validation_rules() / validation_rules_change_password()
+            if (mb_strlen($new_password) < 8) {
+                $this->session->set_flashdata('alert_error', strtr(trans('form_validation_min_length'), ['{field}' => trans('password'), '{param}' => 8]));
+                redirect(get_safe_referer('', 'sessions/passwordreset/' . rawurlencode((string) $this->input->post('token'))));
             }
 
             $this->load->model('users/mdl_users');
@@ -149,7 +179,7 @@ class Sessions extends Base_Controller
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             }
 
-            if (empty($user->user_passwordreset_token) || ! hash_equals((string) $user->user_passwordreset_token, (string) $this->input->post('token'))) {
+            if (empty($user->user_passwordreset_token) || ! hash_equals((string) $user->user_passwordreset_token, hash_password_reset_token((string) $this->input->post('token')))) {
                 $this->session->set_flashdata('alert_error', trans('password_reset_token_expired'));
                 redirect(get_safe_referer('', 'sessions/passwordreset'));
             }
@@ -168,8 +198,11 @@ class Sessions extends Base_Controller
             $this->_clear_password_reset_token($user_id);
 
             // Delete failed login attempts from login_log table
-            $user = $this->db->where('user_id', $user_id)->get('ip_users')->row();
-            $this->_login_log_reset($user->user_email);
+            // Reuse the user row fetched above (it still has the email), and migrate a pre-namespacing
+            // row first so the reset clears it too instead of leaving the account locked.
+            $login_log_key = $this->_login_account_log_key((string) $user->user_email);
+            $this->_migrate_legacy_login_log_key((string) $user->user_email, $login_log_key);
+            $this->_login_log_reset($login_log_key);
 
             // Redirect back to the login form
             redirect('sessions/login');
@@ -255,7 +288,7 @@ class Sessions extends Base_Controller
 
                 // Save the token and expiry to the database
                 $db_array = [
-                    'user_passwordreset_token'        => $token,
+                    'user_passwordreset_token'        => hash_password_reset_token($token),
                     'user_passwordreset_token_expiry' => $expiry_timestamp,
                 ];
 
@@ -341,7 +374,17 @@ class Sessions extends Base_Controller
             return false;
         }
 
+        // An empty or non-string identity has no account to lock out and nothing to
+        // authenticate; counting it would key a real, namespaced lockout row on hash('') or
+        // crash _login_account_log_key()'s string type hint with a TypeError (e.g. an
+        // array-valued email[] POST field). Reject before any counter is touched.
+        if ( ! is_string($email_address) || $email_address === '') {
+            return false;
+        }
+
         $this->load->model('mdl_sessions');
+
+        $email_address = $this->_canonical_login_email($email_address);
 
         // IP-based rate limiting mirrors the password-reset throttle.
         if ($this->_is_ip_rate_limited_login()) {
@@ -351,17 +394,20 @@ class Sessions extends Base_Controller
             return false;
         }
 
-        // Per-account lockout (email-keyed).
-        $login_log = $this->_login_log_check($email_address);
+        // Per-account lockout (email-keyed, namespaced so a submitted email cannot collide with
+        // another counter's key in ip_login_log).
+        $login_log_key = $this->_login_account_log_key($email_address);
+        $this->_migrate_legacy_login_log_key($email_address, $login_log_key);
+        $login_log = $this->_login_log_check($login_log_key);
         if (empty($login_log) || $login_log->log_count < 10) {
             if ($this->mdl_sessions->auth($email_address, $password)) {
-                $this->_login_log_reset($email_address);
+                $this->_login_log_reset($login_log_key);
                 $this->_reset_ip_login_attempts();
 
                 return true;
             }
 
-            $this->_login_log_addfailure($email_address);
+            $this->_login_log_addfailure($login_log_key);
             $this->_record_ip_login_attempt();
         }
 
@@ -525,6 +571,92 @@ class Sessions extends Base_Controller
         );
     }
 
+    /**
+     * The email as stored for the account it identifies, or the submitted value when no account matches.
+     *
+     * The users table compares emails with a case-insensitive, trailing-space-insensitive collation, so
+     * "a@x.com", "A@X.com" and "a@x.com " all reach the same account. The failed-login counter is keyed on
+     * the submitted text, so each spelling would get a fresh counter and the lockout could be walked around.
+     * Resolving to the stored spelling makes every spelling share one counter.
+     */
+    private function _canonical_login_email(string $email_address): string
+    {
+        $row = $this->db->select('user_email')->where('user_email', $email_address)->limit(1)->get('ip_users')->row();
+
+        return $row !== null ? (string) $row->user_email : $email_address;
+    }
+
+    private function _login_account_log_key(string $email): string
+    {
+        return 'login_account:' . hash('sha256', mb_strtolower($email));
+    }
+
+    /**
+     * One-time migration for an ip_login_log row still sitting under a pre-namespacing
+     * key: the per-account lockout used to be keyed by the raw, unhashed email address,
+     * and the password-reset token counter by the raw token. Renaming the row in place
+     * preserves log_count and log_create_timestamp, so an account or token that was
+     * actively locked out keeps its remaining lockout time instead of silently resetting
+     * the moment this fix deploys. A legacy row is only ever renamed once; if a namespaced
+     * row already exists too, the legacy row is dropped instead of overwriting real data.
+     */
+    private function _migrate_legacy_login_log_key(string $legacy_key, string $new_key): void
+    {
+        if ($legacy_key === $new_key) {
+            return;
+        }
+
+        // A value shaped like one of the six namespaced keys can never be a genuine pre-fix
+        // legacy row — it's either a real row belonging to a different counter, or a forged
+        // email/token crafted to equal one. Treating it as "this account's legacy row" would
+        // let an attacker steal or clobber another counter's row through the migration path
+        // itself, reopening the exact forgery this fix closes. Refuse to touch it. This
+        // includes cron_key: (Cron::recur()'s per-IP throttle), which is not itself part of
+        // this fix but shares the same ip_login_log.login_name column.
+        if (preg_match('/^(?:login_account|login_ip|cron_key|password_reset_ip|password_reset_email|password_reset_token):[0-9a-f]{64}$/', $legacy_key)) {
+            return;
+        }
+
+        $legacy_row = $this->db->where('login_name', $legacy_key)->get('ip_login_log')->row();
+
+        if (empty($legacy_row)) {
+            return;
+        }
+
+        $existing_new_row = $this->db->where('login_name', $new_key)->get('ip_login_log')->row();
+
+        if (empty($existing_new_row)) {
+            $this->db->where('login_name', $legacy_key)->update('ip_login_log', ['login_name' => $new_key]);
+
+            return;
+        }
+
+        // Both rows can coexist (e.g. a case-variant email: the namespaced key is
+        // case-insensitive, but this exact-case legacy lookup only matches if an earlier
+        // request happened to use this exact casing). Keep whichever row's count is
+        // higher — the stronger lockout — instead of always discarding the legacy row's
+        // count, or an attacker could reset their own active lockout just by varying the
+        // email's case on a later attempt. Whether the surviving count is still within the
+        // 12-hour window is left to _login_log_check()'s own existing staleness check.
+        if ((int) $legacy_row->log_count > (int) $existing_new_row->log_count) {
+            // The count condition makes the write atomic: a request that raised the namespaced
+            // row between the two reads above is not overwritten with the staler legacy count.
+            $this->db->where('login_name', $new_key)
+                ->where('log_count <', (int) $legacy_row->log_count)
+                ->update('ip_login_log', [
+                    'log_count'            => $legacy_row->log_count,
+                    'log_create_timestamp' => $legacy_row->log_create_timestamp,
+                ]);
+        }
+
+        $this->db->where('login_name', $legacy_key)->delete('ip_login_log');
+    }
+
+    private function _password_reset_token_log_key(string $token): string
+    {
+        return 'password_reset_token:' . hash('sha256', $token);
+    }
+
     private function _password_reset_ip_log_key(string $ip_address): string
     {
         return 'password_reset_ip:' . hash('sha256', $ip_address);
@@ -648,10 +780,8 @@ class Sessions extends Base_Controller
      */
     private function _reject_expired_password_reset_token($user): void
     {
-        if (empty($user->user_passwordreset_token_expiry)) {
-            return;
-        }
-
+        // A token without a stored expiry is rejected like a malformed one: tokens are always written
+        // together with their expiry, so a row without one must not stay valid forever.
         try {
             // Initialize UTC timezone if not already done
             if ( ! isset(self::$utc_timezone)) {

@@ -225,6 +225,22 @@ class Users extends Admin_Controller
 
         if ($this->mdl_users->run_validation('validation_rules_change_password')) {
             $this->mdl_users->save_change_password($user_id, $this->input->post('user_password'));
+
+            // Every other session of this user ends on its next request (User_Controller); keep
+            // the acting user's own session when they changed their own password.
+            if ((string) $user_id === $acting_user_id) {
+                $this->load->helper('ip_security');
+                $updated_user = $this->mdl_users->get_by_id($user_id);
+                $this->session->set_userdata([
+                    'user_credential' => session_credential_fingerprint((string) $updated_user->user_password),
+                ]);
+
+                // A copy of this very session (a stolen cookie) shares its id with the session that
+                // just changed the password and would pass the refreshed check above. A new id, with
+                // the old session destroyed, ends it.
+                $this->session->sess_regenerate(true);
+            }
+
             redirect('users/form/' . $user_id);
         }
 
@@ -282,7 +298,7 @@ class Users extends Admin_Controller
             return;
         }
 
-        $this->load->model('mdl_user_clients');
+        $this->load->model('user_clients/mdl_user_clients');
 
         if ( ! $this->mdl_user_clients->can_user_manage($user_client_id)) {
             show_error(trans('access_denied'), 403);
@@ -291,6 +307,16 @@ class Users extends Admin_Controller
         $user_client = $this->mdl_user_clients->get_by_id($user_client_id);
         if ( ! $user_client) {
             show_404();
+        }
+
+        // The assignment must belong to the user in the URL, and the acting user must be
+        // allowed to manage that account.
+        if ((string) $user_client->user_id !== (string) $user_id
+            || ! $this->mdl_user_clients->can_manage_user_clients($user_client->user_id)
+        ) {
+            show_error(trans('access_denied'), 403);
+
+            return;
         }
 
         $this->mdl_user_clients->delete($user_client_id);

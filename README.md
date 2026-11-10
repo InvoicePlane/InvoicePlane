@@ -6,7 +6,7 @@ _A libre self-hosted web application designed to help you manage invoices, clien
 
 [![Current version](https://img.shields.io/badge/dynamic/json.svg?label=Current%20Version&url=https%3A%2F%2Fapi.github.com%2Frepos%2FInvoicePlane%2FInvoicePlane%2Freleases%2Flatest&query=%24.name&colorB=%23429ae1)](https://www.invoiceplane.com/)
 [![Downloads](https://img.shields.io/github/downloads/invoiceplane/invoiceplane/total?colorB=%23429ae1)](https://www.invoiceplane.com/)
-[![Translation](https://img.shields.io/badge/Translations-%40%20Crowdin-429ae1)](https://translations.invoiceplane.com/project/fusioninvoice)
+[![Translation](https://img.shields.io/badge/Translations-%40%20Crowdin-429ae1)](https://crowdin.com/project/fusioninvoice)
 
 
 [![Discord](https://img.shields.io/badge/Chat%3A-Discord-5865F2.svg?logo=discord&logoColor=white)](https://discord.gg/PPzD2hTrXt)

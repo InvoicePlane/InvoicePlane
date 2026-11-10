@@ -172,12 +172,15 @@
                     </a>
                 </li>
                 <li>
-                    <a href="<?php echo site_url('sessions/logout'); ?>"
-                       class="tip icon logout" data-placement="bottom"
-                       title="<?php _trans('logout'); ?>">
-                        <i class="fa fa-power-off"></i>
-                        <span class="visible-xs">&nbsp;<?php _trans('logout'); ?></span>
-                    </a>
+                    <form method="post" action="<?php echo site_url('sessions/logout'); ?>" style="display: inline;">
+                        <?php _csrf_field(); ?>
+                        <button type="submit" class="tip icon logout" data-placement="bottom"
+                                title="<?php _trans('logout'); ?>"
+                                style="background: none; border: none; padding: 15px; margin: 0; font: inherit; color: inherit; cursor: pointer;">
+                            <i class="fa fa-power-off"></i>
+                            <span class="visible-xs">&nbsp;<?php _trans('logout'); ?></span>
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>

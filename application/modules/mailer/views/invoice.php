@@ -1,6 +1,6 @@
 <script>
     $(function () {
-        var template_fields = ["body", "subject", "from_name", "from_email", "cc", "bcc", "pdf_template"];
+        var template_fields = ["body", "subject", "cc", "bcc", "pdf_template"];
 
         $('#email_template').change(function () {
             var email_template_id = $(this).val();
@@ -19,11 +19,8 @@
     });
 
     $(document).ready(function() {
-        // this is the email invoice window, disable the quote select
         $('#tags_invoice').prop('disabled', false);
         $('#tags_quote').prop('disabled', 'disabled');
-        // Fix blocked by browser if to_email field is empty
-        $('#btn_cancel').on('click', function(){$('#to_email').prop('required', false);});
     });
 
 </script>
@@ -74,9 +71,13 @@ if (($invoice->client_einvoicing_version ?? '') != '' && ($invoice->client_einvo
             ?>
 
                 <div class="form-group">
-                    <label for="to_email"><?php _trans('to_email'); ?></label>
-                    <input type="email" multiple name="to_email" id="to_email" class="form-control" required
-                           value="<?php echo htmlsc($invoice->client_email); ?>">
+                    <label><?php _trans('to_email'); ?></label>
+                    <p class="form-control-static"><?php echo htmlsc($invoice->client_email); ?></p>
+                </div>
+
+                <div class="form-group">
+                    <label><?php _trans('from_email'); ?></label>
+                    <p class="form-control-static"><?php echo htmlsc($default_from_email ?? $invoice->user_email); ?></p>
                 </div>
 
                 <hr>
@@ -96,18 +97,6 @@ foreach ($email_templates as $email_template) {
 }
             ?>
                     </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="from_name"><?php _trans('from_name'); ?></label>
-                    <input type="text" name="from_name" id="from_name" class="form-control"
-                           value="<?php _htmlsc($invoice->user_name); ?>">
-                </div>
-
-                <div class="form-group">
-                    <label for="from_email"><?php _trans('from_email'); ?></label>
-                    <input type="text" name="from_email" id="from_email" class="form-control" required
-                           value="<?php echo html_escape($default_from_email ?? $invoice->user_email); ?>">
                 </div>
 
                 <div class="form-group">

@@ -556,7 +556,8 @@ class Mdl_Invoices extends Response_Model
                 $invoice_array[] = $file;
             }
 
-            rsort($invoice_array);
+            // Names start with a random token, so newest-first has to come from the modification time.
+            usort($invoice_array, static fn (string $a, string $b): int => filemtime($b) <=> filemtime($a));
         }
 
         return $invoice_array;

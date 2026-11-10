@@ -33,6 +33,23 @@ class Ajax extends Admin_Controller
         if ($this->mdl_quotes->run_validation('validation_rules_save_quote')) {
             $items = json_decode($this->input->post('items'));
 
+            // Reject negative quantities, prices and discounts (and items that belong to another
+            // quote) before anything is written: items are saved one by one below.
+            $this->load->helper('item_amount');
+            $errors = amount_sign_errors(
+                $items,
+                $this->input->post('quote_discount_amount'),
+                $this->input->post('quote_discount_percent'),
+                false,
+                'quote'
+            ) + $this->foreign_item_errors($items, $quote_id);
+
+            if ($errors !== []) {
+                $this->json_encode_ajax(['success' => 0, 'validation_errors' => $errors]);
+
+                return;
+            }
+
             $quote_discount_percent = (float) $this->input->post('quote_discount_percent');
             $quote_discount_amount  = (float) $this->input->post('quote_discount_amount');
 
@@ -79,6 +96,9 @@ class Ajax extends Admin_Controller
                     $item_id = ($item->item_id) ?: null;
                     unset($item->item_id);
 
+                    // The posted quote is the only one an item may be saved to.
+                    $item->quote_id = (int) $quote_id;
+
                     $this->mdl_quote_items->save($item_id, $item, $global_discount);
                 } elseif (empty($item->item_name) && ( ! empty($item->item_quantity) || ! empty($item->item_price))) {
                     // Throw an error message and use the form validation for that (todo: where the translations of: The .* field is required.)
@@ -94,6 +114,8 @@ class Ajax extends Admin_Controller
                     ];
 
                     $this->json_encode_ajax($response);
+
+                    return;
                 }
             }
 
@@ -174,6 +196,8 @@ class Ajax extends Admin_Controller
                 ];
 
                 $this->json_encode_ajax($response);
+
+                return;
             }
         }
 
@@ -210,8 +234,12 @@ class Ajax extends Admin_Controller
         $item_id = $this->input->post('item_id');
         $this->load->model('mdl_quotes');
 
-        // Only continue if the quote exists or no item id was provided
-        if ($this->mdl_quotes->get_by_id($quote_id) || empty($item_id)) {
+        // Only continue if the quote exists and the item really belongs to it; deleting by bare
+        // item id would let one quote's URL remove (and recalculate) another quote's line.
+        $item_belongs_to_quote = ! empty($item_id)
+            && $this->db->where(['item_id' => $item_id, 'quote_id' => $quote_id])->count_all_results('ip_quote_items') > 0;
+
+        if ($item_belongs_to_quote && $this->mdl_quotes->get_by_id($quote_id)) {
             // Delete quote item
             $this->load->model('mdl_quote_items');
             $item = $this->mdl_quote_items->delete($item_id);
@@ -537,5 +565,35 @@ class Ajax extends Admin_Controller
         }
 
         $this->json_encode_ajax($response);
+    }
+
+    /**
+     * An item id that does not exist, or belongs to another quote, must not be updated through
+     * this quote: the update would silently do nothing, or move another quote's item here.
+     *
+     * @return array<string, string>
+     */
+    private function foreign_item_errors($items, $quote_id): array
+    {
+        if ( ! is_iterable($items)) {
+            return [];
+        }
+
+        foreach ($items as $item) {
+            if (empty($item->item_id)) {
+                continue;
+            }
+
+            $owned = $this->db
+                ->where('item_id', (int) $item->item_id)
+                ->where('quote_id', (int) $quote_id)
+                ->count_all_results('ip_quote_items');
+
+            if ($owned < 1) {
+                return ['item_id' => trans('item_not_on_document')];
+            }
+        }
+
+        return [];
     }
 }

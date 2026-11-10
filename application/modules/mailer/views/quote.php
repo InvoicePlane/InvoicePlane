@@ -1,6 +1,6 @@
 <script>
     $(function () {
-        var template_fields = ["body", "subject", "from_name", "from_email", "cc", "bcc", "pdf_template"];
+        var template_fields = ["body", "subject", "cc", "bcc", "pdf_template"];
 
         $('#email_template').change(function () {
             var email_template_id = $(this).val();
@@ -19,11 +19,8 @@
     });
 
     $(document).ready(function() {
-        // this is the email quote window, disable the invoice select
         $('#tags_invoice').prop('disabled', 'disabled');
         $('#tags_quote').prop('disabled', false);
-        // Fix blocked by browser if to_email field is empty
-        $('#btn_cancel').on('click', function(){$('#to_email').prop('required', false);});
     });
 
 </script>
@@ -57,9 +54,13 @@
                 <?php $this->layout->load_view('layout/alerts'); ?>
 
                 <div class="form-group">
-                    <label for="to_email"><?php _trans('to_email'); ?></label>
-                    <input type="email" multiple name="to_email" id="to_email" class="form-control" required
-                           value="<?php echo htmlsc($quote->client_email); ?>">
+                    <label><?php _trans('to_email'); ?></label>
+                    <p class="form-control-static"><?php echo htmlsc($quote->client_email); ?></p>
+                </div>
+
+                <div class="form-group">
+                    <label><?php _trans('from_email'); ?></label>
+                    <p class="form-control-static"><?php echo isset($default_from_email) ? htmlsc($default_from_email) : htmlsc($quote->user_email); ?></p>
                 </div>
 
                 <hr>
@@ -79,18 +80,6 @@ foreach ($email_templates as $email_template) {
 }
             ?>
                     </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="from_name"><?php _trans('from_name'); ?></label>
-                    <input type="text" name="from_name" id="from_name" class="form-control"
-                           value="<?php _htmlsc($quote->user_name); ?>">
-                </div>
-
-                <div class="form-group">
-                    <label for="from_email"><?php _trans('from_email'); ?></label>
-                    <input type="text" name="from_email" id="from_email" class="form-control" required
-                           value="<?php echo isset($default_from_email) ? htmlsc($default_from_email) : htmlsc($quote->user_email); ?>">
                 </div>
 
                 <div class="form-group">

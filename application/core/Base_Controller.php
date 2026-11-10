@@ -52,7 +52,7 @@ class Base_Controller extends MX_Controller
             $this->load->library(['encryption', 'form_validation', 'session', 'ClientTitleEnum']);
             $this->load->database();
 
-            $this->load->helper(['trans', 'number', 'pager', 'invoice', 'date', 'form', 'echo', 'user', 'client', 'country']);
+            $this->load->helper(['trans', 'number', 'pager', 'invoice', 'date', 'form', 'echo', 'user', 'client', 'country', 'security']);
 
             // Load setting model and load settings
             $this->load->model('settings/mdl_settings');
@@ -79,10 +79,13 @@ class Base_Controller extends MX_Controller
 
     protected function setSecurityHeaders(): void
     {
-        $this->output
-            ->set_header('X-Frame-Options: ' . env('X_FRAME_OPTIONS', 'SAMEORIGIN'))
-            ->set_header("Content-Security-Policy: frame-ancestors 'self'; object-src 'none'; base-uri 'self'")
-            ->set_header('Referrer-Policy: strict-origin-when-cross-origin');
+        $this->load->helper('ip_security');
+
+        foreach (security_frame_headers() as $header) {
+            $this->output->set_header($header);
+        }
+
+        $this->output->set_header('Referrer-Policy: strict-origin-when-cross-origin');
 
         if (env_bool('ENABLE_X_CONTENT_TYPE_OPTIONS', 'true')) {
             $this->output->set_header('X-Content-Type-Options: nosniff');

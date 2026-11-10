@@ -1,6 +1,7 @@
 <?php
 
 $lang = [
+    'access_denied'                                 => 'Access denied',
     'account_information'                           => 'Account Information',
     'active'                                        => 'Active',
     'active_client'                                 => 'Active',
@@ -289,12 +290,14 @@ $lang = [
     'interface'                                     => 'Interface',
     'invalid_date'                                  => 'Invalid date',
     'invalid_file_path'                             => 'Invalid file path. Operation not permitted.',
+    'invalid_request'                               => 'Invalid request. Please try again.',
     'invalid_tax_rate_decimal_places'               => 'Invalid tax rate decimal places. Must be 2 or 3.',
     'contains_invalid_characters'                   => 'contains invalid characters',
     'invalid_filename'                              => 'Invalid filename. Path traversal characters are not allowed.',
     'invalid_file_path_outside_allowed_directory'   => 'Invalid file path. File is outside the allowed directory.',
     'no_logo_to_remove'                             => 'No logo configured to remove.',
     'failed_to_delete_logo'                         => 'Failed to delete logo file. Please check file permissions.',
+    'invalid_value_for_field'                       => 'The submitted value is not valid.',
     'invoice'                                       => 'Invoice',
     'invoice_aging'                                 => 'Invoice Aging',
     'invoice_aging_16_30'                           => '16 - 30 Days',
@@ -443,6 +446,7 @@ $lang = [
     'pay_now'                                       => 'Pay Now',
     'payment'                                       => 'Payment',
     'payment_cannot_exceed_balance'                 => 'Payment amount cannot exceed invoice balance.',
+    'payment_in_progress_try_again'                 => 'Another payment for this invoice is being processed. Please try again in a moment.',
     'payment_date'                                  => 'Payment Date',
     'payment_form'                                  => 'Payment Form',
     'payment_history'                               => 'Payment History',
@@ -510,6 +514,15 @@ $lang = [
     'qr_code_settings_remittance_text_tags'         => 'Remittance Text Tags',
     'qty'                                           => 'Qty',
     'quantity'                                      => 'Quantity',
+    'item_quantity_must_not_be_negative'            => 'The item quantity cannot be negative.',
+    'item_quantity_must_not_be_positive_on_credit'  => 'Quantities on a credit invoice must be zero or negative.',
+    'item_price_must_not_be_negative'               => 'The item price cannot be negative.',
+    'item_discount_must_not_be_negative'            => 'The item discount cannot be negative.',
+    'discount_must_not_be_negative'                 => 'The discount cannot be negative.',
+    'discount_percent_must_not_exceed_100'          => 'The discount percentage cannot exceed 100.',
+    'invoice_could_not_be_saved'                    => 'The invoice could not be saved. Nothing was changed.',
+    'invoice_total_must_not_be_negative'            => 'The discounts exceed the invoice total, so the total would be negative.',
+    'item_not_on_document'                          => 'One of the submitted items does not belong to this document.',
     'quarter'                                       => 'Quarter',
     'quick_actions'                                 => 'Quick Actions',
     'quote'                                         => 'Quote',
@@ -557,6 +570,7 @@ $lang = [
     'run_report'                                    => 'Run Report',
     'svg_logo_blocked_security'                     => 'SVG logo files are blocked for security reasons. Please remove this logo and upload a PNG, JPG, or GIF file instead.',
     'svg_upload_blocked_security'                   => 'SVG file upload blocked for security reasons. Please upload a PNG, JPG, or GIF file instead.',
+    'cc_bcc_own_domain_only'                        => 'CC and BCC addresses must belong to your own domain.',
     'security_warning'                              => 'Security Warning',
     'setup_completed_flag_false'                    => 'SETUP_COMPLETED is set to false',
     'disable_setup_flag_false'                      => 'DISABLE_SETUP is set to false',
@@ -848,7 +862,7 @@ $lang = [
     'user_iban'                                => 'IBAN',
     'user_subscriber_number'                   => 'Subscriber Number',
 
-    // Clients/Enums/ClientTitleEnum
+    // libraries/ClientTitleEnum
     'mr'        => 'mr',
     'mrs'       => 'mrs',
     'doctor'    => 'doctor',

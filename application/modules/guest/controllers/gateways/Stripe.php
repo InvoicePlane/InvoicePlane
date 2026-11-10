@@ -18,7 +18,7 @@ use Stripe\StripeClient;
 #[AllowDynamicProperties]
 class Stripe extends Base_Controller
 {
-    protected StripeClient $stripe;
+    protected ?StripeClient $stripe = null;
 
     protected $Mdl_settings;
 
@@ -29,8 +29,6 @@ class Stripe extends Base_Controller
         $this->load->model('invoices/mdl_invoices');
         $this->load->helper('file_security');
         $this->load->helper(['currency', 'stripe']);
-
-        $this->stripe = new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
     }
 
     /**
@@ -41,10 +39,10 @@ class Stripe extends Base_Controller
      *
      * @return json the client secret in a json format
      */
-    public function create_checkout_session($invoice_url_key)
+    public function create_checkout_session($invoice_url_key = null)
     {
         // Require POST request to prevent CSRF attacks
-        if ($this->input->method() !== 'post') {
+        if ($this->input->method() !== 'post' || $invoice_url_key === null) {
             show_404();
         }
 
@@ -52,7 +50,7 @@ class Stripe extends Base_Controller
 
         // Security: Verify the invoice exists and is guest-visible
         if ( ! $invoice) {
-            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted checkout session creation for non-public or non-existent invoice with key: ' . sanitize_for_logging($invoice_url_key));
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Attempted checkout session creation for non-public or non-existent invoice with key: ' . sanitize_for_logging((string) $invoice_url_key));
             show_404();
         }
 
@@ -63,7 +61,7 @@ class Stripe extends Base_Controller
             redirect(site_url('guest/view/invoice/' . $invoice->invoice_url_key));
         }
 
-        $checkout_session = $this->stripe->checkout->sessions->create([
+        $checkout_session = $this->stripeClient()->checkout->sessions->create([
             'mode'                => 'payment',
             'ui_mode'             => 'embedded',
             'return_url'          => site_url('guest/gateways/stripe/callback/{CHECKOUT_SESSION_ID}'),
@@ -93,11 +91,30 @@ class Stripe extends Base_Controller
      *
      * @return void
      */
-    public function callback(string $checkout_session_id)
+    public function callback(?string $checkout_session_id = null)
     {
+        if ($checkout_session_id === null) {
+            show_404();
+        }
+
+        // A Checkout Session id is "cs_" + alphanumerics. Reject anything else before it costs a Stripe API call.
+        if ( ! preg_match('/^cs_[A-Za-z0-9_]{8,250}$/', $checkout_session_id)) {
+            log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected malformed checkout session id: ' . sanitize_for_logging($checkout_session_id));
+            $this->session->set_flashdata('alert_error', trans('online_payment_error'));
+
+            redirect('guest/view/invoices');
+        }
+
+        // Initialised up front: the finally block runs even when retrieve() throws.
+        $session  = null;
+        $invoice  = null;
+        $response = '';
+        $user_msg = '';
+        $paid     = 'error';
+
         try {
             // Retrieve the Checkout Session from Stripe
-            $session = $this->stripe->checkout->sessions->retrieve($checkout_session_id);
+            $session = $this->stripeClient()->checkout->sessions->retrieve($checkout_session_id);
 
             // Debug logging
             log_message('debug', __CLASS__ . '::' . __FUNCTION__ . ' reached, status: ' . $session->status . ' payment_status: ' . $session->payment_status . ', checkout_session_id: ' . sanitize_for_logging($checkout_session_id));
@@ -189,9 +206,14 @@ class Stripe extends Base_Controller
                                 . ', fee: ' . amount_from_minor_units($session->application_fee_amount, stripe_minor_unit_multiplier($session->currency))       // 0 in test. Set in live mode?
                                 . ', session ID: ' . $session->id                                   // Unique identifier for the object.
                                 : ($session->cancel ? $session->cancellation_reason : $session->last_payment_error); // Cancelled
-            // User (& error) message
-            $user_msg = $paid ? sprintf(trans('online_payment_successful'), '#' . htmlsc($invoice->invoice_number))
-                              : trans('online_payment_failed') . '<br>' . sprintf(trans('online_payment_incomplete'), __CLASS__, $session->payment_status);
+            // User (& error) message. Keep the status-specific message already set
+            // above (already processed, duplicate, invoice already paid,
+            // currency/amount mismatch) — only fill in a generic one here.
+            if ($paid) {
+                $user_msg = sprintf(trans('online_payment_successful'), '#' . htmlsc($invoice->invoice_number));
+            } elseif ($user_msg === '') {
+                $user_msg = trans('online_payment_failed') . '<br>' . sprintf(trans('online_payment_incomplete'), __CLASS__, $session->payment_status);
+            }
         } catch (Error|Exception|ErrorException $e) {
             $user_msg = trans('online_payment_error') . (empty($user_msg) ? '' : '<br>' . $user_msg);
             $paid     = 'error'; // tweak to reuse
@@ -201,21 +223,33 @@ class Stripe extends Base_Controller
         } finally {
             $paid = is_bool($paid) ? ($paid ? 'success' : 'info') : $paid; // Tweak to reuse (flashdata alert_*)
             // Check stripe server ok
-            $ok = $session->status !== null; // Stripe is accessible?
-            // Record a succeeded/canceled and other merchant response (This helps you keep track of incomplete attempts)
-            $this->db->insert('ip_merchant_responses', [
-                'invoice_id'                   => $invoice->invoice_id,
-                'merchant_response_successful' => (int) $ok, // response server API (no)ok
-                'merchant_response_date'       => date('Y-m-d'),
-                'merchant_response_driver'     => __CLASS__,
-                'merchant_response'            => ($ok ? $session->mode . ': ' . $session->payment_status . ', ' : '') . $response,
-                'merchant_response_reference'  => $ok ? 'intent_id: ' . $session->payment_intent : 'none',
-            ]);
+            $ok = $session !== null && $session->status !== null; // Stripe is accessible?
+            // Record a succeeded/canceled and other merchant response (This helps you keep track of incomplete attempts).
+            // Without a resolved invoice there is nothing to attach it to (ip_merchant_responses.invoice_id is NOT NULL).
+            if ($invoice !== null) {
+                $this->db->insert('ip_merchant_responses', [
+                    'invoice_id'                   => $invoice->invoice_id,
+                    'merchant_response_successful' => (int) $ok, // response server API (no)ok
+                    'merchant_response_date'       => date('Y-m-d'),
+                    'merchant_response_driver'     => __CLASS__,
+                    'merchant_response'            => ($ok ? $session->mode . ': ' . $session->payment_status . ', ' : '') . $response,
+                    'merchant_response_reference'  => $ok ? 'intent_id: ' . $session->payment_intent : 'none',
+                ]);
+            }
 
             // Notify user
             $this->session->set_flashdata('alert_' . $paid, $user_msg);
             // Attempt to redirect them to the invoice. invoice_url_key? No, return to invoices view
-            redirect('guest/view/invoice' . (empty($invoice->invoice_url_key) ? 's' : '/' . $invoice->invoice_url_key));
+            redirect('guest/view/invoice' . (empty($invoice->invoice_url_key ?? null) ? 's' : '/' . $invoice->invoice_url_key));
         }
+    }
+
+    /**
+     * The Stripe SDK client, built on first use: constructing it throws when no API key is configured, which
+     * must not turn a request that is rejected before any Stripe call into a 500.
+     */
+    protected function stripeClient(): StripeClient
+    {
+        return $this->stripe ??= new StripeClient($this->crypt->decode(get_setting('gateway_stripe_apiKey')));
     }
 }

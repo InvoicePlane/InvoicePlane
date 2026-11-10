@@ -96,6 +96,15 @@ function generate_password_reset_token(): string
 }
 
 /**
+ * Store only a digest of a password reset token: the emailed link carries the token itself, so
+ * reading the users table (backup, SQL injection elsewhere) does not yield a usable reset link.
+ */
+function hash_password_reset_token(string $token): string
+{
+    return hash('sha256', $token);
+}
+
+/**
  * Generate a cryptographically secure salt for password hashing.
  *
  * Creates a 22-character base64-encoded salt suitable for bcrypt password hashing.
@@ -121,5 +130,45 @@ function generate_secure_salt(): string
         $safeMessage = sanitize_exception_for_logging($e->getMessage());
         log_message('error', 'Failed to generate secure salt: ' . $safeMessage);
         throw new RuntimeException('Unable to generate secure salt');
+    }
+}
+
+/**
+ * Fingerprint of the password an authenticated session was created with.
+ *
+ * Stored in the session at login and compared on every request (User_Controller), so changing or
+ * resetting a password ends every other session of that user on its next request, whatever the
+ * session driver. HMAC with the encryption key so the session never carries anything derived from
+ * the bare password hash.
+ */
+function session_credential_fingerprint(string $password_hash): string
+{
+    return hash_hmac('sha256', $password_hash, (string) config_item('encryption_key'));
+}
+
+if ( ! function_exists('security_frame_headers')) {
+    /**
+     * The clickjacking headers, derived from X_FRAME_OPTIONS.
+     *
+     * Only SAMEORIGIN and DENY are valid values; anything else (ALLOWALL, ALLOW-FROM ..., a typo)
+     * falls back to SAMEORIGIN so a bad setting can never produce an invalid X-Frame-Options that
+     * browsers ignore. The CSP frame-ancestors follows the same choice, so DENY blocks framing in
+     * browsers that read the CSP instead of X-Frame-Options.
+     *
+     * @return string[] complete header lines
+     */
+    function security_frame_headers(): array
+    {
+        $ancestors = ['SAMEORIGIN' => "'self'", 'DENY' => "'none'"];
+        $option    = mb_strtoupper(trim((string) env('X_FRAME_OPTIONS', 'SAMEORIGIN')));
+
+        if ( ! isset($ancestors[$option])) {
+            $option = 'SAMEORIGIN';
+        }
+
+        return [
+            'X-Frame-Options: ' . $option,
+            "Content-Security-Policy: frame-ancestors {$ancestors[$option]}; object-src 'none'; base-uri 'self'",
+        ];
     }
 }

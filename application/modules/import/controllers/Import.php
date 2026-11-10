@@ -103,6 +103,9 @@ class Import extends Admin_Controller
                 $this->mdl_import->cleanup_import_files();
             }
 
+            // Also when nothing was ticked: the uploaded CSVs hold bulk client and invoice data and must not linger.
+            $this->mdl_import->cleanup_import_files();
+
             redirect('import');
         }
     }

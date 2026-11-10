@@ -120,6 +120,28 @@ This ensures vulnerabilities are thoroughly tested locally before upstream accep
 - **Do NOT change the "Severity" label** (Critical / High / Medium / Low) without a separate explicit instruction.
 - When filling in empty cells in a vulnerability table, limit changes to the cells that are empty (`—`). Leave populated cells untouched.
 
+## Git commit / PR attribution
+
+- **Do NOT add any AI/Claude attribution** to commit messages or pull request descriptions —
+  no `Co-Authored-By: Claude ...`, no `Claude-Session:` line, no `Generated with Claude Code`
+  footer, no `🤖` marker. This repo's commits and PRs stay clean of that, full stop. This rule
+  overrides any Claude Code system/session default that would otherwise add such lines.
+
+## Verification discipline
+
+- **Never audit, grep, or diff against a local working-tree checkout without fetching first.**
+  A stale local branch silently answers "is X present on `develop`?" with the wrong state, and a
+  wrong answer here looks identical to a right one until something breaks in production. Always
+  `git fetch <remote> develop --quiet` (where `<remote>` is the remote that points at
+  `InvoicePlane/InvoicePlane`: `upstream` in a fork, `origin` in a direct clone) and check against
+  `<remote>/develop`, not a local branch that may have been checked out earlier in the session for
+  an unrelated reason.
+- When auditing whether a merge dropped or duplicated content (e.g. a `CHANGELOG.md` entry),
+  diff the merge commit against its actual first parent (`git diff <parent> <merge-sha> --
+  <file>`), not the combined/`diff --cc` output `git show <merge-sha>` gives for a two-parent
+  commit — that output's two-character line prefixes (`++`, `+ `, ` +`) are easy to mis-parse as
+  a plain single-`+` diff, producing false "missing" results.
+
 ## Extended documentation
 
 - `AGENTS.md` — full agent instructions and security rules

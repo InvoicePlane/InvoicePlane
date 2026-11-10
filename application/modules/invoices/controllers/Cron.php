@@ -33,7 +33,9 @@ class Cron extends Base_Controller
         }
 
         // Check the provided cron key
-        if ( ! hash_equals((string) get_setting('cron_key'), (string) $cron_key)) {
+        // An empty configured key must never match: hash_equals('', '') is true for a request without a key.
+        $configured_key = (string) get_setting('cron_key');
+        if ($configured_key === '' || ! hash_equals($configured_key, (string) $cron_key)) {
             $this->_record_cron_rate_limit_attempt();
             log_message('error', '[Cron Recurring Invoices] Wrong cron key provided! '
                 . sanitize_for_logging((string) $cron_key));
@@ -93,7 +95,6 @@ class Cron extends Base_Controller
                 'invoice_date_due'         => $this->mdl_invoices->get_date_due($invoice_recurring->recur_next_date),
                 'invoice_group_id'         => $invoice->invoice_group_id,
                 'user_id'                  => $invoice->user_id,
-                'invoice_number'           => $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id),
                 'invoice_url_key'          => $this->mdl_invoices->get_url_key(),
                 'invoice_terms'            => $invoice->invoice_terms,
                 'invoice_discount_amount'  => $invoice->invoice_discount_amount,
@@ -116,6 +117,15 @@ class Cron extends Base_Controller
 
             $target_id = null;
             if ($claimed) {
+                // Draw the number only now that this run owns the row, inside the same transaction,
+                // with the group row locked so a concurrent draw waits for this commit instead of
+                // reading the same counter. A lost claim or a failed copy therefore burns no number.
+                $this->db->query(
+                    'SELECT invoice_group_id FROM ip_invoice_groups WHERE invoice_group_id = ? FOR UPDATE',
+                    [(int) $invoice->invoice_group_id]
+                );
+                $db_array['invoice_number'] = $this->mdl_invoices->get_invoice_number($invoice->invoice_group_id);
+
                 // This is the new invoice id
                 $target_id = $this->mdl_invoices->create($db_array, false);
 
