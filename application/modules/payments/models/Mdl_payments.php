@@ -239,6 +239,11 @@ class Mdl_Payments extends Response_Model
             $this->db->where('invoice_id', $db_array['invoice_id']);
             $this->db->set('invoice_status_id', 4);
             $this->db->update('ip_invoices');
+        } else {
+            // An edit may lower the payment: a Paid invoice is open again, as in delete()
+            $this->db->where(['invoice_id' => $db_array['invoice_id'], 'invoice_status_id' => 4]);
+            $this->db->set('invoice_status_id', 2);
+            $this->db->update('ip_invoices');
         }
 
         $global_discount['item'] = $this->mdl_invoice_amounts->get_global_discount($db_array['invoice_id']);

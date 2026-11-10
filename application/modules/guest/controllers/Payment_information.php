@@ -95,6 +95,15 @@ class Payment_Information extends Base_Controller
         $this->load->view('guest/payment_information', $data);
 
         if ($payment_provider) {
+            // The gateway pages link back with a lower-case name ("paypal"), the drivers are listed in config case ("PayPal").
+            foreach ($available_drivers as $driver) {
+                if (strcasecmp($driver, (string) $payment_provider) === 0) {
+                    $payment_provider = $driver;
+
+                    break;
+                }
+            }
+
             // Only dispatch to drivers that are in the computed allowlist.
             if ( ! in_array($payment_provider, $available_drivers, true)) {
                 show_404();
