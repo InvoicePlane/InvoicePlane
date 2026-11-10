@@ -58,7 +58,7 @@ function _htmle($output)
         return '';
     }
 
-    echo htmlentities($output, ENT_COMPAT  | ENT_SUBSTITUTE | ENT_DISALLOWED | ENT_HTML5);
+    echo htmlentities($output, ENT_COMPAT | ENT_SUBSTITUTE | ENT_DISALLOWED | ENT_HTML5);
 }
 
 /**

@@ -242,43 +242,6 @@ class Sumex
         $this->_canton      = self::CANTONS[$CI->mdl_settings->setting('sumex_canton')];
     }
 
-    /**
-     * Writes the SUMEX XML to storage/temp/ under a name an outsider cannot guess (CWE-377): the invoice number alone
-     * is sequential and public-ish, so "Invoice_<number>.xml" could be fetched by anyone who can reach the directory.
-     * The file is also made owner-only.
-     */
-    private function writeTempXml(string $filename): ?string
-    {
-        $xml = $this->xml();
-        if ($xml === false) {
-            log_message('error', 'Sumex: the invoice XML could not be generated, no temporary file written');
-
-            return null;
-        }
-
-        $path = STORAGE_TEMP_FOLDER . $filename . '_' . bin2hex(random_bytes(8)) . '.xml';
-
-        // The file holds patient and billing data, so it is created owner-only from the start: with the
-        // process umask alone it would be readable by others between the write and a later chmod().
-        $previousUmask = umask(0177);
-
-        try {
-            $written = @file_put_contents($path, $xml, LOCK_EX);
-        } finally {
-            umask($previousUmask);
-        }
-
-        // Hand out the path only when the content is complete and the permissions are enforced.
-        if ($written !== strlen($xml) || ! @chmod($path, 0600)) {
-            @unlink($path);
-            log_message('error', 'Sumex: unable to write the temporary XML file with owner-only permissions');
-
-            return null;
-        }
-
-        return $path;
-    }
-
     public function pdf($invoice_template = null): bool|string
     {
         $xml = $this->xml();
@@ -610,7 +573,7 @@ class Sumex
     {
         $node = $this->doc->createElement('invoice:esrRed');
 
-        $reason            = $this->doc->createElement('invoice:payment_reason');
+        $reason = $this->doc->createElement('invoice:payment_reason');
         $reason->appendChild($this->doc->createTextNode((string) $this->_invoiceNumber));
 
         $subNumb = $this->_subscriberNumber;
@@ -651,7 +614,7 @@ class Sumex
 
     protected function xmlInvoiceRemark()
     {
-        $node            = $this->doc->createElement('invoice:remark');
+        $node = $this->doc->createElement('invoice:remark');
         $node->appendChild($this->doc->createTextNode((string) $this->_treatment['observations']));
 
         return $node;
@@ -738,8 +701,8 @@ class Sumex
     protected function xmlCompany()
     {
         // <invoice:company>
-        $bcompany                 = $this->doc->createElement('invoice:company');
-        $bcompany_name            = $this->doc->createElement('invoice:companyname');
+        $bcompany      = $this->doc->createElement('invoice:company');
+        $bcompany_name = $this->doc->createElement('invoice:companyname');
         $bcompany_name->appendChild($this->doc->createTextNode((string) $this->_company['name']));
 
         $bcompany->appendChild($bcompany_name);
@@ -747,8 +710,8 @@ class Sumex
         $bcompany_postal = $this->generatePostal($this->_company['street'], $this->_company['zip'], $this->_company['city']);
         $bcompany->appendChild($bcompany_postal);
 
-        $bcompany_telecom                  = $this->doc->createElement('invoice:telecom');
-        $bcompany_telecom_phone            = $this->doc->createElement('invoice:phone');
+        $bcompany_telecom       = $this->doc->createElement('invoice:telecom');
+        $bcompany_telecom_phone = $this->doc->createElement('invoice:phone');
         $bcompany_telecom_phone->appendChild($this->doc->createTextNode((string) $this->_company['phone']));
 
         $bcompany_telecom->appendChild($bcompany_telecom_phone);
@@ -762,13 +725,13 @@ class Sumex
     {
         $postal = $this->doc->createElement('invoice:postal');
 
-        $postal_street            = $this->doc->createElement('invoice:street');
+        $postal_street = $this->doc->createElement('invoice:street');
         $postal_street->appendChild($this->doc->createTextNode((string) $street));
 
-        $postal_zip            = $this->doc->createELement('invoice:zip');
+        $postal_zip = $this->doc->createELement('invoice:zip');
         $postal_zip->appendChild($this->doc->createTextNode((string) $zip));
 
-        $postal_city            = $this->doc->createElement('invoice:city');
+        $postal_city = $this->doc->createElement('invoice:city');
         $postal_city->appendChild($this->doc->createTextNode((string) $city));
 
         $postal->appendChild($postal_street);
@@ -782,10 +745,10 @@ class Sumex
     {
         $person = $this->doc->createElement('invoice:person');
 
-        $familyName            = $this->doc->createElement('invoice:familyname');
+        $familyName = $this->doc->createElement('invoice:familyname');
         $familyName->appendChild($this->doc->createTextNode((string) $this->_patient['familyName']));
 
-        $givenName            = $this->doc->createElement('invoice:givenname');
+        $givenName = $this->doc->createElement('invoice:givenname');
         $givenName->appendChild($this->doc->createTextNode((string) $this->_patient['givenName']));
 
         $postal = $this->generatePostal($street, $zip, $city);
@@ -804,8 +767,8 @@ class Sumex
 
     protected function generateTelecom($phoneNr)
     {
-        $telecom          = $this->doc->createElement('invoice:telecom');
-        $phone            = $this->doc->createElement('invoice:phone');
+        $telecom = $this->doc->createElement('invoice:telecom');
+        $phone   = $this->doc->createElement('invoice:phone');
         $phone->appendChild($this->doc->createTextNode((string) $phoneNr));
 
         $telecom->appendChild($phone);
@@ -961,8 +924,8 @@ class Sumex
     protected function xmlInsurance()
     {
         // <invoice:company>
-        $bcompany                 = $this->doc->createElement('invoice:company');
-        $bcompany_name            = $this->doc->createElement('invoice:companyname');
+        $bcompany      = $this->doc->createElement('invoice:company');
+        $bcompany_name = $this->doc->createElement('invoice:companyname');
         $bcompany_name->appendChild($this->doc->createTextNode((string) $this->_insurance['name']));
 
         $bcompany->appendChild($bcompany_name);
@@ -989,5 +952,42 @@ class Sumex
         $node->setAttribute('case_date', date("Y-m-d\TH:i:s", strtotime($this->_casedate)));
 
         return $node;
+    }
+
+    /**
+     * Writes the SUMEX XML to storage/temp/ under a name an outsider cannot guess (CWE-377): the invoice number alone
+     * is sequential and public-ish, so "Invoice_<number>.xml" could be fetched by anyone who can reach the directory.
+     * The file is also made owner-only.
+     */
+    private function writeTempXml(string $filename): ?string
+    {
+        $xml = $this->xml();
+        if ($xml === false) {
+            log_message('error', 'Sumex: the invoice XML could not be generated, no temporary file written');
+
+            return null;
+        }
+
+        $path = STORAGE_TEMP_FOLDER . $filename . '_' . bin2hex(random_bytes(8)) . '.xml';
+
+        // The file holds patient and billing data, so it is created owner-only from the start: with the
+        // process umask alone it would be readable by others between the write and a later chmod().
+        $previousUmask = umask(0177);
+
+        try {
+            $written = @file_put_contents($path, $xml, LOCK_EX);
+        } finally {
+            umask($previousUmask);
+        }
+
+        // Hand out the path only when the content is complete and the permissions are enforced.
+        if ($written !== strlen($xml) || ! @chmod($path, 0600)) {
+            @unlink($path);
+            log_message('error', 'Sumex: unable to write the temporary XML file with owner-only permissions');
+
+            return null;
+        }
+
+        return $path;
     }
 }

@@ -111,6 +111,8 @@ class Ajax extends Admin_Controller
 
     public function save_user_client()
     {
+        $this->load->model('users/mdl_users');
+
         $user_id   = $this->input->post('user_id');
         $client_id = $this->input->post('client_id');
 

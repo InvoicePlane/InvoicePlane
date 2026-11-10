@@ -1,0 +1,666 @@
+<?php
+
+namespace Tests\Feature\Invoices;
+
+use Ajax;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
+
+/**
+ * invoices/controllers/Ajax.php — the invoice editor's Ajax backend.
+ * Focuses on required-field validation (each required field removed, one at
+ * a time, asserting failure and no mutation) for the mutating actions, plus
+ * happy paths and IDOR-adjacent edge cases.
+ */
+#[\PHPUnit\Framework\Attributes\Group('invoices')]
+#[CoversClass(Ajax::class)]
+class InvoicesAjaxControllerTest extends AbstractTestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->actingAsAdmin();
+        // A real install seeds this during the setup wizard (Mdl_setup::$default_settings);
+        // Mdl_invoices::get_date_due() builds a DateInterval directly from it with no
+        // fallback, so create()/copy_invoice()/create_credit() all need it present.
+        $this->databaseInsertOrIgnore('ip_settings', ['setting_key' => 'invoices_due_after', 'setting_value' => '30']);
+    }
+
+    #[Test]
+    public function it_creates_an_invoice_with_all_required_fields(): void
+    {
+        /* Arrange */
+        $clientId = $this->seedClient();
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/create', $this->validCreatePayload($clientId));
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(1, $json['success'] ?? null, 'Body: ' . $response->body());
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $json['invoice_id'], 'client_id' => $clientId]);
+    }
+
+    #[Test]
+    public function it_fails_to_create_an_invoice_without_client_id(): void
+    {
+        /* Arrange */
+        $clientId = $this->seedClient();
+        $payload  = $this->validCreatePayload($clientId);
+        unset($payload['client_id']);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/create', $payload);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseCount('ip_invoices', 0);
+    }
+
+    #[Test]
+    public function it_fails_to_create_an_invoice_without_invoice_date_created(): void
+    {
+        /* Arrange */
+        $clientId = $this->seedClient();
+        $payload  = $this->validCreatePayload($clientId);
+        unset($payload['invoice_date_created']);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/create', $payload);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseCount('ip_invoices', 0);
+    }
+
+    #[Test]
+    public function it_fails_to_create_an_invoice_without_invoice_group_id(): void
+    {
+        /* Arrange */
+        $clientId = $this->seedClient();
+        $payload  = $this->validCreatePayload($clientId);
+        unset($payload['invoice_group_id']);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/create', $payload);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseCount('ip_invoices', 0);
+    }
+
+    #[Test]
+    public function it_fails_to_create_an_invoice_without_invoice_time_created(): void
+    {
+        /* Arrange */
+        $clientId = $this->seedClient();
+        $payload  = $this->validCreatePayload($clientId);
+        unset($payload['invoice_time_created']);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/create', $payload);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseCount('ip_invoices', 0);
+    }
+
+    #[Test]
+    public function it_fails_to_create_an_invoice_without_user_id(): void
+    {
+        /* Arrange */
+        $clientId = $this->seedClient();
+        $payload  = $this->validCreatePayload($clientId);
+        unset($payload['user_id']);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/create', $payload);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseCount('ip_invoices', 0);
+    }
+
+    #[Test]
+    public function it_saves_an_invoice_with_all_required_fields(): void
+    {
+        /* Arrange */
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => 'SAVE-REQ-001', 'invoice_date_due' => '2029-01-01']);
+        $payload   = array_merge($this->validSavePayload($invoiceId), [
+            'invoice_date_due'         => '2030-01-15',
+            'invoice_discount_percent' => '10',
+            'items'                    => json_encode([[
+                'invoice_id'   => (string) $invoiceId, 'item_id' => '', 'item_name' => 'Widget', 'item_description' => '', 'item_quantity' => '2',
+                'item_price'   => '50', 'item_discount_amount' => '', 'item_product_id' => '', 'item_product_unit_id' => '',
+                'item_task_id' => '', 'item_tax_rate_id' => '0',
+            ]]),
+        ]);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/save', $payload);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(1, $json['success'] ?? null, 'Body: ' . $response->body());
+        $this->assertDatabaseHas('ip_invoices', [
+            'invoice_id'               => $invoiceId,
+            'invoice_date_due'         => '2030-01-15',
+            'invoice_discount_percent' => '10.00',
+            'client_id'                => $clientId,
+        ]);
+        $this->assertDatabaseHas('ip_invoice_items', ['invoice_id' => $invoiceId, 'item_name' => 'Widget']);
+    }
+
+    #[Test]
+    public function it_fails_to_save_an_invoice_without_invoice_date_due(): void
+    {
+        /* Arrange */
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => 'SAVE-REQ-002', 'invoice_date_due' => date('Y-m-d', strtotime('+10 days'))]);
+        $payload   = $this->validSavePayload($invoiceId);
+        unset($payload['invoice_date_due']);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/save', $payload);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'invoice_date_due' => date('Y-m-d', strtotime('+10 days'))]);
+    }
+
+    #[Test]
+    public function it_fails_to_save_an_invoice_without_invoice_date_created(): void
+    {
+        /* Arrange */
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => 'SAVE-REQ-003', 'invoice_date_due' => '2029-01-01']);
+        $payload   = array_merge($this->validSavePayload($invoiceId), ['invoice_date_due' => '2031-02-02']);
+        unset($payload['invoice_date_created']);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/save', $payload);
+
+        /* Assert: rejected, and nothing from the rejected payload reached the database */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'invoice_date_due' => '2029-01-01']);
+        $this->assertDatabaseMissing('ip_invoice_items', ['invoice_id' => $invoiceId]);
+    }
+
+    #[Test]
+    public function it_rejects_an_invoice_number_with_unsafe_characters(): void
+    {
+        /* Arrange */
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId, ['invoice_number' => 'SAVE-REQ-004']);
+        $payload   = $this->validSavePayload($invoiceId);
+
+        $payload['invoice_number'] = 'INV<script>alert(1)</script>';
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/save', $payload);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'invoice_number' => 'SAVE-REQ-004']);
+    }
+
+    // -------------------------------------------------------------------------
+    // change_user() / change_client()
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_changes_the_invoices_user(): void
+    {
+        /* Arrange */
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId);
+        $newUserId = $this->databaseInsert('ip_users', [
+            'user_name'     => 'New Owner', 'user_email' => 'new-owner@test.local',
+            'user_password' => password_hash('x', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(10)),
+            'user_type'     => 1, 'user_active' => 1, 'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/change_user', ['user_id' => (string) $newUserId, 'invoice_id' => (string) $invoiceId]);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(1, $json['success'] ?? null);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'user_id' => $newUserId]);
+    }
+
+    #[Test]
+    public function it_fails_to_change_the_invoices_user_for_an_unknown_user_id(): void
+    {
+        /* Arrange */
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId, ['user_id' => 1]);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/change_user', ['user_id' => '999999', 'invoice_id' => (string) $invoiceId]);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'user_id' => 1]);
+    }
+
+    #[Test]
+    public function it_changes_the_invoices_client(): void
+    {
+        /* Arrange */
+        $clientId    = $this->seedClient();
+        $invoiceId   = $this->seedInvoice($clientId);
+        $newClientId = $this->seedClient(['client_name' => 'New Owner Client']);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/change_client', ['client_id' => (string) $newClientId, 'invoice_id' => (string) $invoiceId]);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(1, $json['success'] ?? null);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'client_id' => $newClientId]);
+    }
+
+    #[Test]
+    public function it_fails_to_change_the_invoices_client_for_an_unknown_client_id(): void
+    {
+        /* Arrange */
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/change_client', ['client_id' => '999999', 'invoice_id' => (string) $invoiceId]);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'client_id' => $clientId]);
+    }
+
+    // -------------------------------------------------------------------------
+    // delete_item()
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_deletes_an_existing_invoice_item(): void
+    {
+        /* Arrange */
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId);
+        $itemId    = $this->databaseInsert('ip_invoice_items', [
+            'invoice_id' => $invoiceId, 'item_tax_rate_id' => 0, 'item_date_added' => date('Y-m-d'),
+            'item_name'  => 'Deletable', 'item_description' => '', 'item_quantity' => '1.00', 'item_price' => '10.00', 'item_order' => 0,
+        ]);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/delete_item/' . $invoiceId, ['item_id' => (string) $itemId]);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(1, $json['success'] ?? null);
+        $this->assertDatabaseMissing('ip_invoice_items', ['item_id' => $itemId]);
+    }
+
+    #[Test]
+    public function it_refuses_to_delete_an_item_through_another_invoices_url(): void
+    {
+        /* Arrange: the item belongs to invoice B, the request is addressed to invoice A */
+        $clientId = $this->seedClient();
+        $invoiceA = $this->seedInvoice($clientId);
+        $invoiceB = $this->seedInvoice($clientId);
+        $itemOfB  = $this->databaseInsert('ip_invoice_items', [
+            'invoice_id' => $invoiceB, 'item_tax_rate_id' => 0, 'item_date_added' => date('Y-m-d'),
+            'item_name'  => 'Belongs to B', 'item_description' => '', 'item_quantity' => '1.00', 'item_price' => '10.00', 'item_order' => 0,
+        ]);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/delete_item/' . $invoiceA, ['item_id' => (string) $itemOfB]);
+
+        /* Assert */
+        self::assertSame(0, json_decode($response->body(), true)['success'] ?? null);
+        $this->assertDatabaseHas('ip_invoice_items', ['item_id' => $itemOfB, 'invoice_id' => $invoiceB]);
+    }
+
+    #[Test]
+    public function it_does_not_delete_anything_for_a_nonexistent_item_id(): void
+    {
+        /* Arrange */
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId);
+        $itemId    = $this->databaseInsert('ip_invoice_items', [
+            'invoice_id' => $invoiceId, 'item_tax_rate_id' => 0, 'item_date_added' => date('Y-m-d'),
+            'item_name'  => 'Untouched', 'item_description' => '', 'item_quantity' => '1.00', 'item_price' => '10.00', 'item_order' => 0,
+        ]);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/delete_item/' . $invoiceId, ['item_id' => '999999']);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseHas('ip_invoice_items', ['item_id' => $itemId]);
+    }
+
+    // -------------------------------------------------------------------------
+    // save_invoice_tax_rate() — required: invoice_id, tax_rate_id, include_item_tax
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_fails_to_save_an_invoice_tax_rate_without_invoice_id(): void
+    {
+        /* Arrange */
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/save_invoice_tax_rate', ['tax_rate_id' => '1', 'include_item_tax' => '0']);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseCount('ip_invoice_tax_rates', 0);
+    }
+
+    // -------------------------------------------------------------------------
+    // create_recurring() — required: invoice_id, recur_start_date, recur_frequency
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_creates_a_recurring_invoice_with_all_required_fields(): void
+    {
+        /* Arrange */
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/create_recurring', [
+            'invoice_id'       => (string) $invoiceId,
+            'recur_start_date' => date('Y-m-d'),
+            'recur_frequency'  => '1D',
+        ]);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(1, $json['success'] ?? null, 'Body: ' . $response->body());
+        $this->assertDatabaseHas('ip_invoices_recurring', ['invoice_id' => $invoiceId]);
+    }
+
+    #[Test]
+    public function it_fails_to_create_a_recurring_invoice_without_recur_start_date(): void
+    {
+        /* Arrange */
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/create_recurring', [
+            'invoice_id'      => (string) $invoiceId,
+            'recur_frequency' => '1D',
+        ]);
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseCount('ip_invoices_recurring', 0);
+    }
+
+    // -------------------------------------------------------------------------
+    // copy_invoice() / create_credit() (use the default validation_rules())
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_copies_an_invoice(): void
+    {
+        /* Arrange */
+        $sourceClientId = $this->seedClient(['client_name' => 'Copy Source Client']);
+        $targetClientId = $this->seedClient(['client_name' => 'Copy Target Client']);
+        $sourceId       = $this->seedInvoice($sourceClientId, ['invoice_number' => 'COPY-SRC-001']);
+        $this->databaseInsert('ip_invoice_items', [
+            'invoice_id' => $sourceId, 'item_name' => 'Copied item', 'item_description' => '', 'item_quantity' => '3',
+            'item_price' => '20.00', 'item_order' => 1,
+        ]);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/copy_invoice', array_merge($this->validCreatePayload($targetClientId), [
+            'invoice_id' => (string) $sourceId,
+        ]));
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(1, $json['success'] ?? null, 'Body: ' . $response->body());
+        $targetId = (int) $json['invoice_id'];
+        self::assertNotSame($sourceId, $targetId);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $targetId, 'client_id' => $targetClientId]);
+        $this->assertDatabaseHas('ip_invoice_items', ['invoice_id' => $targetId, 'item_name' => 'Copied item']);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $sourceId, 'client_id' => $sourceClientId, 'invoice_number' => 'COPY-SRC-001']);
+        $this->assertDatabaseHas('ip_invoice_items', ['invoice_id' => $sourceId, 'item_name' => 'Copied item']);
+    }
+
+    #[Test]
+    public function it_fails_to_copy_an_invoice_without_client_id(): void
+    {
+        /* Arrange */
+        $clientId = $this->seedClient();
+        $sourceId = $this->seedInvoice($clientId);
+        $payload  = $this->validCreatePayload($clientId);
+        unset($payload['client_id']);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/copy_invoice', array_merge($payload, ['invoice_id' => (string) $sourceId]));
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(0, $json['success'] ?? null);
+        $this->assertDatabaseCount('ip_invoices', 1);
+    }
+
+    #[Test]
+    public function it_creates_a_credit_invoice(): void
+    {
+        /* Arrange */
+        $clientId = $this->seedClient();
+        $sourceId = $this->seedInvoice($clientId, ['invoice_number' => 'CREDIT-SRC-001']);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/create_credit', array_merge($this->validCreatePayload($clientId), [
+            'invoice_id' => (string) $sourceId,
+        ]));
+
+        /* Assert */
+        $json = json_decode($response->body(), true);
+        self::assertSame(1, $json['success'] ?? null, 'Body: ' . $response->body());
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $json['invoice_id'], 'creditinvoice_parent_id' => $sourceId]);
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $sourceId, 'is_read_only' => 1]);
+    }
+
+    // -------------------------------------------------------------------------
+    // read-only helpers
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_gets_an_item(): void
+    {
+        /* Arrange */
+        $clientId  = $this->seedClient();
+        $invoiceId = $this->seedInvoice($clientId);
+        $itemId    = $this->databaseInsert('ip_invoice_items', [
+            'invoice_id' => $invoiceId, 'item_tax_rate_id' => 0, 'item_date_added' => date('Y-m-d'),
+            'item_name'  => 'Get Me', 'item_description' => '', 'item_quantity' => '1.00', 'item_price' => '10.00', 'item_order' => 0,
+        ]);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/get_item', ['item_id' => (string) $itemId]);
+
+        /* Assert */
+        $this->assertResponseBodyContains($response, 'Get Me');
+    }
+
+    #[Test]
+    public function it_gets_a_recur_start_date(): void
+    {
+        /* Arrange */
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/get_recur_start_date', [
+            'invoice_date'    => date('Y-m-d'),
+            'recur_frequency' => '1D',
+        ]);
+
+        /* Assert */
+        $body = trim($response->body());
+        self::assertMatchesRegularExpression(
+            '#^\d{4}-\d{2}-\d{2}$|^\d{2}/\d{2}/\d{4}$#',
+            $body,
+            'The endpoint must echo a single formatted start date, got: ' . $body
+        );
+        self::assertNotSame(date('Y-m-d'), $body, 'A 1-day frequency must advance the start date past the invoice date.');
+    }
+
+    #[Test]
+    public function it_requires_an_ajax_request(): void
+    {
+        /* Arrange */
+
+        /* Act */
+        $response = $this->post('/invoices/ajax/get_recur_start_date', []);
+
+        /* Assert */
+        self::assertSame('', $response->body());
+    }
+
+    // -------------------------------------------------------------------------
+    // modal_* view endpoints (absorbed from InvoicesAjaxModalsTest)
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_renders_the_create_invoice_modal(): void
+    {
+        /* Arrange */
+        $clientId = $this->seedClient(['client_name' => 'Modal Create Client']);
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/modal_create_invoice', ['client_id' => (string) $clientId]);
+
+        /* Assert */
+        $this->assertResponseBodyContains($response, 'name="invoice_group_id"');
+        $this->assertResponseBodyContains($response, 'id="create_invoice_client_id"');
+    }
+
+    #[Test]
+    public function it_renders_the_create_recurring_modal(): void
+    {
+        /* Arrange */
+        $invoiceId = $this->seedInvoice($this->seedClient());
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/modal_create_recurring', ['invoice_id' => (string) $invoiceId]);
+
+        /* Assert */
+        $this->assertResponseBodyContains($response, 'name="recur_frequency"');
+        $this->assertResponseBodyContains($response, 'name="recur_start_date"');
+    }
+
+    #[Test]
+    public function it_renders_the_create_credit_modal(): void
+    {
+        /* Arrange */
+        $invoiceId = $this->seedInvoice($this->seedClient());
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/modal_create_credit', ['invoice_id' => (string) $invoiceId]);
+
+        /* Assert */
+        $this->assertResponseBodyContains($response, 'name="parent_id"');
+        $this->assertResponseBodyContains($response, 'value="' . $invoiceId . '"');
+    }
+
+    // -------------------------------------------------------------------------
+    // Sequential AJAX under csrf_regenerate (#1601 regression, absorbed from
+    // InvoicesItemSaveRegressionTest and Issue1601AjaxCsrfRegenerationTest)
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_saves_an_invoice_on_the_first_attempt(): void
+    {
+        /* Arrange */
+        $invoiceId                = $this->seedInvoice($this->seedClient(), ['invoice_number' => 'ITEM-SAVE-001']);
+        $payload                  = $this->validSavePayload($invoiceId);
+        $payload['invoice_terms'] = 'First attempt terms';
+
+        /* Act */
+        $response = $this->ajax('POST', '/invoices/ajax/save', $payload);
+        $json     = json_decode($response->body(), true);
+
+        /* Assert */
+        self::assertSame(1, $json['success'] ?? null, 'Save must succeed on the first attempt: ' . $response->body());
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'invoice_terms' => 'First attempt terms']);
+    }
+
+    #[Test]
+    public function it_persists_a_save_that_immediately_follows_a_create(): void
+    {
+        /* Arrange */
+        // csrf_regenerate is forced on for the Feature harness (config.php), which
+        // is the #1601 scenario: two AJAX writes back to back. The second must
+        // still land. (The token echo itself only fires when CSRF_PROTECTION is
+        // also on, and turning that on for an AJAX route trips a separate,
+        // pre-existing json_encode_ajax() double-verify bug — noted for the
+        // maintainer in the release-readiness report.)
+        $clientId = $this->seedClient();
+
+        /* Act */
+        $createResponse = $this->ajax('POST', '/invoices/ajax/create', $this->validCreatePayload($clientId));
+        $createData     = json_decode($createResponse->body(), true);
+        $invoiceId      = (int) ($createData['invoice_id'] ?? 0);
+        $savePayload    = $this->validSavePayload($invoiceId) + ['invoice_terms' => 'Terms set on the follow-up save'];
+        $saveResponse   = $this->ajax('POST', '/invoices/ajax/save', $savePayload);
+        $saveData       = json_decode($saveResponse->body(), true);
+
+        /* Assert */
+        self::assertSame(1, $createData['success'] ?? null, 'Create failed: ' . $createResponse->body());
+        self::assertSame(1, $saveData['success'] ?? null, 'Save after create failed: ' . $saveResponse->body());
+        $this->assertDatabaseHas('ip_invoices', ['invoice_id' => $invoiceId, 'invoice_terms' => 'Terms set on the follow-up save']);
+    }
+
+    // -------------------------------------------------------------------------
+    // create() — required: client_id, invoice_date_created, invoice_time_created, invoice_group_id
+    // -------------------------------------------------------------------------
+
+    private function validCreatePayload(int $clientId): array
+    {
+        return [
+            'client_id'            => (string) $clientId,
+            'invoice_date_created' => date('Y-m-d'),
+            'invoice_time_created' => date('H:i:s'),
+            'invoice_group_id'     => '1',
+            'user_id'              => '1',
+        ];
+    }
+
+    // -------------------------------------------------------------------------
+    // save() — required: invoice_date_created, invoice_date_due, invoice_time_created
+    // -------------------------------------------------------------------------
+
+    private function validSavePayload(int $invoiceId): array
+    {
+        return [
+            'invoice_id'               => (string) $invoiceId,
+            'invoice_date_created'     => date('Y-m-d'),
+            'invoice_date_due'         => date('Y-m-d', strtotime('+30 days')),
+            'invoice_time_created'     => date('H:i:s'),
+            'invoice_status_id'        => '1',
+            'invoice_discount_percent' => '0',
+            'invoice_discount_amount'  => '0',
+            'items'                    => '[]',
+        ];
+    }
+}

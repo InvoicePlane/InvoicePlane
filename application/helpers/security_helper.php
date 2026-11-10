@@ -385,4 +385,3 @@ function encode_for_javascript_string($string)
         -1
     );
 }
-

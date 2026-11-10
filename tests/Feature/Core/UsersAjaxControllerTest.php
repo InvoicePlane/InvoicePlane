@@ -1,0 +1,254 @@
+<?php
+
+namespace Tests\Feature\Core;
+
+use Ajax;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\AbstractTestCase;
+
+/**
+ * Users AJAX controller — application/modules/users/controllers/Ajax.php.
+ * Primarily tests authorization on endpoints that modify user-related data.
+ */
+#[Group('users')]
+#[CoversClass(Ajax::class)]
+class UsersAjaxControllerTest extends AbstractTestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->actingAsAdmin();
+    }
+
+    // -------------------------------------------------------------------------
+    // save_user_client — authorization
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_prevents_a_non_primary_admin_from_assigning_clients_to_another_user(): void
+    {
+        /* Arrange */
+        $attackerId = $this->databaseInsert('ip_users', [
+            'user_name'          => 'Attacker Admin',
+            'user_password'      => password_hash('attacker-secret', PASSWORD_DEFAULT),
+            'user_psalt'         => bin2hex(random_bytes(10)),
+            'user_email'         => 'attacker-admin@test.local',
+            'user_type'          => 1,
+            'user_active'        => 1,
+            'user_date_created'  => date('Y-m-d H:i:s'),
+            'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        $victimId = $this->databaseInsert('ip_users', [
+            'user_name'          => 'Victim Admin',
+            'user_password'      => password_hash('victim-secret', PASSWORD_DEFAULT),
+            'user_psalt'         => bin2hex(random_bytes(10)),
+            'user_email'         => 'victim-admin@test.local',
+            'user_type'          => 1,
+            'user_active'        => 1,
+            'user_date_created'  => date('Y-m-d H:i:s'),
+            'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        $clientId = $this->seedClient(['client_name' => 'Test Client']);
+
+        $this->actingAsAdmin($attackerId);
+
+        /* Act */
+        $response = $this->ajax('POST', '/users/ajax/save_user_client', [
+            'user_id'   => (string) $victimId,
+            'client_id' => (string) $clientId,
+        ]);
+
+        /* Assert */
+        self::assertSame(403, $response->statusCode(), 'Only the primary admin may assign clients to other users.');
+        $this->assertDatabaseMissing('ip_user_clients', ['user_id' => $victimId, 'client_id' => $clientId]);
+    }
+
+    #[Test]
+    public function it_allows_a_user_to_assign_clients_to_themselves(): void
+    {
+        /* Arrange */
+        $userId = $this->databaseInsert('ip_users', [
+            'user_name'          => 'Self-Managing User',
+            'user_password'      => password_hash('secret', PASSWORD_DEFAULT),
+            'user_psalt'         => bin2hex(random_bytes(10)),
+            'user_email'         => 'self-manage@test.local',
+            'user_type'          => 1,
+            'user_active'        => 1,
+            'user_date_created'  => date('Y-m-d H:i:s'),
+            'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        $clientId = $this->seedClient(['client_name' => 'My Client']);
+
+        $this->actingAsAdmin($userId);
+
+        /* Act */
+        $response = $this->ajax('POST', '/users/ajax/save_user_client', [
+            'user_id'   => (string) $userId,
+            'client_id' => (string) $clientId,
+        ]);
+
+        /* Assert */
+        self::assertTrue($response->isSuccessful(), 'A user should be able to assign clients to their own account.');
+        $this->assertDatabaseHas('ip_user_clients', ['user_id' => $userId, 'client_id' => $clientId]);
+    }
+
+    #[Test]
+    public function it_allows_the_primary_admin_to_assign_clients_to_any_user(): void
+    {
+        /* Arrange */
+        // Primary admin is user_id 1 (automatically set by actingAsAdmin())
+        $userId = $this->databaseInsert('ip_users', [
+            'user_name'          => 'Non-Admin User',
+            'user_password'      => password_hash('secret', PASSWORD_DEFAULT),
+            'user_psalt'         => bin2hex(random_bytes(10)),
+            'user_email'         => 'non-admin@test.local',
+            'user_type'          => 2,
+            'user_active'        => 1,
+            'user_date_created'  => date('Y-m-d H:i:s'),
+            'user_date_modified' => date('Y-m-d H:i:s'),
+        ]);
+
+        $clientId = $this->seedClient(['client_name' => 'Assigned By Admin']);
+
+        /* Act */
+        $response = $this->ajax('POST', '/users/ajax/save_user_client', [
+            'user_id'   => (string) $userId,
+            'client_id' => (string) $clientId,
+        ]);
+
+        /* Assert */
+        self::assertTrue($response->isSuccessful(), 'The primary admin should be able to assign clients to any user.');
+        $this->assertDatabaseHas('ip_user_clients', ['user_id' => $userId, 'client_id' => $clientId]);
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function it_returns_an_empty_json_list_for_an_empty_name_query(): void
+    {
+        /* Arrange */
+        $this->actingAsAdmin();
+        $this->seedUser(['user_name' => 'Searchable Person']);
+
+        /* Act */
+        $response = $this->request('GET', '/users/ajax/name_query/1', ['query' => ''], [], true);
+
+        /* Assert: exactly one JSON document - the search below the guard must not also run and append results */
+        self::assertSame([], json_decode($response->body(), true, 512, JSON_THROW_ON_ERROR));
+    }
+
+    #[Test]
+    public function it_finds_only_active_users_of_the_requested_type_by_name_prefix(): void
+    {
+        /* Arrange */
+        $this->actingAsAdmin();
+        $matchId = $this->seedUser(['user_type' => 1, 'user_name' => 'Zed Alpha', 'user_active' => 1]);
+        $this->seedUser(['user_type' => 1, 'user_name' => 'Zed Inactive', 'user_active' => 0]);
+        $this->seedUser(['user_type' => 2, 'user_name' => 'Zed Guest', 'user_active' => 1]);
+        $this->seedUser(['user_type' => 1, 'user_name' => 'Unrelated Name', 'user_active' => 1]);
+
+        /* Act */
+        $response = $this->request('GET', '/users/ajax/name_query/1', ['query' => 'Zed'], [], true);
+
+        /* Assert */
+        $found = json_decode($response->body(), true, 512, JSON_THROW_ON_ERROR);
+        self::assertCount(1, $found);
+        self::assertSame((string) $matchId, (string) $found[0]['id']);
+        self::assertStringContainsString('Zed Alpha', $found[0]['text']);
+    }
+
+    #[Test]
+    public function it_treats_percent_and_underscore_in_a_name_query_as_literal_characters_not_wildcards(): void
+    {
+        /* Arrange: GHSA-g7f2-mj3r-xx88 follow-up. LIKE wildcards are stripped from the input before it is bound. */
+        $this->actingAsAdmin();
+        $this->seedUser(['user_type' => 1, 'user_name' => 'Zed Alpha', 'user_active' => 1]);
+
+        /* Act */
+        $underscore = $this->request('GET', '/users/ajax/name_query/1', ['query' => 'Z_d'], [], true);
+        $percent    = $this->request('GET', '/users/ajax/name_query/1', ['query' => 'Z%d'], [], true);
+        $plain      = $this->request('GET', '/users/ajax/name_query/1', ['query' => 'Ze%'], [], true);
+
+        /* Assert: 'Z_d' would match 'Zed' and 'Z%d' would match 'Zed' if the wildcards were live */
+        self::assertSame([], json_decode($underscore->body(), true, 512, JSON_THROW_ON_ERROR), '"_" must not act as a single-character wildcard.');
+        self::assertSame([], json_decode($percent->body(), true, 512, JSON_THROW_ON_ERROR), '"%" must not act as a multi-character wildcard.');
+        self::assertCount(1, json_decode($plain->body(), true, 512, JSON_THROW_ON_ERROR), 'The stripped term "Ze" is still a prefix of "Zed Alpha".');
+    }
+
+    #[Test]
+    public function it_only_matches_the_middle_of_a_name_when_permissive_search_is_requested(): void
+    {
+        /* Arrange */
+        $this->actingAsAdmin();
+        $this->seedUser(['user_type' => 1, 'user_name' => 'Zed Alpha', 'user_active' => 1]);
+
+        /* Act */
+        $strict     = $this->request('GET', '/users/ajax/name_query/1', ['query' => 'Alpha'], [], true);
+        $permissive = $this->request('GET', '/users/ajax/name_query/1', ['query' => 'Alpha', 'permissive_search_users' => '1'], [], true);
+
+        /* Assert */
+        self::assertSame([], json_decode($strict->body(), true, 512, JSON_THROW_ON_ERROR));
+        self::assertCount(1, json_decode($permissive->body(), true, 512, JSON_THROW_ON_ERROR));
+    }
+
+    #[Test]
+    public function it_also_searches_the_company_and_invoicing_contact_columns(): void
+    {
+        /* Arrange */
+        $this->actingAsAdmin();
+        $byCompany = $this->seedUser(['user_type' => 1, 'user_name' => 'Nomatch One', 'user_company' => 'Acme Holdings']);
+        $byContact = $this->seedUser(['user_type' => 1, 'user_name' => 'Nomatch Two', 'user_invoicing_contact' => 'Quincy Contact']);
+
+        /* Act */
+        $company = json_decode($this->request('GET', '/users/ajax/name_query/1', ['query' => 'Acme'], [], true)->body(), true, 512, JSON_THROW_ON_ERROR);
+        $contact = json_decode($this->request('GET', '/users/ajax/name_query/1', ['query' => 'Quincy'], [], true)->body(), true, 512, JSON_THROW_ON_ERROR);
+
+        /* Assert */
+        self::assertSame([(string) $byCompany], array_map(static fn ($r) => (string) $r['id'], $company));
+        self::assertSame([(string) $byContact], array_map(static fn ($r) => (string) $r['id'], $contact));
+    }
+
+    #[Test]
+    public function it_returns_an_empty_list_for_a_sql_injection_shaped_name_query(): void
+    {
+        /* Arrange */
+        $this->actingAsAdmin();
+        $this->seedUser(['user_type' => 1, 'user_name' => 'Zed Alpha', 'user_active' => 1]);
+
+        /* Act */
+        $response = $this->request('GET', '/users/ajax/name_query/1', ['query' => "x' OR '1'='1"], [], true);
+
+        /* Assert: bound as a literal prefix, so nothing matches and nothing errors */
+        $this->assertResponseStatusCode($response, 200);
+        self::assertSame([], json_decode($response->body(), true, 512, JSON_THROW_ON_ERROR));
+    }
+
+    /** @param array<string,mixed> $overrides */
+    protected function seedUser(array $overrides = []): int
+    {
+        return $this->databaseInsert('ip_users', array_merge([
+            'user_type'         => 2, 'user_name' => 'Seeded ' . bin2hex(random_bytes(3)),
+            'user_email'        => 'seed+' . bin2hex(random_bytes(4)) . '@test.local',
+            'user_password'     => password_hash('secret123', PASSWORD_DEFAULT), 'user_psalt' => bin2hex(random_bytes(8)),
+            'user_language'     => 'system', 'user_active' => 1,
+            'user_date_created' => date('Y-m-d H:i:s'), 'user_date_modified' => date('Y-m-d H:i:s'),
+        ], $overrides));
+    }
+
+    protected function seedClient(array $overrides = []): int
+    {
+        return $this->databaseInsert('ip_clients', array_merge([
+            'client_name'          => 'Seed Client ' . bin2hex(random_bytes(3)),
+            'client_active'        => 1,
+            'client_date_created'  => date('Y-m-d H:i:s'),
+            'client_date_modified' => date('Y-m-d H:i:s'),
+        ], $overrides));
+    }
+}
