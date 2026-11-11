@@ -13,7 +13,7 @@
             show_loader(); // Show spinner
             $.post("<?php echo site_url('invoices/ajax/copy_invoice'); ?>", {
                     legacy_calculation: legacy_calculation, // Automatic. From meta (see script)
-                    invoice_id: <?php echo $invoice_id; ?>,
+                    invoice_id: <?php echo (int) $invoice_id; ?>,
                     client_id: $('#client_id').val(),
                     user_id: $('#user_id').val(),
                     invoice_date_created: $('#invoice_date_created_modal').val(),
