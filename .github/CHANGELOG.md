@@ -225,7 +225,7 @@ exposure and for the URL Rewrite rules that the shipped `web.config` is built on
 
 - **`parse_template()` printed a deprecation notice for an empty template:** a `null` body reached `preg_match_all()`, which PHP 8.1 and later report as deprecated, and the notice ended up in the generated output. **Fix:** a `null` or empty body is returned unchanged.
 
-- **JSON answers did not carry the next CSRF token when `csrf_regenerate` is on:** with regeneration enabled the token a page holds is spent by its first Ajax POST, and the answer gave the page no way to learn the next one. **Fix:** `json_encode_ajax()` adds the new token to its answer in that configuration; nothing changes with the default configuration.
+- **JSON answers did not carry the next CSRF token when `csrf_regenerate` is on:** with regeneration enabled the token a page holds is spent by its first Ajax POST, and the answer gave the page no way to learn the next one. **Fix:** `json_encode_ajax()` adds the new token to a keyed answer in that configuration. A list answer (products, tasks, an empty result) is sent unchanged, so it stays a JSON array; the token still travels in the `X-_ip_csrf` response header. Nothing changes with the default configuration.
 
 - **The setup security warning did not say which flag is wrong:** the warning shown to administrators only read "Security Warning". **Fix:** it now lists the flags that are off (`SETUP_COMPLETED`, `DISABLE_SETUP`), as the code that collects them intended.
 

@@ -18,6 +18,9 @@ class Admin_Controller extends User_Controller
 {
     use XSS_Protection_Trait;
 
+    /**
+     * Requires an administrator session, sends the CSRF token header and warns when the setup flags are unsafe.
+     */
     public function __construct()
     {
         parent::__construct('user_type', 1);

@@ -92,11 +92,18 @@ class Base_Controller extends MX_Controller
         }
     }
 
-    // centralize Ajax controllers response - since 1.7.2
+    /**
+     * Central JSON answer of the Ajax controllers (since 1.7.2).
+     *
+     * With CSRF regeneration the token the client holds is spent by this request, so a keyed answer also carries
+     * the next one. A list (products, tasks, an empty result) is sent as it is: adding a key would turn the JSON
+     * array into an object with the token as one of its items.
+     */
     protected function json_encode_ajax(array|object $response): void
     {
-        // With CSRF regeneration the token the client holds is spent by this request: hand it the next one.
-        if ($this->config->item('csrf_protection') && $this->config->item('csrf_regenerate')) {
+        $is_list = is_array($response) && array_is_list($response);
+
+        if ( ! $is_list && $this->config->item('csrf_protection') && $this->config->item('csrf_regenerate')) {
             $response = (array) $response;
 
             $response[$this->security->get_csrf_token_name()] = $this->security->get_csrf_hash();

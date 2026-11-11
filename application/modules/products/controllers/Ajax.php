@@ -58,6 +58,9 @@ class Ajax extends Admin_Controller
         }
     }
 
+    /**
+     * Returns the selected products as a JSON list; an empty selection gives an empty list.
+     */
     public function process_product_selections()
     {
         $this->load->model('mdl_products');

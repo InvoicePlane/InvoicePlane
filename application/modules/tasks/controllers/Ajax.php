@@ -37,6 +37,9 @@ class Ajax extends Admin_Controller
         $this->layout->load_view('tasks/modal_task_lookups', $data);
     }
 
+    /**
+     * Returns the selected tasks as a JSON list; an empty selection gives an empty list.
+     */
     public function process_task_selections()
     {
         $this->load->model('mdl_tasks');

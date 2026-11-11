@@ -37,6 +37,9 @@ class Settings extends Admin_Controller
         $this->check_svg_logos();
     }
 
+    /**
+     * Shows the settings page and saves a posted batch of settings, including the optional logo uploads.
+     */
     public function index()
     {
         // Get the payment gateway configurations

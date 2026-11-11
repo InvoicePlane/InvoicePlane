@@ -18,6 +18,9 @@ class Ajax extends Admin_Controller
 {
     public $ajax_controller = true;
 
+    /**
+     * Returns the posted email template as JSON, or null when the id is unknown.
+     */
     public function get_content()
     {
         $this->load->model('email_templates/mdl_email_templates');
