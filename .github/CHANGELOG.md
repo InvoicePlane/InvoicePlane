@@ -25,7 +25,7 @@ Thank you to everyone who reported or fixed issues in this release.
 **Bug reports and contributions:**
 
 - [@1icarus2](https://github.com/1icarus2): the report of the IIS exposure with the URL Rewrite rules the shipped `web.config` is built on, the unstyled PDFs after upgrading to 1.7.2 (with the root cause in mPDF and the suggestion to read the stylesheets from disk), and the client dropdown search failing on MariaDB with `ONLY_FULL_GROUP_BY` (#1866) with the failing queries and the `WHERE` form that fixes it.
-- [@Iweisc](https://github.com/Iweisc): detailed, reproducible bug reports, including the payment edit that left a paid invoice open (see "Fixed").
+- [@Iweisc](https://github.com/Iweisc): detailed, reproducible bug reports: the payment edit that left a paid invoice open, the recurring start date and the item deletion discount.
 - [@bharath32](https://github.com/bharath32): the MySQL 8 client birthdate migration fix.
 - [@sabinich](https://github.com/sabinich): the update check and news panel on the GitHub Releases API.
 - [@torreirow](https://github.com/torreirow): the diagnosis of the custom public template failure.
