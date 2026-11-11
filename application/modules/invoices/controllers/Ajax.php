@@ -27,7 +27,10 @@ class Ajax extends Admin_Controller
             'invoices/mdl_invoice_sumex',
         ]);
 
-        $invoice_id = $this->security->xss_clean($this->input->post('invoice_id', true));
+        // Security: cast to int before it is concatenated into a CodeIgniter validation-rule string
+        // (Mdl_invoices::validation_rules_save_invoice()); a raw string such as "1]|system|trim[" would break
+        // out of the is_unique[...] rule and name an arbitrary PHP function for Form_validation to call (CWE-94).
+        $invoice_id = (int) $this->input->post('invoice_id', true);
 
         $this->mdl_invoices->set_id($invoice_id);
 
