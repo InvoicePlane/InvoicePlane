@@ -184,7 +184,8 @@ class Mdl_Quotes extends Response_Model
             'quote_number' => [
                 'field' => 'quote_number',
                 'label' => trans('quote') . ' #',
-                'rules' => 'regex_match[/^[^\x00-\x1F\x7F<>"\']+$/]|is_unique[ip_quotes.quote_number' . (($this->id) ? '.quote_id.' . $this->id : '') . ']',
+                // Security: see the matching comment in Mdl_invoices::validation_rules_save_invoice() (CWE-94).
+                'rules' => 'regex_match[/^[^\x00-\x1F\x7F<>"\']+$/]|is_unique[ip_quotes.quote_number' . (ctype_digit((string) $this->id) ? '.quote_id.' . (int) $this->id : '') . ']',
             ],
             'quote_date_created' => [
                 'field' => 'quote_date_created',

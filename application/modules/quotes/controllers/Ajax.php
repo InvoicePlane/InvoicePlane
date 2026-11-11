@@ -26,7 +26,9 @@ class Ajax extends Admin_Controller
             'units/mdl_units',
         ]);
 
-        $quote_id = $this->security->xss_clean($this->input->post('quote_id', true));
+        // Security: cast to int before it is concatenated into a CodeIgniter validation-rule string
+        // (Mdl_quotes::validation_rules_save_quote()); see the matching comment in invoices/controllers/Ajax.php (CWE-94).
+        $quote_id = (int) $this->input->post('quote_id', true);
 
         $this->mdl_quotes->set_id($quote_id);
 

@@ -189,7 +189,10 @@ class Mdl_Invoices extends Response_Model
             'invoice_number' => [
                 'field' => 'invoice_number',
                 'label' => trans('invoice') . ' #',
-                'rules' => 'is_unique[ip_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']',
+                // Security: ctype_digit, not a bare truthiness check — $this->id reaches this string verbatim
+                // (set_id() stores whatever it is given), so anything other than a plain integer here would be
+                // concatenated into the rule string Form_validation splits on "|" (CWE-94).
+                'rules' => 'is_unique[ip_invoices.invoice_number' . (ctype_digit((string) $this->id) ? '.invoice_id.' . (int) $this->id : '') . ']',
             ],
             'invoice_date_created' => [
                 'field' => 'invoice_date_created',
