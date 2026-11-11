@@ -31,6 +31,14 @@ function get_setting($setting_key, $default = '', $escape = false)
 }
 
 /**
+ * Whether the administrator has switched online payments on. Only the saved value "1" counts.
+ */
+function online_payments_enabled(): bool
+{
+    return (string) get_setting('enable_online_payments') === '1';
+}
+
+/**
  * Get the settings for a payment gateway.
  *
  * @param string $gateway
