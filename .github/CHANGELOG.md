@@ -86,7 +86,7 @@ exposure and for the URL Rewrite rules that the shipped `web.config` is built on
 | The update check and the news panel read from the GitHub Releases API; their requests are bounded and non-list answers fall back | — | — | [@sabinich](https://github.com/sabinich) | [#1777](https://github.com/InvoicePlane/InvoicePlane/pull/1777), [#1787](https://github.com/InvoicePlane/InvoicePlane/pull/1787) |
 | CSRF check trusted a tokenless POST to a `csrf_exclude_uris` URI (follow-up to the invoice-delete fix, #1694) | — | [GHSA-mhvh-4j3w-7pvj](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-mhvh-4j3w-7pvj) | [@venkatesh2003631](https://github.com/venkatesh2003631) | [#1784](https://github.com/InvoicePlane/InvoicePlane/pull/1784) |
 | Stored XSS via unescaped `system_theme` setting, reaching the unauthenticated login page (CWE-79 / CWE-116 / CWE-20 / CWE-693) | High | [GHSA-hmqm-59ff-gmcw](https://github.com/InvoicePlane/InvoicePlane/security/advisories/GHSA-hmqm-59ff-gmcw) | [@cray4367](https://github.com/cray4367) | [#1805](https://github.com/InvoicePlane/InvoicePlane/pull/1805) |
-| Mass-assignment / column-name injection via item properties in `invoices/ajax/save` and `quotes/ajax/save`, allowing arbitrary database reads through an INSERT (CWE-915 / CWE-89) | — | — | [@rickwengdev](https://github.com/rickwengdev) | [#TODO](https://github.com/InvoicePlane/InvoicePlane/pull/TODO) |
+| Mass-assignment / column-name injection via item properties in `invoices/ajax/save` and `quotes/ajax/save`, allowing arbitrary database reads through an INSERT (CWE-915 / CWE-89) | — | — | [@rickwengdev](https://github.com/rickwengdev) | [#1874](https://github.com/InvoicePlane/InvoicePlane/pull/1874) |
 
 ### Security fixes
 
