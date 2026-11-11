@@ -119,6 +119,13 @@ class Invoices extends Admin_Controller
 
     public function view($invoice_id): void
     {
+        // Security: permitted_uri_chars (application/config/config.php) allows "()-.:~", and MySQL's loose comparison
+        // of a string against an int column matches on the leading numeric prefix, so the real invoice still loads
+        // for a segment such as "1-foo(1)" -- the attacker-chosen remainder reached the invoice views unquoted,
+        // written straight into inline script (an "invoice_id:" echo in the view), i.e. reflected XSS
+        // (CWE-79). Casting here makes every one of those echoes safe without touching each view individually.
+        $invoice_id = (int) $invoice_id;
+
         $this->load->model(
             [
                 'invoices/mdl_items',
