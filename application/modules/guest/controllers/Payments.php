@@ -33,6 +33,7 @@ class Payments extends Guest_Controller
     {
         if ( ! empty($this->user_clients)) {
             $this->mdl_payments
+                ->guest_visible()
                 ->where_in('ip_invoices.client_id', $this->user_clients);
         } else {
             $this->mdl_payments->where('1=0');
