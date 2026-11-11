@@ -71,7 +71,12 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
 
     $CI->load->helper(['country', 'client']);
 
-    $invoice                   = $CI->mdl_invoices->get_by_id($invoice_id);
+    $invoice = ctype_digit((string) $invoice_id) ? $CI->mdl_invoices->get_by_id($invoice_id) : null;
+
+    if ( ! $invoice) {
+        show_404();
+    }
+
     $invoice                   = $CI->mdl_invoices->get_payments($invoice);
     $invoice->invoice_password = $CI->mdl_invoices->decrypt_invoice_password($invoice->invoice_password);
 
@@ -221,7 +226,12 @@ function generate_invoice_sumex($invoice_id, $stream = true, $invoice_template =
     $CI->load->helper('file_security');
 
     $CI->load->model('invoices/mdl_items');
-    $invoice                   = $CI->mdl_invoices->get_by_id($invoice_id);
+    $invoice = ctype_digit((string) $invoice_id) ? $CI->mdl_invoices->get_by_id($invoice_id) : null;
+
+    if ( ! $invoice) {
+        show_404();
+    }
+
     $invoice->invoice_password = $CI->mdl_invoices->decrypt_invoice_password($invoice->invoice_password);
 
     if ($invoice_template) {
@@ -311,7 +321,12 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
         ]
     );
 
-    $quote                 = $CI->mdl_quotes->get_by_id($quote_id);
+    $quote = ctype_digit((string) $quote_id) ? $CI->mdl_quotes->get_by_id($quote_id) : null;
+
+    if ( ! $quote) {
+        show_404();
+    }
+
     $quote->quote_password = $CI->mdl_quotes->decrypt_quote_password($quote->quote_password);
 
     // Override language with system language

@@ -214,6 +214,10 @@ class Quotes extends Admin_Controller
      */
     public function generate_pdf($quote_id, $stream = true, $quote_template = null)
     {
+        if ( ! ctype_digit((string) $quote_id)) {
+            show_404();
+        }
+
         $this->load->helper(['pdf', 'template']);
 
         // Security (CSRF): "mark as sent when generating the PDF" mutates quote
