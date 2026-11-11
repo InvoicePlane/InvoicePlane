@@ -48,7 +48,7 @@ if (in_array($quote->quote_status_id, [2, 3])) {
 <?php
 }
 ?>
-            <a href="<?php echo site_url('guest/quotes/generate_pdf/' . $quote_id); ?>"
+            <a href="<?php echo site_url('guest/quotes/generate_pdf/' . (int) $quote_id); ?>"
                class="btn btn-default" id="btn_generate_pdf" target="_blank">
                 <i class="fa fa-print"></i> <?php _trans('download_pdf'); ?>
             </a>

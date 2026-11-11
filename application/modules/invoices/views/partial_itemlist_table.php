@@ -37,7 +37,7 @@ $invoice_disabled = $invoice->is_read_only != 1 ? '' : ' disabled="disabled"';
                 <?php endif; ?>
             </td>
             <td class="td-text">
-                <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
+                <input type="hidden" name="invoice_id" value="<?php echo (int) $invoice_id; ?>">
                 <input type="hidden" name="item_id" value="">
                 <input type="hidden" name="item_product_id" value="">
                 <input type="hidden" name="item_task_id" class="item-task-id" value="">
@@ -181,7 +181,7 @@ foreach ($items as $item) {
     ?>
             </td>
             <td class="td-text">
-                <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
+                <input type="hidden" name="invoice_id" value="<?php echo (int) $invoice_id; ?>">
                 <input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>"<?php echo $invoice_disabled; ?>>
                 <input type="hidden" name="item_task_id" class="item-task-id"
                        value="<?php echo $item->item_task_id ? $item->item_task_id : ''; ?>">

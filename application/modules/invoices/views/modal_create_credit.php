@@ -4,7 +4,7 @@
         $('#create-credit-confirm').click(function () {
             show_loader(); // Show spinner
             $.post("<?php echo site_url('invoices/ajax/create_credit'); ?>", {
-                    invoice_id: <?php echo $invoice_id; ?>,
+                    invoice_id: <?php echo (int) $invoice_id; ?>,
                     client_id: $('#client_id').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_group_id: $('#invoice_group_id').val(),

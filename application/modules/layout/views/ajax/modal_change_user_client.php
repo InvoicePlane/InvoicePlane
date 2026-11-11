@@ -78,7 +78,7 @@ if ($who_id) {
                 </div>
             </div>
 
-            <input class="hidden" id="<?php echo $type; ?>_id" value="<?php echo $type_id; ?>">
+            <input class="hidden" id="<?php echo $type; ?>_id" value="<?php echo (int) $type_id; ?>">
             <input class="hidden" id="input_permissive_search_<?php echo $who; ?>s" value="<?php echo $permissive; ?>">
         </div>
 
