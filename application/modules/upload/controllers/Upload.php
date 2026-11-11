@@ -35,8 +35,14 @@ class Upload extends Admin_Controller
         $this->content_types = $this->mdl_uploads->content_types;
     }
 
-    public function upload_file(int $customerId, string $url_key): void
+    public function upload_file($customerId, string $url_key): void
     {
+        if ( ! ctype_digit((string) $customerId)) {
+            show_404();
+        }
+
+        $customerId = (int) $customerId;
+
         if (empty($_FILES['file']['name'])) {
             respond_file_message(400, 'upload_error_no_file');
         }

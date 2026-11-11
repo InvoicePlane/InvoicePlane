@@ -266,6 +266,10 @@ class Invoices extends Admin_Controller
      */
     public function generate_pdf($invoice_id, $stream = true, $invoice_template = null): void
     {
+        if ( ! ctype_digit((string) $invoice_id)) {
+            show_404();
+        }
+
         $this->load->helper(['pdf', 'template']);
 
         // Security (CSRF): "mark as sent when generating the PDF" mutates invoice
@@ -338,9 +342,15 @@ class Invoices extends Admin_Controller
 
     public function generate_sumex_copy($invoice_id): void
     {
+        $invoice = ctype_digit((string) $invoice_id) ? $this->mdl_invoices->get_by_id($invoice_id) : null;
+
+        if ( ! $invoice) {
+            show_404();
+        }
+
         $this->load->model('invoices/mdl_items');
         $this->load->library('Sumex', [
-            'invoice' => $this->mdl_invoices->get_by_id($invoice_id),
+            'invoice' => $invoice,
             'items'   => $this->mdl_items->where('invoice_id', $invoice_id)->get()->result(),
             'options' => [
                 'copy'   => '1',
