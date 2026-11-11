@@ -219,6 +219,18 @@ exposure and for the URL Rewrite rules that the shipped `web.config` is built on
 
 ### Bug fixes
 
+- **Requests with empty or unknown input answered with an HTTP 500 instead of a normal response:** `products/ajax/process_product_selections` and `tasks/ajax/process_task_selections` passed a missing selection straight to `where_in()` (`TypeError`), `email_templates/ajax/get_content` passed the `null` of an unknown template id to `json_encode_ajax()` (`TypeError`), and the public `guest/payment_information/form` without an invoice key raised an `ArgumentCountError`. **Fix:** an empty selection returns `[]`, an unknown template returns `null`, and the payment form treats a missing key like an unknown one and redirects. The tasks Ajax controller is now marked as an Ajax controller like its siblings.
+
+- **Saving the settings read logo uploads that were not sent:** `Settings::index()` read `$_FILES['invoice_logo']['name']` and `$_FILES['login_logo']['name']` unconditionally, which raises a warning on PHP 8 when the form is posted without those file fields. **Fix:** both are checked with `isset()` first.
+
+- **`parse_template()` printed a deprecation notice for an empty template:** a `null` body reached `preg_match_all()`, which PHP 8.1 and later report as deprecated, and the notice ended up in the generated output. **Fix:** a `null` or empty body is returned unchanged.
+
+- **JSON answers did not carry the next CSRF token when `csrf_regenerate` is on:** with regeneration enabled the token a page holds is spent by its first Ajax POST, and the answer gave the page no way to learn the next one. **Fix:** `json_encode_ajax()` adds the new token to its answer in that configuration; nothing changes with the default configuration.
+
+- **The setup security warning did not say which flag is wrong:** the warning shown to administrators only read "Security Warning". **Fix:** it now lists the flags that are off (`SETUP_COMPLETED`, `DISABLE_SETUP`), as the code that collects them intended.
+
+- **Deleting a client returned to the unfiltered client list:** the redirect went to `clients`, which redirects again; it now goes straight to `clients/status/active`.
+
 - **Deleting an invoice or quote item through another document's URL removed the item:** `invoices/ajax/delete_item/<id>` and `quotes/ajax/delete_item/<id>` only checked that the document in the URL exists, then deleted the posted item id whichever document it belonged to, so one invoice's (or quote's) URL could remove a line of another and leave that document's totals stale. The item must now belong to the document named in the URL; any other combination answers `success: 0` and deletes nothing.
 
 - **The online payment log (Payments > Online logs) printed provider responses unescaped:** the driver, response message, reference and id of each `ip_merchant_responses` row went into the table as raw HTML, so a payment provider response containing markup (or script) ran in the browser of the administrator who opened the log. All four columns are now escaped with `htmlsc()`, like the invoice number next to them.

@@ -16,6 +16,8 @@ if ( ! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Ajax extends Admin_Controller
 {
+    public $ajax_controller = true;
+
     /**
      * @param null|int $invoice_id
      */
@@ -39,7 +41,15 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('mdl_tasks');
 
-        $tasks = $this->mdl_tasks->where_in('task_id', $this->input->post('task_ids'))->get()->result();
+        $ids = $this->input->post('task_ids');
+
+        if (empty($ids)) {
+            $this->json_encode_ajax([]);
+
+            return;
+        }
+
+        $tasks = $this->mdl_tasks->where_in('task_id', $ids)->get()->result();
         foreach ($tasks as $task) {
             $task->task_price = format_amount($task->task_price);
         }
