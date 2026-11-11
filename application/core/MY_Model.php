@@ -454,6 +454,41 @@ class MY_Model extends CI_Model
     }
 
     /**
+     * Drop every key of $db_array that is not a real column of $this->table (CWE-915 / CWE-89): a caller that
+     * inserts a request-decoded object or array straight into the database, such as an item row built from
+     * posted JSON, would otherwise let an attacker-chosen property name become an identifier in the generated
+     * SQL. CodeIgniter's query builder does not escape an identifier containing "(" or "'"
+     * (DB_driver::_escape_identifiers()), so such a name can close the column list and append its own VALUES
+     * clause, including a subquery. This is opt-in per model (see Mdl_Items::save() / Mdl_Quote_Items::save())
+     * rather than applied here automatically, since not every $db_array shape (e.g. a plain scalar) supports it.
+     *
+     * @param array|object $db_array
+     *
+     * @return array|object
+     */
+    protected function only_known_columns($db_array)
+    {
+        if ( ! is_array($db_array) && ! is_object($db_array)) {
+            return $db_array;
+        }
+
+        $columns = $this->db->list_fields($this->table);
+
+        if (is_object($db_array)) {
+            $filtered = new stdClass();
+            foreach ($db_array as $key => $value) {
+                if (in_array($key, $columns, true)) {
+                    $filtered->{$key} = $value;
+                }
+            }
+
+            return $filtered;
+        }
+
+        return array_intersect_key($db_array, array_flip($columns));
+    }
+
+    /**
      * Query builder which listens to methods in child model.
      *
      * @param array $exclude

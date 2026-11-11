@@ -92,7 +92,9 @@ class Mdl_Quote_Items extends Response_Model
      */
     public function save($id = null, $db_array = null, &$global_discount = [])
     {
-        $id = parent::save($id, $db_array);
+        // Security: see the matching comment in Mdl_Items::save() (CWE-915).
+        $db_array = $this->only_known_columns($db_array);
+        $id       = parent::save($id, $db_array);
 
         $this->load->model([
             'quotes/mdl_quote_item_amounts',
