@@ -127,7 +127,7 @@ foreach ($payment_methods as $payment_method) {
                 </div>
 
                 <!-- Add a hidden input field to pass whether payment custom fields have been create -->
-                <input type="hidden" name="payment_cf_exist" id="payment_cf_exist" value="<?php echo $payment_cf_exist; ?>">
+                <input type="hidden" name="payment_cf_exist" id="payment_cf_exist" value="<?php echo $payment_cf_exist === 'yes' ? 'yes' : 'no'; ?>">
 
             </form>
         </div>
