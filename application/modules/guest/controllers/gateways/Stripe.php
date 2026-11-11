@@ -41,6 +41,11 @@ class Stripe extends Base_Controller
      */
     public function create_checkout_session($invoice_url_key = null)
     {
+        // No new payment starts while online payments are switched off.
+        if ( ! online_payments_enabled()) {
+            show_404();
+        }
+
         // Require POST request to prevent CSRF attacks
         if ($this->input->method() !== 'post' || $invoice_url_key === null) {
             show_404();
@@ -88,6 +93,10 @@ class Stripe extends Base_Controller
      * card transaction has been completed or aborted
      * Handle exceptions Improved by @Matthias-Ab.
      *
+     *
+     * Not behind the online payments switch on purpose: the customer has already paid at Stripe when this is called,
+     * so refusing it would keep the money and lose the payment record. A session can only exist for a checkout that
+     * create_checkout_session() started, which the switch does refuse.
      *
      * @return void
      */
