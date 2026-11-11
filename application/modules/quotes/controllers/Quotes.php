@@ -251,6 +251,18 @@ class Quotes extends Admin_Controller
             return;
         }
 
+        // The tax row must belong to the quote in the URL; deleting by bare row id would let one quote's URL
+        // remove another quote's tax and then recalculate the wrong quote. Plain integers only: the database
+        // would read "5abc" as 5.
+        $tax_row_belongs_to_quote = ctype_digit($quote_id) && ctype_digit((string) $quote_tax_rate_id)
+            && $this->db->where(['quote_tax_rate_id' => (int) $quote_tax_rate_id, 'quote_id' => (int) $quote_id])->count_all_results('ip_quote_tax_rates') > 0;
+
+        if ( ! $tax_row_belongs_to_quote) {
+            show_404();
+
+            return;
+        }
+
         $this->load->model('quotes/mdl_quote_tax_rates');
         $this->mdl_quote_tax_rates->delete($quote_tax_rate_id);
 
