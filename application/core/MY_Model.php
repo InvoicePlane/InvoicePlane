@@ -472,7 +472,14 @@ class MY_Model extends CI_Model
             return $db_array;
         }
 
-        $columns = $this->db->list_fields($this->table);
+        // A caller that passes nothing (null/[]/an empty object) relies on MY_Model::save()'s own
+        // "$db_array is falsy -> build it from db_array()" fallback; that must still work exactly as
+        // before. What must NOT happen is an attacker turning a real, non-empty payload into that same
+        // falsy shape by naming only columns this filter rejects -- save() would then silently build the
+        // row from db_array() (whatever the request's own POST fields happen to be) instead of refusing,
+        // which is a different and unintended write path, not merely "nothing was saved".
+        $had_keys = is_object($db_array) ? get_object_vars($db_array) !== [] : $db_array !== [];
+        $columns  = $this->db->list_fields($this->table);
 
         if (is_object($db_array)) {
             $filtered = new stdClass();
@@ -481,11 +488,17 @@ class MY_Model extends CI_Model
                     $filtered->{$key} = $value;
                 }
             }
-
-            return $filtered;
+            $kept = get_object_vars($filtered) !== [];
+        } else {
+            $filtered = array_intersect_key($db_array, array_flip($columns));
+            $kept     = $filtered !== [];
         }
 
-        return array_intersect_key($db_array, array_flip($columns));
+        if ($had_keys && ! $kept) {
+            throw new RuntimeException('only_known_columns(): every key of the supplied $db_array was rejected; refusing to fall through to save()\'s build-from-POST fallback.');
+        }
+
+        return $filtered;
     }
 
     /**
