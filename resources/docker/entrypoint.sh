@@ -109,6 +109,20 @@ ENCRYPTION_CIPHER=${ENCRYPTION_CIPHER_SAFE}
 SETUP_COMPLETED=true
 EOF
 
+# Optional settings. Each is written only when it has a value, so that the application default applies otherwise
+# (an empty SESS_SAVE_PATH, for one, breaks sessions).
+OPTIONAL_SETTINGS="COOKIE_SECURE PROXY_IPS SESS_DRIVER SESS_SAVE_PATH SESS_COOKIE_NAME SESS_TABLE_NAME
+CSRF_PROTECTION CSRF_REGENERATE CSRF_EXPIRE LOGIN_IP_MAX_ATTEMPTS LOGIN_IP_WINDOW_MINUTES CRON_IP_MAX_ATTEMPTS
+CRON_IP_WINDOW_MINUTES PASSWORD_RESET_TOKEN_EXPIRY_MINUTES SEC_STRIP_EXIF_FROM_IMAGES TITLE"
+
+for name in $OPTIONAL_SETTINGS; do
+    value="${!name:-}"
+    if [ -n "$value" ]; then
+        safe_value="$(sanitize_config_value "$value")"
+        printf '%s=%s\n' "$name" "$safe_value" >> "$CONFIG"
+    fi
+done
+
 # Protect the custom templates directory from direct HTTP access.
 if [ -n "${CUSTOM_TEMPLATES_FOLDER:-}" ]; then
     mkdir -p "$CUSTOM_TEMPLATES_FOLDER"
