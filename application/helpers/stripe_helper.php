@@ -103,6 +103,30 @@ function stripe_minor_unit_rounding_step(string $currency): int
 }
 
 /**
+ * How far a captured amount may differ from the invoice balance for $currency and still be
+ * accepted as a full payment, in major units.
+ *
+ * For every currency with no rounding step this is the plain float-precision slack (0.0001).
+ * For UGX, ISK and the three-decimal currencies, stripe_amount_to_minor_units() rounds the
+ * invoice balance to the nearest step before sending it to Stripe, so the amount Stripe actually
+ * captures can differ from the balance by up to half that step — in either direction. A capture
+ * check (or Mdl_Payments::record_external_payment()'s own balance guard) that still used the
+ * plain 0.0001 tolerance here would reject a legitimately captured payment as a mismatch, or
+ * refuse to record it as an "oversized" overpayment, purely because of Stripe's own rounding
+ * rule — not because anything was actually wrong with the payment.
+ */
+function stripe_minor_unit_rounding_tolerance(string $currency): float
+{
+    $step = stripe_minor_unit_rounding_step($currency);
+
+    if ($step <= 1) {
+        return 0.0001;
+    }
+
+    return ($step / 2) / stripe_minor_unit_multiplier($currency);
+}
+
+/**
  * Convert a major-unit invoice amount to the integer Stripe expects for this currency: the plain
  * minor-unit conversion (amount_to_minor_units(), from currency_helper.php), then rounded to the
  * step stripe_minor_unit_rounding_step() requires, for the currencies where that step is more

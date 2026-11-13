@@ -167,12 +167,16 @@ class Stripe extends Base_Controller
                     $expected_currency = mb_strtoupper((string) get_setting('gateway_stripe_currency'));
                     $capture_currency  = mb_strtoupper((string) ($session->currency ?? ''));
                     $capture_amount    = amount_from_minor_units($session->amount_total, stripe_minor_unit_multiplier($capture_currency));
+                    // UGX, ISK and the three-decimal currencies send a balance Stripe itself rounded to its
+                    // required step (stripe_amount_to_minor_units()), so the capture can differ from the
+                    // balance by up to half that step without anything being wrong with the payment.
+                    $tolerance = stripe_minor_unit_rounding_tolerance($capture_currency);
 
                     if ($capture_currency !== $expected_currency) {
                         log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: currency mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . $expected_currency . ', received: ' . $capture_currency);
                         $paid     = false;
                         $user_msg = trans('online_payment_payment_failed');
-                    } elseif ((float) $capture_amount + 0.0001 < (float) $invoice->invoice_balance) {
+                    } elseif ((float) $capture_amount + $tolerance < (float) $invoice->invoice_balance) {
                         log_message('error', __CLASS__ . '::' . __FUNCTION__ . ' - Rejected capture: amount mismatch for invoice ' . sanitize_for_logging($invoice_key) . '. Expected: ' . sanitize_for_logging($invoice->invoice_balance) . ', received: ' . sanitize_for_logging($capture_amount));
                         $paid     = false;
                         $user_msg = trans('online_payment_payment_failed');
@@ -188,7 +192,7 @@ class Stripe extends Base_Controller
                             'payment_method_id'   => get_setting('gateway_stripe_payment_method'),
                             'payment_note'        => trans('online_payment_intent_id') . ': ' . $payment_intent,
                             'payment_external_id' => $payment_intent,
-                        ]);
+                        ], $tolerance);
 
                         if ( ! $recorded) {
                             $paid     = false;
