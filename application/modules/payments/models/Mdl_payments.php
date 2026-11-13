@@ -217,18 +217,34 @@ class Mdl_Payments extends Response_Model
         // float-precision noise, which this same reconciliation already produces for an exact
         // match; a caller using the default tolerance never has a residual above that noise.
         if ($amounts !== null && (float) $amounts->invoice_balance > 0.0001 && (float) $amounts->invoice_balance <= $tolerance) {
-            $this->db->set([
-                'invoice_id'          => $invoice_id,
-                'payment_date'        => date_to_mysql($db_array['payment_date']),
-                'payment_amount'      => (float) $amounts->invoice_balance,
-                'payment_method_id'   => $db_array['payment_method_id'] ?: 0,
-                'payment_note'        => trans('online_payment_rounding_adjustment'),
-                'payment_external_id' => null,
-            ]);
-            $this->db->insert('ip_payments');
+            $residual = (float) $amounts->invoice_balance;
 
-            $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
-            $amounts = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
+            // Claim the residual the same way the gate above claims the capture: one
+            // conditional UPDATE, atomic in itself, re-verifying against the live row rather
+            // than trusting the plain SELECT above. A concurrent payment that has since
+            // changed this balance makes the WHERE match nothing -- affected_rows() is 0, the
+            // insert below is skipped, and whatever that concurrent change did stands
+            // untouched, instead of this residual overwriting it with a stale amount.
+            $this->db->set('invoice_paid', sprintf('invoice_paid + %F', $residual), false);
+            $this->db->set('invoice_balance', 0, false);
+            $this->db->where('invoice_id', $invoice_id);
+            $this->db->where(sprintf('ABS(invoice_balance - %F) < 0.0001', $residual), null, false);
+            $this->db->update('ip_invoice_amounts');
+
+            if ($this->db->affected_rows() > 0) {
+                $this->db->set([
+                    'invoice_id'          => $invoice_id,
+                    'payment_date'        => date_to_mysql($db_array['payment_date']),
+                    'payment_amount'      => $residual,
+                    'payment_method_id'   => $db_array['payment_method_id'] ?: 0,
+                    'payment_note'        => trans('online_payment_rounding_adjustment'),
+                    'payment_external_id' => null,
+                ]);
+                $this->db->insert('ip_payments');
+
+                $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
+                $amounts = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
+            }
         }
 
         if ($amounts !== null && (float) $amounts->invoice_paid >= (float) $amounts->invoice_total) {
