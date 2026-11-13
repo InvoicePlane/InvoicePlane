@@ -16,8 +16,16 @@ if ( ! defined('BASEPATH')) {
 /**
  * Return the multiplier Stripe uses to express an amount in a currency's minor unit.
  *
- * Stripe treats these currencies as zero-decimal currencies for charges:
- * https://docs.stripe.com/currencies#zero-decimal
+ * Three buckets, per https://docs.stripe.com/currencies:
+ * - Zero-decimal currencies (https://docs.stripe.com/currencies#zero-decimal): the charge and
+ *   the amount are the same, so the multiplier is 1.
+ * - Three-decimal currencies (https://docs.stripe.com/currencies#three-decimal): the minor unit
+ *   is a thousandth, so the multiplier is 1000. The resulting amount must additionally be a
+ *   multiple of 10 — see stripe_minor_unit_rounding_step().
+ * - Everything else, including the two special-case currencies (UGX, ISK) that Stripe treats as
+ *   zero-decimal but requires expressed as a two-decimal value whose decimal part is always "00"
+ *   (https://docs.stripe.com/currencies#special-cases): multiplier 100. For UGX/ISK the resulting
+ *   amount must additionally be a multiple of 100 — see stripe_minor_unit_rounding_step().
  */
 function stripe_minor_unit_multiplier(string $currency): int
 {
@@ -39,5 +47,76 @@ function stripe_minor_unit_multiplier(string $currency): int
         'XPF',
     ];
 
-    return in_array(strtoupper($currency), $zero_decimal_currencies, true) ? 1 : 100;
+    static $three_decimal_currencies = [
+        'BHD',
+        'JOD',
+        'KWD',
+        'OMR',
+        'TND',
+    ];
+
+    $code = strtoupper($currency);
+
+    if (in_array($code, $zero_decimal_currencies, true)) {
+        return 1;
+    }
+
+    if (in_array($code, $three_decimal_currencies, true)) {
+        return 1000;
+    }
+
+    return 100;
+}
+
+/**
+ * The step a currency's minor-unit amount must be a multiple of, on top of
+ * stripe_minor_unit_multiplier() — 1 for every currency except Stripe's documented special cases
+ * (https://docs.stripe.com/currencies#special-cases, https://docs.stripe.com/currencies#three-decimal):
+ * - UGX and ISK: backward-compatible zero-decimal currencies expressed with a decimal part that
+ *   is always "00", i.e. the minor-unit amount must be a multiple of 100.
+ * - Three-decimal currencies (BHD, JOD, KWD, OMR, TND): the minor-unit amount must be a multiple
+ *   of 10.
+ */
+function stripe_minor_unit_rounding_step(string $currency): int
+{
+    static $round_to_nearest_100 = ['UGX', 'ISK'];
+
+    static $three_decimal_currencies = [
+        'BHD',
+        'JOD',
+        'KWD',
+        'OMR',
+        'TND',
+    ];
+
+    $code = strtoupper($currency);
+
+    if (in_array($code, $round_to_nearest_100, true)) {
+        return 100;
+    }
+
+    if (in_array($code, $three_decimal_currencies, true)) {
+        return 10;
+    }
+
+    return 1;
+}
+
+/**
+ * Convert a major-unit invoice amount to the integer Stripe expects for this currency: the plain
+ * minor-unit conversion (amount_to_minor_units(), from currency_helper.php), then rounded to the
+ * step stripe_minor_unit_rounding_step() requires, for the currencies where that step is more
+ * than 1. Stripe rejects an amount that isn't a multiple of the required step outright, so this
+ * is the single conversion the checkout-session line item should use.
+ */
+function stripe_amount_to_minor_units(int|float|string $amount, string $currency): int
+{
+    $minor_units = amount_to_minor_units($amount, stripe_minor_unit_multiplier($currency));
+    $step        = stripe_minor_unit_rounding_step($currency);
+
+    if ($step <= 1) {
+        return $minor_units;
+    }
+
+    return (int) (round($minor_units / $step) * $step);
 }

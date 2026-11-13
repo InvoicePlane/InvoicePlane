@@ -70,7 +70,7 @@ class Stripe extends Base_Controller
                 [
                     'price_data' => [
                         'currency'     => get_setting('gateway_stripe_currency'),
-                        'unit_amount'  => amount_to_minor_units($invoice->invoice_balance, stripe_minor_unit_multiplier(get_setting('gateway_stripe_currency'))),
+                        'unit_amount'  => stripe_amount_to_minor_units($invoice->invoice_balance, get_setting('gateway_stripe_currency')),
                         'product_data' => [
                             'name' => trans('invoice') . ' #' . $invoice->invoice_number,
                         ],
