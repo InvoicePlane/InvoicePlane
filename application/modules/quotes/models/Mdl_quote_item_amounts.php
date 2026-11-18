@@ -33,9 +33,19 @@ class Mdl_Quote_Item_Amounts extends CI_Model
 
         $item_subtotal = $item->item_quantity * $item->item_price;
 
+        // item_price_includes_tax: item_price is the final, tax-inclusive price. Round the tax on
+        // its own first and take the base price as what remains, so quantity * (base + tax) still
+        // equals quantity * item_price exactly. Recomputing tax from the subtotal with the raw rate
+        // (the normal path below) is what drifts by a cent either way - GH issue #1887.
+        $item_unit_tax = null;
+        if ( ! empty($item->item_price_includes_tax)) {
+            $item_unit_tax = round($item->item_price * ($item->item_tax_rate_percent / (100 + $item->item_tax_rate_percent)), 2);
+            $item_subtotal = $item->item_quantity * ($item->item_price - $item_unit_tax);
+        }
+
         // Discounts calculation - since v1.6.3
         if (config_item('legacy_calculation')) {
-            $item_tax_total      = $item_subtotal * ($item->item_tax_rate_percent / 100);
+            $item_tax_total      = $item_unit_tax !== null ? $item->item_quantity * $item_unit_tax : $item_subtotal * ($item->item_tax_rate_percent / 100);
             $item_discount_total = $item->item_discount_amount * $item->item_quantity;
             $item_total          = $item_subtotal + $item_tax_total - $item_discount_total;
         } else {
@@ -50,7 +60,7 @@ class Mdl_Quote_Item_Amounts extends CI_Model
 
             $global_discount['item'] += $item_discount; // for Mdl_quote_amounts calculation
             $item_discount_total = $item->item_discount_amount * $item->item_quantity;
-            $item_tax_total      = ($item_subtotal - $item_discount - $item_discount_total) * ($item->item_tax_rate_percent / 100);
+            $item_tax_total      = $item_unit_tax !== null ? $item->item_quantity * $item_unit_tax : ($item_subtotal - $item_discount - $item_discount_total) * ($item->item_tax_rate_percent / 100);
             $item_total          = $item_subtotal - $item_discount - $item_discount_total + $item_tax_total;
         }
 
