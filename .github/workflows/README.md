@@ -122,7 +122,7 @@ Artifacts are also available in the Actions tab for 90 days.
 4. **Creates pull request** - Automated PR with update details
 
 **Update Types:**
-- `security-patch` - Security and patch updates (default for scheduled runs)
+- `security-patch` - Security and patch updates (default)
 - `patch-minor` - Patch and minor version updates
 - `all-dependencies` - All updates including major versions with `composer bump`
 
@@ -177,9 +177,9 @@ The default `GITHUB_TOKEN` has restricted permissions and cannot create pull req
 4. **Creates pull request** - Automated PR with update details
 
 **Update Types:**
-- `security-only` - Only security fixes (default for scheduled runs)
+- `security-updates` - Only security fixes (default)
 - `patch-minor` - Patch and minor version updates
-- `all-dependencies` - All updates including major versions
+- `all-latest` - All updates including major versions
 
 **Required Secrets:**
 
