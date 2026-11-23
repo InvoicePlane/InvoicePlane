@@ -108,8 +108,10 @@ Artifacts are also available in the Actions tab for 90 days.
 ### 2. Composer Dependency Update (`composer-update.yml`)
 
 **Trigger:**
-- Scheduled: Weekly on Mondays at 9:00 AM UTC
-- Manual dispatch with update type selection
+- Manual dispatch with update type selection only. A weekly schedule trigger used to run this,
+  but every scheduled run failed with `startup_failure` (the job never started) because this
+  workflow's `contents: write` / `pull-requests: write` permissions exceed what the repository's
+  Actions settings allow for an unattended trigger; it was removed until that setting is revisited.
 
 **Purpose:** Automates Composer (PHP) dependency updates with security checks
 
@@ -161,8 +163,10 @@ The default `GITHUB_TOKEN` has restricted permissions and cannot create pull req
 ### 3. Yarn Dependency Update (`yarn-update.yml`)
 
 **Trigger:**
-- Scheduled: Weekly on Mondays at 10:00 AM UTC
-- Manual dispatch with update type selection
+- Manual dispatch with update type selection only. A weekly schedule trigger used to run this,
+  but every scheduled run failed with `startup_failure` (the job never started) because this
+  workflow's `contents: write` / `pull-requests: write` permissions exceed what the repository's
+  Actions settings allow for an unattended trigger; it was removed until that setting is revisited.
 
 **Purpose:** Automates Yarn (JavaScript) dependency updates with security checks
 
