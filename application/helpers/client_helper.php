@@ -35,7 +35,10 @@ function format_client($client, $show_title = true): string
     }
 
     $client_title = '';
-    if ($show_title && ! empty($client->client_title)) {
+    // Pre-1.7 clients could end up with the form's internal 'custom' sentinel stored literally
+    // in client_title (the free-text title itself was never saved). Treat that bare value as
+    // blank instead of printing it as if it were a real custom title.
+    if ($show_title && ! empty($client->client_title) && ClientTitleEnum::CUSTOM !== $client->client_title) {
         $client_title = ucfirst(in_array($client->client_title, ClientTitleEnum::VALUES, true) ? trans($client->client_title) : $client->client_title) . ' ';
     }
 
