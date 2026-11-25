@@ -36,11 +36,12 @@ runs:
 
         php_version="${{ inputs.php-version }}"
 
-        # software-properties-common provides add-apt-repository itself, so
-        # it must be installed before the ondrej/php PPA is added.
+        # ppa:ondrej/php (Launchpad) is frozen and no longer receiving updates;
+        # packages.sury.org is Ondřej Surý's own repository and the one he now
+        # maintains going forward, so add PHP from there instead.
         sudo apt-get update
-        sudo apt-get install -y software-properties-common ca-certificates curl unzip
-        sudo add-apt-repository -y ppa:ondrej/php
+        sudo apt-get install -y ca-certificates curl unzip lsb-release
+        curl -sSL https://packages.sury.org/php/README.txt | sudo bash -x
         sudo apt-get update
 
         # Map requested PHP extension names to their apt package names.
