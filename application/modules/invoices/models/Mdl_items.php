@@ -102,7 +102,10 @@ class Mdl_Items extends Response_Model
      */
     public function save($id = null, $db_array = null, &$global_discount = [])
     {
-        $id = parent::save($id, $db_array);
+        // Security: $db_array here is built from decoded request JSON (invoices/controllers/Ajax.php::save()); an
+        // attacker-chosen property name must not become a column identifier in the INSERT/UPDATE this triggers (CWE-915).
+        $db_array = $this->only_known_columns($db_array);
+        $id       = parent::save($id, $db_array);
 
         $this->load->model([
             'invoices/mdl_item_amounts',

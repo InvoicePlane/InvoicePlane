@@ -454,6 +454,54 @@ class MY_Model extends CI_Model
     }
 
     /**
+     * Drop every key of $db_array that is not a real column of $this->table (CWE-915 / CWE-89): a caller that
+     * inserts a request-decoded object or array straight into the database, such as an item row built from
+     * posted JSON, would otherwise let an attacker-chosen property name become an identifier in the generated
+     * SQL. CodeIgniter's query builder does not escape an identifier containing "(" or "'"
+     * (DB_driver::_escape_identifiers()), so such a name can close the column list and append its own VALUES
+     * clause, including a subquery. This is opt-in per model (see Mdl_Items::save() / Mdl_Quote_Items::save())
+     * rather than applied here automatically, since not every $db_array shape (e.g. a plain scalar) supports it.
+     *
+     * @param array|object $db_array
+     *
+     * @return array|object
+     */
+    protected function only_known_columns($db_array)
+    {
+        if ( ! is_array($db_array) && ! is_object($db_array)) {
+            return $db_array;
+        }
+
+        // A caller that passes nothing (null/[]/an empty object) relies on MY_Model::save()'s own
+        // "$db_array is falsy -> build it from db_array()" fallback; that must still work exactly as
+        // before. What must NOT happen is an attacker turning a real, non-empty payload into that same
+        // falsy shape by naming only columns this filter rejects -- save() would then silently build the
+        // row from db_array() (whatever the request's own POST fields happen to be) instead of refusing,
+        // which is a different and unintended write path, not merely "nothing was saved".
+        $had_keys = is_object($db_array) ? get_object_vars($db_array) !== [] : $db_array !== [];
+        $columns  = $this->db->list_fields($this->table);
+
+        if (is_object($db_array)) {
+            $filtered = new stdClass();
+            foreach ($db_array as $key => $value) {
+                if (in_array($key, $columns, true)) {
+                    $filtered->{$key} = $value;
+                }
+            }
+            $kept = get_object_vars($filtered) !== [];
+        } else {
+            $filtered = array_intersect_key($db_array, array_flip($columns));
+            $kept     = $filtered !== [];
+        }
+
+        if ($had_keys && ! $kept) {
+            throw new RuntimeException('only_known_columns(): every key of the supplied $db_array was rejected; refusing to fall through to save()\'s build-from-POST fallback.');
+        }
+
+        return $filtered;
+    }
+
+    /**
      * Query builder which listens to methods in child model.
      *
      * @param array $exclude
