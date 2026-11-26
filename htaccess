@@ -2,12 +2,23 @@
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  
+
   ### uncomment to force HTTPS
   # RewriteCond %{HTTPS} off
   # RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
-  RewriteRule ^index\.php$ - [L]
+  ### Never serve private folders, dot files, project files or configuration backups: without these
+  ### rules every file that exists is served to anyone, without logging in. web.config (IIS) and
+  ### resources/docker/nginx/invoiceplane.conf carry the same refusals; keep the three in step.
+  ### The patterns are relative to the folder this file is in, so they also work in a subdirectory.
+  RewriteRule ^(application|vendor|storage|resources|node_modules|tests|uploads/+(archive|customer_files|import|temp))[.\x20]*(/|$) - [R=404,L,NC]
+  RewriteRule (^|/)\.(?!well-known(/|$)) - [R=404,L]
+  RewriteRule ^(composer\.(json|lock)|package(-lock)?\.json|yarn\.lock|[^/]+\.md|phpcs\.xml|phpunit\.xml|phpstan[^/]*|pint\.json|rector\.php|Gruntfile\.js|(docker-)?compose\.yml|crowdin\.yml|Dockerfile|Makefile|playwright\.config\.js|htaccess|web\.config|ipconfig\.php[^/]*|LICENSE\.txt)[.\x20]*$ - [R=404,L,NC]
+
+  ### The front controller is the one PHP file that is reachable
+  RewriteRule ^index\.php(/|$) - [L]
+  RewriteRule \.php[.\x20]*(/|$) - [R=404,L,NC]
+
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   ### uncomment and adjust if installed in subdirectory
