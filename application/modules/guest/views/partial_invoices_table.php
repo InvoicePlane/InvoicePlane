@@ -53,6 +53,7 @@ foreach ($invoices as $invoice) {
 <?php
         }
     ?>
+                                <?php $this->layout->load_view('guest/partial_tabby_button', ['invoice' => $invoice, 'button_class' => 'btn-sm btn-primary']); ?>
 
                             </div>
                         </td>

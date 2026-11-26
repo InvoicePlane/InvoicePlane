@@ -474,6 +474,20 @@ $config['payment_gateways'] = [
             'label' => 'Test Mode',
         ],
     ],
+    'Tabby' => [
+        'secretKey' => [
+            'type'  => 'password',
+            'label' => 'Secret key',
+        ],
+        'merchantCode' => [
+            'type'  => 'text',
+            'label' => 'Merchant code',
+        ],
+        'webhookSecret' => [
+            'type'  => 'text',
+            'label' => 'Webhook secret',
+        ],
+    ],
     /* 'TargetPay_Directebanking' => array(
         'subAccountId' => array(
             'type' => 'text',

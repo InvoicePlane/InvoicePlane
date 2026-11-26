@@ -110,6 +110,15 @@
 
                     <hr>
 
+                    <?php if ($d === 'tabby') { ?>
+                    <p><?php _trans('tabby_settings_hint'); ?></p>
+                    <div class="form-group">
+                        <label for="tabby-webhook-url"><?php _trans('tabby_webhook_url'); ?></label>
+                        <input type="text" id="tabby-webhook-url" class="form-control" readonly
+                            value="<?php echo html_escape(site_url('guest/gateways/tabby/webhook')); ?>">
+                        <p class="help-block"><?php _trans('tabby_webhook_hint'); ?></p>
+                    </div>
+                    <?php } else { ?>
                     <div class="form-group">
                         <label for="settings[gateway_<?php echo $d; ?>_currency]">
                             <?php _trans('currency'); ?>
@@ -125,6 +134,7 @@
                             <?php } ?>
                         </select>
                     </div>
+                    <?php } ?>
 
                     <div class="form-group">
                         <label for="settings[gateway_<?php echo $d; ?>_payment_method]">

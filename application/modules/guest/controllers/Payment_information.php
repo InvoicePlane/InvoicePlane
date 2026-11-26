@@ -49,21 +49,16 @@ class Payment_Information extends Base_Controller
 
         // Get all payment gateways
         $this->load->model('mdl_settings');
-        $this->config->load('payment_gateways');
-        $gateways = $this->config->item('payment_gateways');
+        $this->load->helper('payments');
 
         $available_drivers = [];
         if ( ! $disable_form) {
-            foreach ($gateways as $driver => $fields) {
-                $d = mb_strtolower($driver);
+            foreach (pay_now_gateways() as $driver) {
+                $invoice_payment_method = $invoice->payment_method;
+                $driver_payment_method  = get_setting('gateway_' . mb_strtolower($driver) . '_payment_method');
 
-                if (get_setting('gateway_' . $d . '_enabled') == 1) {
-                    $invoice_payment_method = $invoice->payment_method;
-                    $driver_payment_method  = get_setting('gateway_' . $d . '_payment_method');
-
-                    if ($invoice_payment_method == 0 || $driver_payment_method == 0 || $driver_payment_method == $invoice_payment_method) {
-                        $available_drivers[] = $driver;
-                    }
+                if ($invoice_payment_method == 0 || $driver_payment_method == 0 || $driver_payment_method == $invoice_payment_method) {
+                    $available_drivers[] = $driver;
                 }
             }
         }

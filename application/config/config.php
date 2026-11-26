@@ -528,7 +528,7 @@ $config['csrf_cookie_name']  = 'ip_csrf_cookie';
 // Users can override via CSRF_EXPIRE env var if needed.
 $config['csrf_expire']       = env('CSRF_EXPIRE', 3600);
 $config['csrf_regenerate']   = env_bool('CSRF_REGENERATE', 'false');
-$config['csrf_exclude_uris'] = [];
+$config['csrf_exclude_uris'] = ['guest/gateways/tabby/webhook'];
 
 /*
 |--------------------------------------------------------------------------

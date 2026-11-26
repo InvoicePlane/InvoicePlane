@@ -64,6 +64,23 @@ $lang = [
     'online_payment_secretWord'          => 'Secret Word', // Field for TwoCheckout
     'online_payment_installationId'      => 'Installation Id', // Field for WorldPay
     'online_payment_callbackPassword'    => 'Callback Password', // Field for WorldPay
+    'online_payment_merchantCode'        => 'Merchant Code', // Field for Tabby
+    'online_payment_webhookSecret'       => 'Webhook Secret', // Field for Tabby
+
+    // Tabby
+    'pay_later_with_tabby'        => 'Pay later with Tabby',
+    'tabby_settings_hint'         => 'Tabby is offered with its own button on invoices when the currency code in the general settings is AED and the client has an email address and a phone number (the mobile number is used first). Refunds made at Tabby are not reflected in InvoicePlane; adjust the payment by hand.',
+    'tabby_webhook_url'           => 'Webhook URL',
+    'tabby_webhook_hint'          => 'Register this URL as a Tabby webhook so payments are recorded even when the customer does not return to the invoice. If you set a webhook secret, register it as the value of the X-Auth-Key header.',
+    'tabby_payment_id'            => 'Tabby payment ID',
+    'tabby_rejected'              => 'Sorry, Tabby is unable to approve this purchase. Please use an alternative payment method for your order.',
+    'tabby_order_amount_too_high' => 'This purchase is above your current spending limit with Tabby, try a smaller cart or use another payment method',
+    'tabby_order_amount_too_low'  => 'The purchase amount is below the minimum amount required to use Tabby, try adding more items or use another payment method',
+    'tabby_payment_aborted'       => 'You aborted the payment. Please retry or choose another payment method.',
+    'tabby_unavailable'           => 'Tabby is not available for this invoice right now. Please try again later or choose another payment method.',
+    'tabby_payment_unconfirmed'   => 'Your Tabby payment could not be confirmed yet. If it went through, this invoice will be updated shortly.',
+    'tabby_payment_voided'        => 'Your Tabby payment was cancelled and refunded. Please contact us if you still need to pay this invoice.',
+    'tabby_payment_unrecorded'    => 'Your Tabby payment was received but could not be applied to this invoice. Please contact us.',
 
     // Status / Error Messages
     'online_payment_payment_cancelled'  => 'Payment cancelled.',
