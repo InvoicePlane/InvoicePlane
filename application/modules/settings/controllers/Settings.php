@@ -37,6 +37,9 @@ class Settings extends Admin_Controller
         $this->check_svg_logos();
     }
 
+    /**
+     * Shows the settings page and saves a posted batch of settings, including the optional logo uploads.
+     */
     public function index()
     {
         // Get the payment gateway configurations
@@ -140,7 +143,7 @@ class Settings extends Admin_Controller
             ];
 
             // Check for invoice logo upload
-            if ($_FILES['invoice_logo']['name']) {
+            if (isset($_FILES['invoice_logo']) && $_FILES['invoice_logo']['name']) {
                 // Security: Check for SVG files before attempting upload
                 $file_extension = mb_strtolower(pathinfo($_FILES['invoice_logo']['name'], PATHINFO_EXTENSION));
                 if ($file_extension === 'svg') {
@@ -165,7 +168,7 @@ class Settings extends Admin_Controller
             }
 
             // Check for login logo upload
-            if ($_FILES['login_logo']['name']) {
+            if (isset($_FILES['login_logo']) && $_FILES['login_logo']['name']) {
                 // Security: Check for SVG files before attempting upload
                 $file_extension = mb_strtolower(pathinfo($_FILES['login_logo']['name'], PATHINFO_EXTENSION));
                 if ($file_extension === 'svg') {

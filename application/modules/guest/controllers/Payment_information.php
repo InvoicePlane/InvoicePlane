@@ -23,7 +23,14 @@ class Payment_Information extends Base_Controller
         $this->load->model('invoices/mdl_invoices');
     }
 
-    public function form($invoice_url_key, $payment_provider = null)
+    /**
+     * Shows the online payment form of an open invoice. A missing or unknown key redirects like any other
+     * invoice that cannot be paid.
+     *
+     * @param string|null $invoice_url_key
+     * @param string|null $payment_provider
+     */
+    public function form($invoice_url_key = null, $payment_provider = null)
     {
         $this->load->model('payment_methods/mdl_payment_methods');
         $disable_form = false;
