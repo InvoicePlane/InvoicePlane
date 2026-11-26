@@ -42,6 +42,20 @@ class Mdl_Payments extends Response_Model
         $this->db->order_by('ip_payments.payment_date DESC, ip_payments.payment_id DESC');
     }
 
+    /**
+     * Restrict joined invoices to statuses that a guest is allowed to see.
+     *
+     * Draft and cancelled invoices are deliberately excluded even when a payment
+     * row already exists: the guest invoice detail, PDF and payment flows apply
+     * the same policy.
+     */
+    public function guest_visible()
+    {
+        $this->filter_where_in('ip_invoices.invoice_status_id', [2, 3, 4]);
+
+        return $this;
+    }
+
     public function default_join()
     {
         $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_payments.invoice_id');
