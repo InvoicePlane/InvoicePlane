@@ -20,6 +20,11 @@ class Payment_Information extends Base_Controller
     {
         parent::__construct();
 
+        // The switch is a rule for every payment page, not only for the pay buttons in the views.
+        if ( ! online_payments_enabled()) {
+            show_404();
+        }
+
         $this->load->model('invoices/mdl_invoices');
     }
 

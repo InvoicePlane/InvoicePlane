@@ -21,6 +21,13 @@ class Paypal extends Base_Controller
     public function __construct()
     {
         parent::__construct();
+
+        // Creating and capturing an order both move towards a charge, so neither runs while online payments are
+        // switched off. PayPal takes the money at capture, so a refused capture leaves nothing unrecorded.
+        if ( ! online_payments_enabled()) {
+            show_404();
+        }
+
         $this->load->helper('file_security');
         $this->_create_client();
     }
