@@ -165,7 +165,7 @@ class Mailer extends Admin_Controller
 
         $this->load->model('invoices/mdl_invoices');
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
-        if (! $invoice) {
+        if ( ! $invoice) {
             show_404();
         }
 
@@ -223,7 +223,7 @@ class Mailer extends Admin_Controller
 
         $this->load->model('quotes/mdl_quotes');
         $quote = $this->mdl_quotes->get_by_id($quote_id);
-        if (! $quote) {
+        if ( ! $quote) {
             show_404();
         }
 
