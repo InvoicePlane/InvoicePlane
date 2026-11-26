@@ -358,6 +358,18 @@ class Invoices extends Admin_Controller
             return;
         }
 
+        // The tax row must belong to the invoice in the URL; deleting by bare row id would let one invoice's URL
+        // remove another invoice's tax and then recalculate the wrong invoice. Plain integers only: the database
+        // would read "5abc" as 5.
+        $tax_row_belongs_to_invoice = ctype_digit($invoice_id) && ctype_digit((string) $invoice_tax_rate_id)
+            && $this->db->where(['invoice_tax_rate_id' => (int) $invoice_tax_rate_id, 'invoice_id' => (int) $invoice_id])->count_all_results('ip_invoice_tax_rates') > 0;
+
+        if ( ! $tax_row_belongs_to_invoice) {
+            show_404();
+
+            return;
+        }
+
         $this->load->model('invoices/mdl_invoice_tax_rates');
         $this->mdl_invoice_tax_rates->delete($invoice_tax_rate_id);
 
