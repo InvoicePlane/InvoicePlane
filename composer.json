@@ -11,6 +11,7 @@
         }
     },
     "require": {
+        "php": ">=8.2",
         "endroid/qr-code": "^4.8.5",
         "ezyang/htmlpurifier": "^4.19",
         "guzzlehttp/guzzle": "^7.15.2",
