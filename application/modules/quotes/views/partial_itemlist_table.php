@@ -48,6 +48,7 @@
                     <input type="text" name="item_price" class="form-control amount" value="">
                     <div class="input-group-addon"><?php echo htmlsc(get_setting('currency_symbol')); ?></div>
                 </div>
+                <?php $this->layout->load_view('layout/partial/itemlist_table_item_price_includes_tax'); ?>
             </td>
 <?php
 if ( ! $legacy_calculation) {
@@ -156,6 +157,7 @@ foreach ($items as $item) {
                                value="<?php echo format_amount($item->item_price); ?>">
                         <div class="input-group-addon"><?php echo htmlsc(get_setting('currency_symbol')); ?></div>
                     </div>
+                    <?php $this->layout->load_view('layout/partial/itemlist_table_item_price_includes_tax', ['item' => $item]); ?>
                 </td>
 <?php
         if ( ! $legacy_calculation) {

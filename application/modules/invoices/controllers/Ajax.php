@@ -91,12 +91,13 @@ class Ajax extends Admin_Controller
                 // Check if an item has either a quantity + price or name or description
                 if ( ! empty($item->item_name)) {
                     // Standardize item data
-                    $item->item_quantity        = $item->item_quantity ? standardize_amount($item->item_quantity) : 0.0;
-                    $item->item_price           = $item->item_price ? standardize_amount($item->item_price) : 0.0;
-                    $item->item_discount_amount = $item->item_discount_amount ? standardize_amount($item->item_discount_amount) : null;
-                    $item->item_product_id      = $item->item_product_id ? $item->item_product_id : null;
-                    $item->item_product_unit_id = $item->item_product_unit_id ? $item->item_product_unit_id : null;
-                    $item->item_product_unit    = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
+                    $item->item_quantity           = $item->item_quantity ? standardize_amount($item->item_quantity) : 0.0;
+                    $item->item_price              = $item->item_price ? standardize_amount($item->item_price) : 0.0;
+                    $item->item_price_includes_tax = ! empty($item->item_price_includes_tax) ? 1 : 0;
+                    $item->item_discount_amount    = $item->item_discount_amount ? standardize_amount($item->item_discount_amount) : null;
+                    $item->item_product_id         = $item->item_product_id ? $item->item_product_id : null;
+                    $item->item_product_unit_id    = $item->item_product_unit_id ? $item->item_product_unit_id : null;
+                    $item->item_product_unit       = $this->mdl_units->get_name($item->item_product_unit_id, $item->item_quantity);
                     if (property_exists($item, 'item_date')) {
                         $item->item_date = $item->item_date ? date_to_mysql($item->item_date) : null;
                     }
