@@ -139,12 +139,21 @@ class Mdl_Payments extends Response_Model
      *
      * @param array $db_array invoice_id, payment_date, payment_amount,
      *                        payment_method_id, payment_note, payment_external_id
+     * @param float $tolerance how far a capture may exceed the invoice balance and still be
+     *                         accepted as a full payment. Default 0.0001 is plain float-precision
+     *                         slack; a caller whose gateway can only express the balance rounded to
+     *                         some larger currency step (see stripe_minor_unit_rounding_step()) must
+     *                         pass that step's size in major units, or this gate rejects a capture
+     *                         that overshot the balance only because the gateway itself rounded it.
+     *                         A residual this leaves below $tolerance is written off through its
+     *                         own adjustment row so the invoice still closes fully; $amount is
+     *                         always recorded exactly as captured, never inflated to cover it.
      *
      * @return bool true when the payment was recorded; false when the invoice
      *              balance no longer covered it (already paid or a concurrent
      *              callback won) or the external id was a replay
      */
-    public function record_external_payment(array $db_array): bool
+    public function record_external_payment(array $db_array, float $tolerance = 0.0001): bool
     {
         $this->load->model('invoices/mdl_invoice_amounts');
 
@@ -162,7 +171,7 @@ class Mdl_Payments extends Response_Model
         $this->db->set('invoice_paid', sprintf('invoice_paid + %F', $amount), false);
         $this->db->set('invoice_balance', sprintf('invoice_balance - %F', $amount), false);
         $this->db->where('invoice_id', $invoice_id);
-        $this->db->where(sprintf('invoice_balance + 0.0001 >= %F', $amount), null, false);
+        $this->db->where(sprintf('invoice_balance + %F >= %F', $tolerance, $amount), null, false);
         $this->db->update('ip_invoice_amounts');
 
         if ($this->db->affected_rows() < 1) {
@@ -197,6 +206,46 @@ class Mdl_Payments extends Response_Model
         $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
 
         $amounts = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
+
+        // A capture accepted only because it fell within $tolerance of the balance (a currency
+        // whose minor-unit rounding step -- see stripe_minor_unit_rounding_step() -- doesn't let
+        // the gateway express the exact balance) leaves that gap as a real, permanent residual:
+        // every future capture for this invoice rounds the same way, so the gateway can never
+        // collect it. $amount itself is left untouched above -- it still reflects exactly what
+        // the gateway captured -- and this residual is written off through its own row instead,
+        // so ip_payments keeps an accurate record of each. 0.0001 (not 0) excludes plain
+        // float-precision noise, which this same reconciliation already produces for an exact
+        // match; a caller using the default tolerance never has a residual above that noise.
+        if ($amounts !== null && (float) $amounts->invoice_balance > 0.0001 && (float) $amounts->invoice_balance <= $tolerance) {
+            $residual = (float) $amounts->invoice_balance;
+
+            // Claim the residual the same way the gate above claims the capture: one
+            // conditional UPDATE, atomic in itself, re-verifying against the live row rather
+            // than trusting the plain SELECT above. A concurrent payment that has since
+            // changed this balance makes the WHERE match nothing -- affected_rows() is 0, the
+            // insert below is skipped, and whatever that concurrent change did stands
+            // untouched, instead of this residual overwriting it with a stale amount.
+            $this->db->set('invoice_paid', sprintf('invoice_paid + %F', $residual), false);
+            $this->db->set('invoice_balance', 0, false);
+            $this->db->where('invoice_id', $invoice_id);
+            $this->db->where(sprintf('ABS(invoice_balance - %F) < 0.0001', $residual), null, false);
+            $this->db->update('ip_invoice_amounts');
+
+            if ($this->db->affected_rows() > 0) {
+                $this->db->set([
+                    'invoice_id'          => $invoice_id,
+                    'payment_date'        => date_to_mysql($db_array['payment_date']),
+                    'payment_amount'      => $residual,
+                    'payment_method_id'   => $db_array['payment_method_id'] ?: 0,
+                    'payment_note'        => trans('online_payment_rounding_adjustment'),
+                    'payment_external_id' => null,
+                ]);
+                $this->db->insert('ip_payments');
+
+                $this->mdl_invoice_amounts->calculate($invoice_id, $global_discount);
+                $amounts = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
+            }
+        }
 
         if ($amounts !== null && (float) $amounts->invoice_paid >= (float) $amounts->invoice_total) {
             $this->db->where('invoice_id', $invoice_id);
