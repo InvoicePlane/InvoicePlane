@@ -12,8 +12,11 @@ on:
           - patch-minor
           - all-latest
         default: 'security-updates'
-  schedule:
-    - cron: '0 10 * * 1'
+
+# Manual-dispatch only: the weekly schedule trigger was removed because every scheduled run
+# failed with startup_failure (zero jobs ever created) for months, caused by this workflow's
+# write permissions exceeding what the repository's Actions settings allow for an unattended
+# trigger. Run this from the Actions tab instead until that repository setting is revisited.
 
 permissions:
   contents: write

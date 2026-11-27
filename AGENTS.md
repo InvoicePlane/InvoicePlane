@@ -83,8 +83,8 @@ These rules must not be broken.
 | `pint.yml` | manual | Format code with Pint and commit changes |
 | `phpunit.yml` | manual | Run PHPUnit test suite |
 | `phpstan.yml` | manual | Static analysis with PHPStan |
-| `composer-update.yml` | manual / weekly | Update Composer dependencies; open a PR |
-| `yarn-update.yml` | manual / weekly | Update Yarn dependencies; open a PR |
+| `composer-update.yml` | manual | Update Composer dependencies; open a PR |
+| `yarn-update.yml` | manual | Update Yarn dependencies; open a PR |
 
 There is no `quickstart.yml`. InvoicePlane does not have `php artisan` commands.
 
