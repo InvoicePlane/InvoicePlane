@@ -99,6 +99,10 @@ SESS_EXPIRATION=864000
 # Do NOT set this to 0 — it must always be a positive number.
 CSRF_EXPIRE=3600
 SESS_MATCH_IP=true
+# Send the session and CSRF cookies only over HTTPS (the Secure attribute). This is the default and the line is here
+# so it is visible. Set it to false ONLY for an install served over plain HTTP (a local test setup): a browser does not
+# return a Secure cookie over HTTP, so nobody could log in.
+COOKIE_SECURE=true
 # Database table used to store sessions when SESS_DRIVER=database.
 # Only needed if you override the default table name.
 SESS_TABLE_NAME=ip_sessions

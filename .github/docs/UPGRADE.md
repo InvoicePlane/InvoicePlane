@@ -4,9 +4,29 @@ This guide provides instructions for upgrading InvoicePlane to newer versions.
 
 ## Table of Contents
 
+- [Instructions to upgrade to 1.7.3 from 1.7.2](#instructions-to-upgrade-to-173-from-172)
 - [Instructions to upgrade to 1.7.2 from 1.7.0 / 1.7.1](#instructions-to-upgrade-to-172-from-170--171)
 - [Instructions to upgrade to 1.6.3 from 1.6.2](#instructions-to-upgrade-to-163-from-162)
 - [Instructions to upgrade to 1.6.0 from 1.5.11](#instructions-to-upgrade-to-160-from-1511)
+
+---
+
+## Instructions to upgrade to 1.7.3 from 1.7.2
+
+### Session and CSRF cookies are now `Secure` by default
+
+`COOKIE_SECURE`, `SESS_MATCH_IP` and `SESS_REGENERATE_DESTROY` are meant to be **on** when they are missing from
+`ipconfig.php`. In 1.7.2 a missing key was read as **off** (`env_bool()` ignored a boolean default), so most installs
+ran without them. From 1.7.3 the documented defaults apply. Check your `ipconfig.php`:
+
+| Key | Effect when it is missing (1.7.3) | Who has to act |
+|-----|------------------------------------|----------------|
+| `COOKIE_SECURE` | `true`: the session and CSRF cookies carry the `Secure` attribute and the browser returns them over HTTPS only | An install **served over plain HTTP** (a local or internal test setup): use HTTPS, or set `COOKIE_SECURE=false` in your existing `ipconfig.php`. Without that nobody can log in, because the browser does not send a `Secure` cookie over HTTP. |
+| `SESS_MATCH_IP` | `true`: a session is only valid from the IP address it was created on | Users whose IP address changes during a session (mobile networks, some VPNs and proxies) are logged out; set `SESS_MATCH_IP=false` if that is a problem. |
+| `SESS_REGENERATE_DESTROY` | `true`: the old session is destroyed when its ID is regenerated | Nobody; leave it on. |
+
+`ipconfig.php.example` now lists `COOKIE_SECURE=true`. Your own `ipconfig.php` is not changed by the upgrade: add the
+line only if you need to turn the default off.
 
 ---
 
