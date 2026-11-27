@@ -108,7 +108,7 @@ if ($legacy_calculation) {
 ?>
                         </div>
 
-                        <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
+                        <input type="hidden" name="invoice_id" value="<?php echo (int) $invoice_id; ?>">
                         <input type="hidden" name="item_id" value="">
                         <input type="hidden" name="item_product_id" value="">
                         <input type="hidden" name="item_task_id" class="item-task-id" value="">
@@ -197,7 +197,7 @@ foreach ($items as $item) {
                         </div>
 
                         <div class="col-xs-12 col-sm-11">
-                            <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
+                            <input type="hidden" name="invoice_id" value="<?php echo (int) $invoice_id; ?>">
                             <input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>"<?php echo $invoice_disabled; ?>>
                             <input type="hidden" name="item_task_id" class="item-task-id" value="<?php if ($item->item_task_id) {
                                 echo $item->item_task_id;

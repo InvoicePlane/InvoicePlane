@@ -33,15 +33,15 @@ if ($quote->quote_status_id == 1) {
     ?>
     $('#quote_change_client').click(function () {
         $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_client'); ?>", {
-            quote_id: <?php echo $quote_id; ?>,
-            client_id: "<?php echo $this->db->escape_str($quote->client_id); ?>",
+            quote_id: <?php echo (int) $quote_id; ?>,
+            client_id: "<?php echo (int) $quote->client_id; ?>",
         });
     });
 
     $('#quote_change_user').click(function () {
         $('#modal-placeholder').load("<?php echo site_url('quotes/ajax/modal_change_user'); ?>", {
-            quote_id: <?php echo $quote_id; ?>,
-            user_id: "<?php echo $this->db->escape_str($quote->user_id); ?>",
+            quote_id: <?php echo (int) $quote_id; ?>,
+            user_id: "<?php echo (int) $quote->user_id; ?>",
         });
     });
 <?php
@@ -66,7 +66,7 @@ if ($quote->quote_status_id == 1) {
             });
             $.post("<?php echo site_url('quotes/ajax/save'); ?>", {
                     legacy_calculation: <?php echo (int) $legacy_calculation; ?>,
-                    quote_id: <?php echo $quote_id; ?>,
+                    quote_id: <?php echo (int) $quote_id; ?>,
                     quote_number: $('#quote_number').val(),
                     quote_date_created: $('#quote_date_created').val(),
                     quote_date_expires: $('#quote_date_expires').val(),
@@ -81,7 +81,7 @@ if ($quote->quote_status_id == 1) {
                 function (data) {
                     var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                     if (response.success === 1) {
-                        window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo $quote_id; ?>;
+                        window.location = "<?php echo site_url('quotes/view'); ?>/" + <?php echo (int) $quote_id; ?>;
                     } else {
                         $('#fullpage-loader').hide();
                         $('.control-group').removeClass('has-error');
@@ -130,7 +130,7 @@ if ($quote->quote_status_id == 1) {
         });
 
         $('#btn_generate_pdf').click(function () {
-            window.open('<?php echo site_url('quotes/generate_pdf/' . $quote_id) . '?' . _csrf_query(); ?>', '_blank');
+            window.open('<?php echo site_url('quotes/generate_pdf/' . (int) $quote_id) . '?' . _csrf_query(); ?>', '_blank');
         });
 
         $(document).ready(function () {
@@ -249,7 +249,7 @@ if ($legacy_calculation) {
 ?>
                 <li>
                     <a href="#" id="btn_generate_pdf"
-                       data-quote-id="<?php echo $quote_id; ?>">
+                       data-quote-id="<?php echo (int) $quote_id; ?>">
                         <i class="fa fa-print fa-margin"></i>
                         <?php _trans('download_pdf'); ?>
                     </a>
@@ -262,14 +262,14 @@ if ($legacy_calculation) {
                 </li>
                 <li>
                     <a href="#" id="btn_quote_to_invoice"
-                       data-quote-id="<?php echo $quote_id; ?>">
+                       data-quote-id="<?php echo (int) $quote_id; ?>">
                         <i class="fa fa-refresh fa-margin"></i>
                         <?php _trans('quote_to_invoice'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#" id="btn_copy_quote"
-                       data-quote-id="<?php echo $quote_id; ?>"
+                       data-quote-id="<?php echo (int) $quote_id; ?>"
                        data-client-id="<?php echo $quote->client_id; ?>">
                         <i class="fa fa-copy fa-margin"></i>
                         <?php _trans('copy_quote'); ?>

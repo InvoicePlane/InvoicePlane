@@ -62,7 +62,7 @@
         <div class="modal-body">
             <form>
 
-                <input type="hidden" name="invoice_id" id="invoice_id" value="<?php echo $invoice_id; ?>">
+                <input type="hidden" name="invoice_id" id="invoice_id" value="<?php echo (int) $invoice_id; ?>">
 
                 <div class="form-group">
                     <label for="payment_amount"><?php _trans('amount'); ?></label>

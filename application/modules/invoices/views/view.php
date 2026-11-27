@@ -24,7 +24,7 @@ $edit_user_title = trans('edit') . ' ' . trans('user') . ' (' . trans('invoicing
         });
 
         $('.btn_add_task').click(function () {
-            $('#modal-placeholder').load("<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" + Math.floor(Math.random() * 1000));
+            $('#modal-placeholder').load("<?php echo site_url('tasks/ajax/modal_task_lookups/' . (int) $invoice_id); ?>/" + Math.floor(Math.random() * 1000));
         });
 
         $('.btn_add_row').click(function () {
@@ -46,7 +46,7 @@ if ( ! $items) {
 
         $('#btn_create_recurring').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_recurring'); ?>", {
-                invoice_id: <?php echo $invoice_id; ?>
+                invoice_id: <?php echo (int) $invoice_id; ?>
             });
         });
 <?php
@@ -55,15 +55,15 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
 
         $('#invoice_change_client').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_change_client'); ?>", {
-                invoice_id: <?php echo $invoice_id; ?>,
-                client_id: "<?php echo $this->db->escape_str($invoice->client_id); ?>",
+                invoice_id: <?php echo (int) $invoice_id; ?>,
+                client_id: "<?php echo (int) $invoice->client_id; ?>",
             });
         });
 
         $('#invoice_change_user').click(function () {
             $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_change_user'); ?>", {
-                invoice_id: <?php echo $invoice_id; ?>,
-                user_id: "<?php echo $this->db->escape_str($invoice->user_id); ?>",
+                invoice_id: <?php echo (int) $invoice_id; ?>,
+                user_id: "<?php echo (int) $invoice->user_id; ?>",
             });
         });
 <?php
@@ -88,7 +88,7 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
             });
             $.post("<?php echo site_url('invoices/ajax/save'); ?>", {
                     legacy_calculation: <?php echo (int) $legacy_calculation; ?>,
-                    invoice_id: <?php echo $invoice_id; ?>,
+                    invoice_id: <?php echo (int) $invoice_id; ?>,
                     invoice_number: $('#invoice_number').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_date_due: $('#invoice_date_due').val(),
@@ -104,7 +104,7 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
                 function (data) {
                     var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                     if (response.success === 1) {
-                        window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
+                        window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo (int) $invoice_id; ?>;
                     } else {
                         $('#fullpage-loader').hide();
                         $('.control-group').removeClass('has-error');
@@ -121,11 +121,11 @@ if ($invoice->invoice_status_id == 1 && ! $invoice->creditinvoice_parent_id) {
         });
 
         $('#btn_generate_pdf').click(function () {
-            window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id) . '?' . _csrf_query(); ?>', '_blank');
+            window.open('<?php echo site_url('invoices/generate_pdf/' . (int) $invoice_id) . '?' . _csrf_query(); ?>', '_blank');
         });
 
         $('#btn_generate_xml').click(function () {
-            window.open('<?php echo site_url('invoices/generate_xml/' . $invoice_id); ?>', '_blank');
+            window.open('<?php echo site_url('invoices/generate_xml/' . (int) $invoice_id); ?>', '_blank');
         });
 
         $(document).on('click', '.btn_delete_item', function () {
@@ -289,7 +289,7 @@ if ($legacy_calculation && $invoice->is_read_only != 1) { // Legacy calculation 
 ?>
                 <li>
                     <a href="#" id="btn_create_credit"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
+                       data-invoice-id="<?php echo (int) $invoice_id; ?>">
                         <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
                     </a>
                 </li>
@@ -298,7 +298,7 @@ if ($invoice->invoice_balance != 0) {
     ?>
                 <li>
                     <a href="#" class="invoice-add-payment"
-                       data-invoice-id="<?php echo $invoice_id; ?>"
+                       data-invoice-id="<?php echo (int) $invoice_id; ?>"
                        data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
                        data-invoice-payment-method="<?php echo $invoice->payment_method; ?>"
                        data-payment-cf-exist="<?php echo $payment_cf_exist ?? ''; ?>">
@@ -311,7 +311,7 @@ if ($invoice->invoice_balance != 0) {
 ?>
                 <li>
                     <a href="#" id="btn_generate_pdf"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
+                       data-invoice-id="<?php echo (int) $invoice_id; ?>">
                         <i class="fa fa-print fa-margin"></i>
                         <?php _trans('download_pdf'); ?>
                     </a>
@@ -322,7 +322,7 @@ if ($einvoice->user) {
     ?>
                 <li>
                     <a href="#" id="btn_generate_xml"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
+                       data-invoice-id="<?php echo (int) $invoice_id; ?>">
                         <i class="fa fa-file-code-o fa-margin"></i>
                         <?php _trans('download_xml'); ?>
                     </a>
@@ -339,14 +339,14 @@ if ($einvoice->user) {
                 <li class="divider"></li>
                 <li>
                     <a href="#" id="btn_create_recurring"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
+                       data-invoice-id="<?php echo (int) $invoice_id; ?>">
                         <i class="fa fa-refresh fa-margin"></i>
                         <?php _trans('create_recurring'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="#" id="btn_copy_invoice"
-                       data-invoice-id="<?php echo $invoice_id; ?>"
+                       data-invoice-id="<?php echo (int) $invoice_id; ?>"
                        data-client-id="<?php echo $invoice->client_id; ?>">
                         <i class="fa fa-copy fa-margin"></i>
                         <?php _trans('copy_invoice'); ?>

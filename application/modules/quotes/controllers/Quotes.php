@@ -82,6 +82,9 @@ class Quotes extends Admin_Controller
      */
     public function view($quote_id)
     {
+        // Security: see the matching comment in Invoices::view() (CWE-79).
+        $quote_id = (int) $quote_id;
+
         $this->load->model(
             [
                 'quotes/mdl_quote_items',

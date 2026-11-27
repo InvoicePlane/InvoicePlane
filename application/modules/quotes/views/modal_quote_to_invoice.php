@@ -11,7 +11,7 @@
             show_loader(); // Show spinner
             $.post("<?php echo site_url('quotes/ajax/quote_to_invoice'); ?>", {
                     legacy_calculation: legacy_calculation, // Automatic. From meta (see script)
-                    quote_id: <?php echo $quote_id; ?>,
+                    quote_id: <?php echo (int) $quote_id; ?>,
                     client_id: $('#client_id').val(),
                     invoice_date_created: $('#invoice_date_created').val(),
                     invoice_time_created: '<?php echo date('H:i:s') ?>',

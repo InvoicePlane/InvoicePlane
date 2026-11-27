@@ -27,7 +27,7 @@
         <tr>
             <td rowspan="2" class="td-icon"><i class="fa fa-arrows cursor-move"></i></td>
             <td class="td-text">
-                <input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
+                <input type="hidden" name="quote_id" value="<?php echo (int) $quote_id; ?>">
                 <input type="hidden" name="item_id" value="">
                 <input type="hidden" name="item_product_id" value="">
 
@@ -132,7 +132,7 @@ foreach ($items as $item) {
             <tr>
                 <td rowspan="2" class="td-icon"><i class="fa fa-arrows cursor-move"></i></td>
                 <td class="td-text">
-                    <input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
+                    <input type="hidden" name="quote_id" value="<?php echo (int) $quote_id; ?>">
                     <input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>">
                     <input type="hidden" name="item_product_id" value="<?php echo $item->item_product_id; ?>">
 

@@ -83,7 +83,7 @@ if ($legacy_calculation) {
                             ?>
                         </div>
 
-                        <input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
+                        <input type="hidden" name="quote_id" value="<?php echo (int) $quote_id; ?>">
                         <input type="hidden" name="item_id" value="">
                         <input type="hidden" name="item_product_id" value="">
                         <div class="col-xs-12 col-md-6 text-right">
@@ -149,7 +149,7 @@ foreach ($items as $item) {
                         </div>
 
                         <div class="col-xs-12 col-sm-11">
-                            <input type="hidden" name="quote_id" value="<?php echo $quote_id; ?>">
+                            <input type="hidden" name="quote_id" value="<?php echo (int) $quote_id; ?>">
                             <input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>">
                             <input type="hidden" name="item_product_id" value="<?php echo $item->item_product_id; ?>">
                             <div class="input-group">

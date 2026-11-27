@@ -16,7 +16,7 @@
         $('#create_recurring_confirm').click(function () {
             show_loader(); // Show spinner
             $.post("<?php echo site_url('invoices/ajax/create_recurring'); ?>", {
-                    invoice_id: <?php echo $invoice_id; ?>,
+                    invoice_id: <?php echo (int) $invoice_id; ?>,
                     recur_start_date: $('#recur_start_date').val(),
                     recur_end_date: $('#recur_end_date').val(),
                     recur_frequency: $('#recur_frequency').val()
@@ -24,7 +24,7 @@
                 function (data) {
                     var response = json_parse(data, <?php echo (int) IP_DEBUG; ?>);
                     if (response.success === 1) {
-                        window.location = "<?php echo site_url('invoices/view'); ?>/<?php echo $invoice_id; ?>";
+                        window.location = "<?php echo site_url('invoices/view'); ?>/<?php echo (int) $invoice_id; ?>";
                     }
                     else {
                         // The validation was not successful
