@@ -404,7 +404,7 @@ class Mdl_Invoice_Amounts extends CI_Model
                     FROM ip_invoice_amounts
                     JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
                         AND MONTH(ip_invoices.invoice_date_created) = MONTH(NOW() - INTERVAL 1 MONTH)
-                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
+                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW() - INTERVAL 1 MONTH)
                     GROUP BY ip_invoices.invoice_status_id')->result_array();
                 break;
             case 'this-quarter':
@@ -422,7 +422,7 @@ class Mdl_Invoice_Amounts extends CI_Model
                     FROM ip_invoice_amounts
                     JOIN ip_invoices ON ip_invoices.invoice_id = ip_invoice_amounts.invoice_id
                         AND QUARTER(ip_invoices.invoice_date_created) = QUARTER(NOW() - INTERVAL 1 QUARTER)
-                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW())
+                        AND YEAR(ip_invoices.invoice_date_created) = YEAR(NOW() - INTERVAL 1 QUARTER)
                     GROUP BY ip_invoices.invoice_status_id')->result_array();
                 break;
             case 'this-year':
@@ -457,6 +457,10 @@ class Mdl_Invoice_Amounts extends CI_Model
         }
 
         foreach ($results as $result) {
+            if ( ! isset($return[$result['invoice_status_id']])) {
+                continue;
+            }
+
             $return[$result['invoice_status_id']] = array_merge($return[$result['invoice_status_id']], $result);
         }
 
